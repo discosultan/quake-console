@@ -28,7 +28,7 @@
     <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>bin\Debug\</OutputPath>    
+    <OutputPath>bin\Debug\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -40,10 +40,15 @@
     <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>bin\Release\</OutputPath>    
+    <OutputPath>bin\Release\</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Console.cs" />
+    <Compile Include="ConsoleState.cs" />
+    <Compile Include="IConsoleInterpreter.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="$(SiliconStudioPackageProps)" Condition="Exists('$(SiliconStudioPackageProps)')" />
   <Import Project="$(SiliconStudioParadoxDir)\Targets\SiliconStudio.Common.targets" Condition="Exists('$(SiliconStudioParadoxDir)\Targets\SiliconStudio.Common.targets')" />
