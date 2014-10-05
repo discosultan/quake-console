@@ -1,0 +1,26 @@
+﻿using SiliconStudio.Paradox.Effects.Data;
+
+namespace Paradox.Console.Testbed.Windows.Effects
+{
+	shader WindowsEffectMain
+	{
+		using params RenderingParameters;
+		using params MaterialParameters;
+		using params EffectSystem;
+
+		mixin ShaderBase;
+		mixin TransformationWAndVP;
+		mixin BRDFDiffuseBase;
+		mixin BRDFSpecularBase;
+		mixin AlbedoFlatShading;
+
+		if (MaterialParameters.AlbedoDiffuse != null)
+			mixin compose albedoDiffuse = MaterialParameters.AlbedoDiffuse;
+
+		if (MaterialParameters.HasSkinningPosition)
+		{
+			mixin macro MaterialParameters.SkinningMaxBones;
+			mixin TransformationSkinning;
+		}
+	};
+}
