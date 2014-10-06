@@ -26,10 +26,8 @@ namespace Varus.Paradox.Console.Testbed
             console = new Varus.Paradox.Console.Console(
                 Services, 
                 new StubConsoleCommandInterpreter(),                
-                Asset.Load<SpriteFont>("SpriteFont"));
-            GameSystems.Add(console);
-            // Add custom game init at load time here
-            // ...
+                await Asset.LoadAsync<SpriteFont>("SpriteFont"));            
+            GameSystems.Add(console);            
 
             // Add a custom script
             Script.Add(GameScript1);
