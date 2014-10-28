@@ -1,17 +1,20 @@
 ﻿namespace Varus.Paradox.Console
 {
-    public enum ConsoleAction : byte
+    internal enum ConsoleAction : byte
     {        
         None,
         DeletePreviousChar,
-        AutoComplete,
+        Autocomplete,
         ExecuteCommand,
+        NextLineModifier,        
         UppercaseModifier,
-        SpecialModifier,
-        UppercaseToggle,
+        CopyPasteModifier,
+        PreviousEntryModifier,
+        AutocompleteModifier,
+        //UppercaseToggle,
         Space,        
-        GoToEnd,
-        GoToBeginning,
+        MoveToEnd,
+        MoveToBeginning,
         MoveLeft,
         PreviousCommandInHistory,
         MoveRight,
@@ -20,6 +23,9 @@
         DeleteCurrentChar,
         //NumLock,      
         Clear,        
-        Copy
+        Copy,
+        Paste,
+        Tab,
+        TabModifier
     }
 }

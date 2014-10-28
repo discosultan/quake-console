@@ -1,0 +1,52 @@
+!Package
+Id: fe8f27ab-fa5a-4571-959d-c534a68ca402
+Tags: []
+Meta:
+    Name: Paradox.Console
+    Version: 1.0.0.0
+    Authors: []
+    Owners: []
+    RootNamespace: Varus.Paradox.Console
+    Dependencies:
+        -   Name: Paradox
+            Version: 1.0.0-beta02
+LocalDependencies: []
+Profiles:
+    -   Name: Shared
+        Platform: Shared
+        InheritProfiles: []
+        AssetFolders:
+            -   Path: Assets/Shared
+                RawImports: []
+            -   Path: Paradox.Console.Game/Effects
+                RawImports: []
+        OutputGroupDirectories: {}
+        Properties:
+            Paradox.DisplayOrientation: !DisplayOrientation LandscapeRight
+        ProjectReferences:
+            -   Id: ddf725a7-6bb1-453f-adcf-95543e368dec
+                Location: Paradox.Console.Game/Paradox.Console.Game.csproj
+                Type: Library
+            -   Id: a9f5f139-3dd2-4ba3-8fb9-60c9c1e300bd
+                Location: ../Paradox.Console/Paradox.Console.csproj
+                Type: Library
+            -   Id: fd6255d0-61cf-4350-b453-8a37376ebcc1
+                Location: ../Paradox.Console.CustomInterpreter/Paradox.Console.CustomInterpreter.csproj
+                Type: Library
+    -   Name: Windows
+        Platform: Windows
+        InheritProfiles: []
+        AssetFolders:
+            -   Path: Assets/Windows
+                RawImports: []
+        OutputGroupDirectories: {}
+        Properties:
+            Paradox.GraphicsPlatform: !GraphicsPlatform Direct3D11
+            Paradox.GraphicsProfile: !GraphicsProfile Level_9_1
+        ProjectReferences:
+            -   Id: c6159437-fcee-4bf7-9b30-9c8a766dca54
+                Location: Paradox.Console.Windows/Paradox.Console.Windows.csproj
+                Type: Executable
+ExplicitFolders: []
+Bundles: []
+TemplateFolders: []
