@@ -6,18 +6,14 @@
 // and re-save the associated .pdxfx.
 // </auto-generated>
 
+
+#line 1 "C:\Users\Jaanus\Code\Paradox.Console\Paradox.Console\Paradox.Console.Game\Effects\ConsoleEffectMain.pdxfx"
 using SiliconStudio.Core;
 using SiliconStudio.Paradox.Effects;
 using SiliconStudio.Paradox.Shaders;
-using SiliconStudio.Core.Mathematics;
-using SiliconStudio.Paradox.Graphics;
-
-
-#line 1 "C:\Users\Jaanus\Code\Paradox.Console\Paradox.Console\Paradox.Console.Game\Effects\ConsoleEffectMain.pdxfx"
-using SiliconStudio.Paradox.Effects.Data;
 
 #line 3
-namespace Varus.Paradox.Console.Effects
+namespace Varus.Paradox.Console.Sample.Effects
 {
 
     #line 5

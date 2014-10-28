@@ -4,7 +4,7 @@ using SiliconStudio.Paradox;
 using SiliconStudio.Paradox.Effects;
 using SiliconStudio.Paradox.Graphics;
 
-namespace Varus.Paradox.Console
+namespace Varus.Paradox.Console.Sample
 {
     public class ConsoleGame : Game
     {

@@ -1,5 +1,5 @@
 
-namespace Varus.Paradox.Console
+namespace Varus.Paradox.Console.Sample
 {
     class ConsoleApp
     {

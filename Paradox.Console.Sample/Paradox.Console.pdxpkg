@@ -25,7 +25,7 @@ Profiles:
             Paradox.DisplayOrientation: !DisplayOrientation LandscapeRight
         ProjectReferences:
             -   Id: ddf725a7-6bb1-453f-adcf-95543e368dec
-                Location: Paradox.Console.Game/Paradox.Console.Game.csproj
+                Location: Paradox.Console.Sample.Game/Paradox.Console.Sample.Game.csproj
                 Type: Library
             -   Id: a9f5f139-3dd2-4ba3-8fb9-60c9c1e300bd
                 Location: ../Paradox.Console/Paradox.Console.csproj
@@ -45,7 +45,7 @@ Profiles:
             Paradox.GraphicsProfile: !GraphicsProfile Level_9_1
         ProjectReferences:
             -   Id: c6159437-fcee-4bf7-9b30-9c8a766dca54
-                Location: Paradox.Console.Windows/Paradox.Console.Windows.csproj
+                Location: Paradox.Console.Samples.Windows/Paradox.Console.Sample.Windows.csproj
                 Type: Executable
 ExplicitFolders: []
 Bundles: []
