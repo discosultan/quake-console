@@ -24,8 +24,7 @@ namespace Varus.Paradox.Console
             _console = console;
             _inputBuffer = inputBuffer;            
 
-            console.FontChanged += (s, e) => CalculateSymbolWidth();
-            CalculateSymbolWidth();
+            console.FontChanged += (s, e) => CalculateSymbolWidth();            
         }
 
         /// <summary>
@@ -89,7 +88,8 @@ namespace Varus.Paradox.Console
 
         private void CalculateSymbolWidth()
         {
-            Width = _console.Font.MeasureString(Symbol).X;            
+            if (_console.Font != null)
+                Width = _console.Font.MeasureString(Symbol).X;            
         }
 
         internal void SetDefaults(ConsoleSettings settings)

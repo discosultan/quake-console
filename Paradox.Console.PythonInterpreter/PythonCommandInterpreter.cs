@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using IronPython.Hosting;
+using Microsoft.Scripting.Hosting;
 using Varus.Paradox.Console.PythonInterpreter.Utilities;
 
 namespace Varus.Paradox.Console.PythonInterpreter
 {
-    public class PythonCommandInterpreter : IPythonInterpreter
+    public class PythonCommandInterpreter : ICommandInterpreter
     {
         private readonly ScriptEngine _scriptEngine = Python.CreateEngine();
         private ScriptScope _scriptScope;

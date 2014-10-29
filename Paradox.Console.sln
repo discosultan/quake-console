@@ -8,9 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Paradox.Console", "Paradox.
 		Paradox.Console.Sample/Paradox.Console.pdxpkg = Paradox.Console.Sample/Paradox.Console.pdxpkg
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Windows", "Paradox.Console.Sample\Paradox.Console.Sample.Windows\Paradox.Console.Sample.Windows.csproj", "{C6159437-FCEE-4BF7-9B30-9C8A766DCA54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Windows", "Paradox.Console.Sample\Paradox.Console.Sample.Windows\Paradox.Console.Sample.Windows.csproj", "{C6159437-FCEE-4BF7-9B30-9C8A766DCA54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Game", "Paradox.Console.Sample\Paradox.Console.Sample.Game\Paradox.Console.Sample.Game.csproj", "{DDF725A7-6BB1-453F-ADCF-95543E368DEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Game", "Paradox.Console.Sample\Paradox.Console.Sample.Game\Paradox.Console.Sample.Game.csproj", "{DDF725A7-6BB1-453F-ADCF-95543E368DEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console", "Paradox.Console\Paradox.Console.csproj", "{A9F5F139-3DD2-4BA3-8FB9-60C9C1E300BD}"
 EndProject
@@ -273,6 +273,7 @@ Global
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.AppStore|Mixed Platforms.ActiveCfg = AppStore|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.AppStore|Mixed Platforms.Build.0 = AppStore|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.AppStore|Windows.ActiveCfg = AppStore|Any CPU
+		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.AppStore|Windows.Build.0 = AppStore|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.AppStore|WindowsPhone.ActiveCfg = AppStore|WindowsPhone
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.AppStore|WindowsPhone.Build.0 = AppStore|WindowsPhone
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.AppStore|WindowsStore.ActiveCfg = AppStore|WindowsStore
@@ -288,6 +289,7 @@ Global
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Debug|Windows.Build.0 = Debug|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Debug|WindowsPhone.ActiveCfg = Debug|WindowsPhone
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Debug|WindowsPhone.Build.0 = Debug|WindowsPhone
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Debug|WindowsStore.ActiveCfg = Debug|WindowsStore
@@ -303,6 +305,7 @@ Global
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Release|Windows.ActiveCfg = Release|Any CPU
+		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Release|Windows.Build.0 = Release|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Release|WindowsPhone.ActiveCfg = Release|WindowsPhone
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Release|WindowsPhone.Build.0 = Release|WindowsPhone
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Release|WindowsStore.ActiveCfg = Release|WindowsStore
@@ -318,6 +321,7 @@ Global
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Testing|Mixed Platforms.ActiveCfg = Testing|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Testing|Mixed Platforms.Build.0 = Testing|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Testing|Windows.ActiveCfg = Testing|Any CPU
+		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Testing|Windows.Build.0 = Testing|Any CPU
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Testing|WindowsPhone.ActiveCfg = Testing|WindowsPhone
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Testing|WindowsPhone.Build.0 = Testing|WindowsPhone
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1}.Testing|WindowsStore.ActiveCfg = Testing|WindowsStore

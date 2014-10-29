@@ -7,7 +7,7 @@ namespace Varus.Paradox.Console.Utilities
     /// <summary>
     /// Static class used to display current and average garbage allocations.
     /// </summary>
-    public static class Garbage
+    internal static class Garbage
     {
         private static float _garbageAmountAtLastUpdate;        
         private static float _secondsPassedSinceLastSecond;
