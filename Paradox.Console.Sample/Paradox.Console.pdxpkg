@@ -47,6 +47,20 @@ Profiles:
             -   Id: c6159437-fcee-4bf7-9b30-9c8a766dca54
                 Location: Paradox.Console.Samples.Windows/Paradox.Console.Sample.Windows.csproj
                 Type: Executable
+    -   Name: WindowsStore
+        Platform: WindowsStore
+        InheritProfiles: []
+        AssetFolders:
+            -   Path: Assets/WindowsStore
+                RawImports: []
+        OutputGroupDirectories: {}
+        Properties:
+            Paradox.GraphicsPlatform: !GraphicsPlatform Direct3D11
+            Paradox.GraphicsProfile: !GraphicsProfile Level_9_1
+        ProjectReferences:
+            -   Id: 23cd737b-3720-4830-ae09-3752ee751f97
+                Location: Paradox.Console.Sample.WindowsStore/Paradox.Console.Sample.WindowsStore.csproj
+                Type: Executable
 ExplicitFolders: []
 Bundles: []
 TemplateFolders: []
