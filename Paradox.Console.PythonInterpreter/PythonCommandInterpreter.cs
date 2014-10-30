@@ -11,6 +11,8 @@ namespace Varus.Paradox.Console.PythonInterpreter
 {
     public class PythonCommandInterpreter : ICommandInterpreter
     {
+        private const StringComparison StringComparisonMethod = StringComparison.Ordinal;
+
         private readonly ScriptEngine _scriptEngine = Python.CreateEngine();
         private ScriptScope _scriptScope;
 
@@ -58,18 +60,18 @@ namespace Varus.Paradox.Console.PythonInterpreter
 
         public bool EchoEnabled { get; set; }
 
-        public void Execute(OutputBuffer viewBuffer, string command)
+        public void Execute(OutputBuffer outputBuffer, string command)
         {
             if (!_initialized)
             {
                 var memStream = new MemoryStream();
-                var pythonWriter = new PythonOutputBufferWriter(memStream, viewBuffer);
+                var pythonWriter = new PythonOutputBufferWriter(memStream, outputBuffer);
                 _scriptEngine.Runtime.IO.SetOutput(memStream, pythonWriter);
                 _scriptEngine.Runtime.IO.SetErrorOutput(memStream, pythonWriter);
                 _initialized = true;
             }
 
-            if (EchoEnabled) viewBuffer.Append(command);
+            if (EchoEnabled) outputBuffer.Append(command);
 
             string resultStr;            
             try
@@ -82,14 +84,17 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 resultStr = ex.Message;
             }
             
-            viewBuffer.Append(resultStr);
+            outputBuffer.Append(resultStr);
         }
 
         public void AddSearchPath(string path)
         {
             string dir = Path.GetDirectoryName(path);
+
+            if (string.IsNullOrWhiteSpace(dir)) return;
+
             ICollection<string> paths = _scriptEngine.GetSearchPaths();
-            if (!string.IsNullOrWhiteSpace(dir)) paths.Add(dir);             
+            paths.Add(dir);             
             _scriptEngine.SetSearchPaths(paths);
         }
 
@@ -297,11 +302,11 @@ namespace Varus.Paradox.Console.PythonInterpreter
 
         private static void FindAutocompleteForEntries(InputBuffer inputBuffer, IList<string> autocompleteEntries, string command, int startIndex, bool isNextValue)
         {
-            int index = autocompleteEntries.IndexOf(x => x.Equals(command, StringComparison.Ordinal));            
+            int index = autocompleteEntries.IndexOf(x => x.Equals(command, StringComparisonMethod));            
             if (index == -1 || inputBuffer.LastAutocompleteEntry == null) inputBuffer.LastAutocompleteEntry = command;
             
             string inputEntry = inputBuffer.LastAutocompleteEntry;
-            Func<string, bool> predicate = x => x.StartsWith(inputEntry, StringComparison.Ordinal);
+            Func<string, bool> predicate = x => x.StartsWith(inputEntry, StringComparisonMethod);
             int firstIndex = autocompleteEntries.IndexOf(predicate);
             if (firstIndex == -1) return;
             int lastIndex = autocompleteEntries.LastIndexOf(predicate);
@@ -411,7 +416,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 type.IsGenericType || // Not a generic type (requires special handling).
                 !type.IsPublic || // Not a public type.
                 type.DeclaringType != null || // IronPython does not support importing nested classes.
-                TypeFilters.Any(x => x.Equals(type.Name, StringComparison.Ordinal)) || // Not filtered.
+                TypeFilters.Any(x => x.Equals(type.Name, StringComparisonMethod)) || // Not filtered.
                 !_addedTypes.Add(type)) // Not already added.                 
             {
                 return false;
@@ -430,7 +435,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
         {
             var result = new MemberTypeInfoCollection();
 
-            var ordered = members.Where(x => !AutocompleteFilters.Any(y => x.Name.StartsWith(y, StringComparison.Ordinal))) // Filter.
+            var ordered = members.Where(x => !AutocompleteFilters.Any(y => x.Name.StartsWith(y, StringComparisonMethod))) // Filter.
                                  .DistinctBy(x => x.Name) // Distinctly named values only.
                                  .OrderBy(x => x.Name); // Order alphabetically.
             ordered.ForEach(x => result.Add(x.Name, x.GetUnderlyingType(), x.MemberType));

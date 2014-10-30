@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using SiliconStudio.Paradox.Graphics;
 using Varus.Paradox.Console.PythonInterpreter;
 
@@ -10,10 +11,10 @@ namespace Varus.Paradox.Console.Sample
         {
             var pythonInterpreter = new PythonCommandInterpreter();
 
-            // Add path to IronPython standard library.
-            pythonInterpreter.AddSearchPath(AppDomain.CurrentDomain.BaseDirectory);
+            // Add search path for IronPython standard library.
+            pythonInterpreter.AddSearchPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Lib\\"));
 
-            // Import threading module and Timer function.
+            // Import threading module and Timer function.            
             pythonInterpreter.RunScript("import threading");
             pythonInterpreter.RunScript("from threading import Timer");
 

@@ -155,7 +155,7 @@ namespace Varus.Paradox.Console
             Caret.Move(-_console.Tab.Length);
         }
         /// <summary>
-        /// Sets the value.
+        /// Sets the value typed into the buffer.
         /// </summary>
         /// <param name="value">Value to set.</param>
         public void Set(string value)
@@ -165,7 +165,7 @@ namespace Varus.Paradox.Console
             Caret.MoveTo(_buffer.Length);            
         }
         /// <summary>
-        /// Gets the value.
+        /// Gets the current value typed into the buffer.
         /// </summary>
         /// <returns>Value of <see cref="InputBuffer"/>.</returns>
         public string Get()
