@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using SiliconStudio.Core.Extensions;
 using SiliconStudio.Core.Mathematics;
 using SiliconStudio.Paradox;
 using SiliconStudio.Paradox.Effects;
@@ -88,7 +90,9 @@ namespace Varus.Paradox.Console.Sample
                 // Calculate world transformation
                 var deltaSeconds = (float)DrawTime.Elapsed.TotalSeconds;
                 _cube.Rotation += _cube.RotationSpeed * deltaSeconds;
-                
+
+                Input.KeyDown.ForEach(x => Debug.WriteLine(x));
+
                 if (Input.IsKeyPressed(Keys.OemTilde))
                 {
                     _console.ToggleOpenClose();

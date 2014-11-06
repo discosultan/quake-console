@@ -2,8 +2,12 @@
 
 namespace Varus.Paradox.Console.CustomInterpreter
 {
+    /// <summary>
+    /// Command which can be executed by <see cref="CustomCommandInterpreter"/>.
+    /// </summary>
     public abstract class Command : ICommand
     {
+        /// <inheritdoc />
         public CommandResult Execute(string[] args)
         {
             var result = CommandResult.Default;

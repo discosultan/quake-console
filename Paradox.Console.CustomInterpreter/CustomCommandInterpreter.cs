@@ -5,6 +5,9 @@ using Varus.Paradox.Console.CustomInterpreter.Utilities;
 
 namespace Varus.Paradox.Console.CustomInterpreter
 {
+    /// <summary>
+    /// Custom interpreter which executes input commands as user registered types of <see cref="Command"/>.
+    /// </summary>
     public class CustomCommandInterpreter : ICommandInterpreter
     {
         private static readonly string[] CommandAndArgumentSeparator = { " " };
@@ -14,13 +17,25 @@ namespace Varus.Paradox.Console.CustomInterpreter
         private readonly Dictionary<string, List<Command>> _commandMap = new Dictionary<string, List<Command>>();
         private string[] _autocompleteEntries;
 
+        /// <summary>
+        /// Constructs a new instance of <see cref="CustomCommandInterpreter"/>.
+        /// </summary>
         public CustomCommandInterpreter()
         {
             EchoEnabled = true;
         }
 
+        /// <summary>
+        /// Gets or sets if the user entered command should be shown in the output.
+        /// </summary>
         public bool EchoEnabled { get; set; }
 
+        /// <summary>
+        /// Executes a command by looking if any <see cref="Command"/> is registered with that name and
+        /// runs it if it is.
+        /// </summary>
+        /// <param name="outputBuffer">Console output buffer to append any output messages.</param>
+        /// <param name="input">Command to execute.</param>
         public void Execute(OutputBuffer outputBuffer, string input)
         {
             if (EchoEnabled) outputBuffer.Append(input);
@@ -49,8 +64,22 @@ namespace Varus.Paradox.Console.CustomInterpreter
             {
                 outputBuffer.Append(string.Format("Command '{0}' not found.", command));
             }
-        }        
+        }
 
+        /// <summary>
+        /// Resets the interpreter by clearing any registered commands.
+        /// </summary>
+        public void Reset()
+        {
+            _autocompleteEntries = null;
+            _commandMap.Clear();
+        }
+
+        /// <summary>
+        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="InputBuffer"/>.
+        /// </summary>
+        /// <param name="inputBuffer">Console input.</param>
+        /// <param name="isNextValue">True if user wants to autocomplete to the next value; false if to the previous value.</param>
         public void Autocomplete(InputBuffer inputBuffer, bool isNextValue)
         {
             if (_autocompleteEntries == null)                            
@@ -75,6 +104,13 @@ namespace Varus.Paradox.Console.CustomInterpreter
             }
         }
 
+        /// <summary>
+        /// Registers a new command with the interpreter.
+        /// </summary>
+        /// <param name="commandName">
+        /// Name of the command. This is the name user must enter into the <see cref="Console"/> to execute the command.
+        /// </param>
+        /// <param name="command">Command to interpreter.</param>
         public void RegisterCommand(string commandName, Command command)
         {
             Check.ArgumentNotNull(commandName, "commandName");
@@ -93,11 +129,19 @@ namespace Varus.Paradox.Console.CustomInterpreter
             _autocompleteEntries = null;
         }
 
+        /// <summary>
+        /// Unregisters a command with the provided name if any.
+        /// </summary>
+        /// <param name="commandName">Command name to remove.</param>
         public void UnregisterCommand(string commandName)
         {
             _commandMap.Remove(commandName);
         }
 
+        /// <summary>
+        /// Unregisters the provided command if found.
+        /// </summary>
+        /// <param name="command">Command to remove.</param>
         public void UnregisterCommand(Command command)
         {
             _commandMap.Values.ForEach(x => x.Remove(command));

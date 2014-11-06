@@ -9,6 +9,10 @@ using Varus.Paradox.Console.PythonInterpreter.Utilities;
 
 namespace Varus.Paradox.Console.PythonInterpreter
 {
+    /// <summary>
+    /// Runs <see cref="Console"/> commands through an IronPython parser. Supports loading .NET types
+    /// and provides intelligent autocomplete for them.
+    /// </summary>
     public class PythonCommandInterpreter : ICommandInterpreter
     {
         private const StringComparison StringComparisonMethod = StringComparison.Ordinal;
@@ -52,14 +56,25 @@ namespace Varus.Paradox.Console.PythonInterpreter
         private const char AssignmentSymbol = '=';
         private const char SpaceSymbol = ' ';
 
+        /// <summary>
+        /// Constructs a new instance of <see cref="PythonCommandInterpreter"/>.
+        /// </summary>
         public PythonCommandInterpreter()
         {
             Reset();            
             EchoEnabled = true;
         }
 
+        /// <summary>
+        /// Gets or sets if the user entered command should be shown in the output.
+        /// </summary>
         public bool EchoEnabled { get; set; }
 
+        /// <summary>
+        /// Executes a command by running it through the IronPython parser.
+        /// </summary>
+        /// <param name="outputBuffer">Console output buffer to append any output messages.</param>
+        /// <param name="command">Command to execute.</param>
         public void Execute(OutputBuffer outputBuffer, string command)
         {
             if (!_initialized)
@@ -87,6 +102,10 @@ namespace Varus.Paradox.Console.PythonInterpreter
             outputBuffer.Append(resultStr);
         }
 
+        /// <summary>
+        /// Adds a search path for the IronPython engine to look for when importing modules.
+        /// </summary>
+        /// <param name="path">Path to add.</param>
         public void AddSearchPath(string path)
         {
             string dir = Path.GetDirectoryName(path);
@@ -98,11 +117,19 @@ namespace Varus.Paradox.Console.PythonInterpreter
             _scriptEngine.SetSearchPaths(paths);
         }
 
+        /// <summary>
+        /// Runs a script straight on IronPython engine.
+        /// </summary>
+        /// <param name="script">Script to run.</param>
+        /// <returns>Value returned by the IronPython engine.</returns>
         public dynamic RunScript(string script)
         {
             return _scriptEngine.CreateScriptSourceFromString(script).Compile().Execute(_scriptScope);
         }
 
+        /// <summary>
+        /// Resets the IronPython engine scope, clears any imported modules and .NET types.
+        /// </summary>
         public void Reset()
         {
             _scriptScope = _scriptEngine.CreateScope();
@@ -118,9 +145,13 @@ namespace Varus.Paradox.Console.PythonInterpreter
         }
 
 
-
         #region Autocomplete
 
+        /// <summary>
+        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="InputBuffer"/>.
+        /// </summary>
+        /// <param name="inputBuffer">Console input.</param>
+        /// <param name="isNextValue">True if user wants to autocomplete to the next value; false if to the previous value.</param>
         public void Autocomplete(InputBuffer inputBuffer, bool isNextValue)
         {
             int autocompleteBoundaryIndices = FindBoundaryIndices(inputBuffer, inputBuffer.Caret.Index);
@@ -337,6 +368,12 @@ namespace Varus.Paradox.Console.PythonInterpreter
 
         #region Type Loading
 
+        /// <summary>
+        /// Adds a variable to the IronPython environment.
+        /// </summary>
+        /// <typeparam name="T">Type of variable to add.</typeparam>
+        /// <param name="name">Name of the variable.</param>
+        /// <param name="obj">Object to add.</param>
         public void AddVariable<T>(string name, T obj)
         {
             if (name == null) throw new ArgumentException("name");
@@ -362,6 +399,10 @@ namespace Varus.Paradox.Console.PythonInterpreter
             AddType(type, true);
         }
 
+        /// <summary>
+        /// Loads types to IronPython.
+        /// </summary>
+        /// <param name="types">Types to load.</param>
         public void AddTypes(params Type[] types)
         {
             if (types == null) throw new ArgumentException("types");
@@ -369,6 +410,10 @@ namespace Varus.Paradox.Console.PythonInterpreter
             types.ForEach(x => AddType(x));
         }
 
+        /// <summary>
+        /// Loads all the public non-nested types from the assembly to IronPython.
+        /// </summary>
+        /// <param name="assembly">Assembly to get types from.</param>
         public void AddAssembly(Assembly assembly)
         {
             if (assembly == null) throw new ArgumentException("assembly");

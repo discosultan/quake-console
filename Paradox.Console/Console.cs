@@ -125,7 +125,7 @@ namespace Varus.Paradox.Console
         private readonly ICommandInterpreter _commandInterpreter;
 
         private readonly ConsoleSettings _defaultSettings = new ConsoleSettings
-        {
+        {            
             BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f),
             FontColor = new Color(1.0f, 1.0f, 0.0f, 1.0f),
             OpenCloseTransitionSeconds = 0.25f,
@@ -210,10 +210,12 @@ namespace Varus.Paradox.Console
         /// Gets the input part of the <see cref="Console"/>.
         /// </summary>
         public InputBuffer InputBuffer { get; private set; }
+
         /// <summary>
         /// Gets the output part of the <see cref="Console"/>.
         /// </summary>
         public OutputBuffer OutputBuffer { get; private set; }
+
         /// <summary>
         /// Gets if any part of the <see cref="Console"/> is visible.
         /// </summary>
@@ -221,6 +223,7 @@ namespace Varus.Paradox.Console
         {
             get { return _state != ConsoleState.Closed; }
         }
+
         /// <summary>
         /// Gets if the <see cref="Console"/> is currently accepting user input.
         /// </summary>
@@ -228,6 +231,7 @@ namespace Varus.Paradox.Console
         {
             get { return _state == ConsoleState.Open || _state == ConsoleState.Opening; }
         }
+
         /// <summary>
         /// Gets or sets the font.
         /// </summary>
@@ -254,14 +258,17 @@ namespace Varus.Paradox.Console
             get { return _repeatedPressTresholdTimer.TargetTime; }
             set { _repeatedPressTresholdTimer.TargetTime = value; }
         }
+
         /// <summary>
         /// Gets or sets the background color. Supports transparency.
         /// </summary>
         public Color BackgroundColor { get; set; }
+
         /// <summary>
         /// Gets or sets the font color. Supports transparency.
         /// </summary>
         public Color FontColor { get; set; }
+
         /// <summary>
         /// Gets or sets the time in seconds it takes to fully open or close the <see cref="Console"/>.
         /// </summary>
@@ -270,6 +277,7 @@ namespace Varus.Paradox.Console
             get { return _transitionTimer.TargetTime; }
             set { _transitionTimer.TargetTime = value; }
         }
+
         /// <summary>
         /// Gets or sets the percentage of height the <see cref="Console"/> window takes in relation to
         /// application window height. Value in between [0...1].
@@ -283,6 +291,7 @@ namespace Varus.Paradox.Console
                 SetWindowWidthAndHeight();                
             }
         }
+
         /// <summary>
         /// Gets or sets the padding to apply to the borders of the <see cref="Console"/> window.
         /// Note that padding will be automatically decreased if the available window area becomes too low.
@@ -302,6 +311,7 @@ namespace Varus.Paradox.Console
                 PaddingChanged(this, EventArgs.Empty);
             }
         }
+
         /// <summary>
         /// Gets or sets the dictionary that is used to map keyboard keys to corresponding symbols
         /// shown in the <see cref="Console"/>.
@@ -352,6 +362,7 @@ namespace Varus.Paradox.Console
                     break;
             }
         }
+
         /// <summary>
         /// Clears the subparts of the <see cref="Console"/>.
         /// </summary>
@@ -371,6 +382,7 @@ namespace Varus.Paradox.Console
                 ClearHistory();
             }       
         }
+
         /// <summary>
         /// Clears the <see cref="Console"/> and sets all the settings
         /// to their default values.
@@ -380,6 +392,7 @@ namespace Varus.Paradox.Console
             Clear();
             SetDefaults(_defaultSettings);
         }
+
         /// <inheritdoc/>        
         public override void Update(GameTime gameTime)
         {
@@ -426,6 +439,7 @@ namespace Varus.Paradox.Console
                     break;
             }
         }
+
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
         {
