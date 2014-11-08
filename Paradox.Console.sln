@@ -14,7 +14,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Game
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console", "Paradox.Console\Paradox.Console.csproj", "{A9F5F139-3DD2-4BA3-8FB9-60C9C1E300BD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{6B6BA0E8-9F1E-4527-83AA-5909A0E75029}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{6B6BA0E8-9F1E-4527-83AA-5909A0E75029}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.PythonInterpreter", "Paradox.Console.PythonInterpreter\Paradox.Console.PythonInterpreter.csproj", "{8AFDC539-5AE3-4245-82E0-5A1238017138}"
 EndProject

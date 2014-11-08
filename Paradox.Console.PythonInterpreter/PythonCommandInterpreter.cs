@@ -47,14 +47,17 @@ namespace Varus.Paradox.Console.PythonInterpreter
         {
             "Void"
         };
-
+        private readonly char[] Operators =
+        {
+            '+', '-', '*', '/', '%'
+        };
         private readonly char[] AutocompleteBoundaryDenoters =
         {
             ' ', '(', ')', '[', ']', '{', '}', '/', '=', '.'
         };
         private const char AccessorSymbol = '.';
         private const char AssignmentSymbol = '=';
-        private const char SpaceSymbol = ' ';
+        private const char SpaceSymbol = ' ';        
 
         /// <summary>
         /// Constructs a new instance of <see cref="PythonCommandInterpreter"/>.
@@ -246,7 +249,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
             return chainEndIndex;
         }
 
-        private static AutocompletionType FindAutocompleteType(InputBuffer inputBuffer, int startIndex)
+        private AutocompletionType FindAutocompleteType(InputBuffer inputBuffer, int startIndex)
         {
             if (startIndex == 0) return AutocompletionType.Regular;            
             startIndex--;            
@@ -257,7 +260,15 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 char c = inputBuffer[i];
                 if (c == SpaceSymbol) continue;                
                 if (c == AccessorSymbol) return AutocompletionType.Accessor;
-                if (c == AssignmentSymbol) return AutocompletionType.Assignment;
+                if (c == AssignmentSymbol)
+                {
+                    if (i <= 0) return AutocompletionType.Assignment;
+                    // If we have for example == or += instead of =, use regular autocompletion.
+                    char prev = inputBuffer[i - 1];
+                    return prev == AssignmentSymbol || Operators.Any(x => x == prev)
+                        ? AutocompletionType.Regular
+                        : AutocompletionType.Assignment;                    
+                }
                 return AutocompletionType.Regular;
             }
             return AutocompletionType.Regular;
