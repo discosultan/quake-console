@@ -9,7 +9,7 @@ Meta:
     RootNamespace: Varus.Paradox.Console
     Dependencies:
         -   Name: Paradox
-            Version: 1.0.0-beta02
+            Version: 1.0.0-beta03
 LocalDependencies: []
 Profiles:
     -   Name: Shared

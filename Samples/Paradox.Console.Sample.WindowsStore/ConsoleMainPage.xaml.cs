@@ -4,6 +4,7 @@ using System;
 using Windows.UI.Xaml.Controls;
 using SiliconStudio.Paradox.Graphics;
 using Varus.Paradox.Console.CustomInterpreter;
+using Varus.Paradox.Console.Sample.Commands;
 
 namespace Varus.Paradox.Console.Sample
 {
@@ -19,6 +20,9 @@ namespace Varus.Paradox.Console.Sample
             var customInterpreter = new CustomCommandInterpreter();
             Action<Console, Cube, SpriteFont, SpriteFont> postLoad = (console, cube, font1, font2) =>
             {
+                customInterpreter.RegisterCommand("Clear-Console", new ClearConsoleCommand(console));
+                customInterpreter.RegisterCommand("Set-Cube-Rotation-Speed", new SetCubeRotationSpeed(cube));
+                customInterpreter.RegisterCommand("Set-Cube-Position", new SetCubePosition(cube));
             };
 
             var game = new ConsoleGame(customInterpreter, postLoad);
