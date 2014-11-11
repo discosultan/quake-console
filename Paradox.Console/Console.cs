@@ -188,7 +188,7 @@ namespace Varus.Paradox.Console
             CharWidthMap = new Dictionary<char, float>();            
             _commandInterpreter = commandInterpreter;
             _graphicsDeviceManager = (GraphicsDeviceManager)registry.GetSafeServiceAs<IGraphicsDeviceManager>();
-            _inputManager = (InputManager)registry.GetSafeServiceAs<IInputManager>();            
+            _inputManager = registry.GetSafeServiceAs<InputManager>();            
             Font = font;            
         }
 
