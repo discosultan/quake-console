@@ -90,7 +90,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Paradox.Console.PythonInterpreter\Paradox.Console.PythonInterpreter.csproj">
+    <ProjectReference Include="..\..\Interpreters\Paradox.Console.PythonInterpreter\Paradox.Console.PythonInterpreter.csproj">
       <Project>{8afdc539-5ae3-4245-82e0-5a1238017138}</Project>
       <Name>Paradox.Console.PythonInterpreter</Name>
     </ProjectReference>

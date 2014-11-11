@@ -30,7 +30,7 @@
     <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Windows-Direct3D11\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\Windows-Direct3D11\Debug\</OutputPath>
     <IntermediateOutputPath>obj\Windows\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -42,7 +42,7 @@
     <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Windows-Direct3D11\Release\</OutputPath>
+    <OutputPath>..\..\Bin\Windows-Direct3D11\Release\</OutputPath>
     <IntermediateOutputPath>obj\Windows\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -54,7 +54,7 @@
     <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Windows-Direct3D11\Testing\</OutputPath>
+    <OutputPath>..\..\Bin\Windows-Direct3D11\Testing\</OutputPath>
     <IntermediateOutputPath>obj\Windows\Testing\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -66,7 +66,7 @@
     <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Windows-Direct3D11\AppStore\</OutputPath>
+    <OutputPath>..\..\Bin\Windows-Direct3D11\AppStore\</OutputPath>
     <IntermediateOutputPath>obj\Windows\AppStore\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -79,7 +79,7 @@
     <SiliconStudioPlatform>WindowsStore</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>WindowsStore</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsStore-Direct3D11\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\WindowsStore-Direct3D11\Debug\</OutputPath>
     <IntermediateOutputPath>obj\WindowsStore\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -92,7 +92,7 @@
     <SiliconStudioPlatform>WindowsStore</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>WindowsStore</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsStore-Direct3D11\Release\</OutputPath>
+    <OutputPath>..\..\Bin\WindowsStore-Direct3D11\Release\</OutputPath>
     <IntermediateOutputPath>obj\WindowsStore\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -105,7 +105,7 @@
     <SiliconStudioPlatform>WindowsStore</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>WindowsStore</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsStore-Direct3D11\Testing\</OutputPath>
+    <OutputPath>..\..\Bin\WindowsStore-Direct3D11\Testing\</OutputPath>
     <IntermediateOutputPath>obj\WindowsStore\Testing\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -118,7 +118,7 @@
     <SiliconStudioPlatform>WindowsStore</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>WindowsStore</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsStore-Direct3D11\AppStore\</OutputPath>
+    <OutputPath>..\..\Bin\WindowsStore-Direct3D11\AppStore\</OutputPath>
     <IntermediateOutputPath>obj\WindowsStore\AppStore\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -132,7 +132,7 @@
     <SiliconStudioPlatform>WindowsPhone</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>WindowsPhone</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsPhone-Direct3D11\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\WindowsPhone-Direct3D11\Debug\</OutputPath>
     <IntermediateOutputPath>obj\WindowsPhone\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -145,7 +145,7 @@
     <SiliconStudioPlatform>WindowsPhone</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>WindowsPhone</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsPhone-Direct3D11\Release\</OutputPath>
+    <OutputPath>..\..\Bin\WindowsPhone-Direct3D11\Release\</OutputPath>
     <IntermediateOutputPath>obj\WindowsPhone\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -158,7 +158,7 @@
     <SiliconStudioPlatform>WindowsPhone</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>WindowsPhone</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsPhone-Direct3D11\Testing\</OutputPath>
+    <OutputPath>..\..\Bin\WindowsPhone-Direct3D11\Testing\</OutputPath>
     <IntermediateOutputPath>obj\WindowsPhone\Testing\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -171,7 +171,7 @@
     <SiliconStudioPlatform>WindowsPhone</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>WindowsPhone</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsPhone-Direct3D11\AppStore\</OutputPath>
+    <OutputPath>..\..\Bin\WindowsPhone-Direct3D11\AppStore\</OutputPath>
     <IntermediateOutputPath>obj\WindowsPhone\AppStore\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -185,7 +185,7 @@
     <SiliconStudioPlatform>Android</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Android</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Android-OpenGLES\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\Android-OpenGLES\Debug\</OutputPath>
     <IntermediateOutputPath>obj\Android\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -199,7 +199,7 @@
     <SiliconStudioPlatform>Android</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Android</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Android-OpenGLES\Release\</OutputPath>
+    <OutputPath>..\..\Bin\Android-OpenGLES\Release\</OutputPath>
     <IntermediateOutputPath>obj\Android\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -213,7 +213,7 @@
     <SiliconStudioPlatform>Android</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Android</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Android-OpenGLES\Testing\</OutputPath>
+    <OutputPath>..\..\Bin\Android-OpenGLES\Testing\</OutputPath>
     <IntermediateOutputPath>obj\Android\Testing\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -227,7 +227,7 @@
     <SiliconStudioPlatform>Android</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Android</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Android-OpenGLES\AppStore\</OutputPath>
+    <OutputPath>..\..\Bin\Android-OpenGLES\AppStore\</OutputPath>
     <IntermediateOutputPath>obj\Android\AppStore\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -242,7 +242,7 @@
     <SiliconStudioPlatform>iOS</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>iOS</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\iOS-OpenGLES\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\iOS-OpenGLES\Debug\</OutputPath>
     <IntermediateOutputPath>obj\iOS\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -259,7 +259,7 @@
     <SiliconStudioPlatform>iOS</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>iOS</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\iOS-OpenGLES\Release\</OutputPath>
+    <OutputPath>..\..\Bin\iOS-OpenGLES\Release\</OutputPath>
     <IntermediateOutputPath>obj\iOS\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -274,7 +274,7 @@
     <SiliconStudioPlatform>iOS</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>iOS</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\iOS-OpenGLES\Testing\</OutputPath>
+    <OutputPath>..\..\Bin\iOS-OpenGLES\Testing\</OutputPath>
     <IntermediateOutputPath>obj\iOS\Testing\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -291,7 +291,7 @@
     <SiliconStudioPlatform>iOS</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>iOS</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\iOS-OpenGLES\AppStore\</OutputPath>
+    <OutputPath>..\..\Bin\iOS-OpenGLES\AppStore\</OutputPath>
     <IntermediateOutputPath>obj\iOS\AppStore\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -307,7 +307,7 @@
     <SiliconStudioPlatform>iOS</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>iOS</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\iOS-OpenGLES\Debug\</OutputPath>
+    <OutputPath>..\..\Bin\iOS-OpenGLES\Debug\</OutputPath>
     <IntermediateOutputPath>obj\iOS\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -320,7 +320,7 @@
     <SiliconStudioPlatform>iOS</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>iOS</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\iOS-OpenGLES\Release\</OutputPath>
+    <OutputPath>..\..\Bin\iOS-OpenGLES\Release\</OutputPath>
     <IntermediateOutputPath>obj\iOS\Release\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -328,7 +328,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\Paradox.Console\Paradox.Console.csproj">
+    <ProjectReference Include="..\..\Paradox.Console\Paradox.Console.csproj">
       <Project>{a9f5f139-3dd2-4ba3-8fb9-60c9c1e300bd}</Project>
       <Name>Paradox.Console</Name>
     </ProjectReference>

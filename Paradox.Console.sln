@@ -5,24 +5,24 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Paradox.Console", "Paradox.Console", "{FE8F27AB-FA5A-4571-959D-C534A68CA402}"
 	ProjectSection(SiliconStudioPackage) = preProject
-		Paradox.Console.Sample/Paradox.Console.pdxpkg = Paradox.Console.Sample/Paradox.Console.pdxpkg
+		Samples/Paradox.Console.pdxpkg = Samples/Paradox.Console.pdxpkg
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Windows", "Paradox.Console.Sample\Paradox.Console.Sample.Windows\Paradox.Console.Sample.Windows.csproj", "{C6159437-FCEE-4BF7-9B30-9C8A766DCA54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Windows", "Samples\Paradox.Console.Sample.Windows\Paradox.Console.Sample.Windows.csproj", "{C6159437-FCEE-4BF7-9B30-9C8A766DCA54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Game", "Paradox.Console.Sample\Paradox.Console.Sample.Game\Paradox.Console.Sample.Game.csproj", "{DDF725A7-6BB1-453F-ADCF-95543E368DEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Game", "Samples\Paradox.Console.Sample.Game\Paradox.Console.Sample.Game.csproj", "{DDF725A7-6BB1-453F-ADCF-95543E368DEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console", "Paradox.Console\Paradox.Console.csproj", "{A9F5F139-3DD2-4BA3-8FB9-60C9C1E300BD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{6B6BA0E8-9F1E-4527-83AA-5909A0E75029}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.PythonInterpreter", "Paradox.Console.PythonInterpreter\Paradox.Console.PythonInterpreter.csproj", "{8AFDC539-5AE3-4245-82E0-5A1238017138}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.PythonInterpreter", "Interpreters\Paradox.Console.PythonInterpreter\Paradox.Console.PythonInterpreter.csproj", "{8AFDC539-5AE3-4245-82E0-5A1238017138}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interpreters", "Interpreters", "{7A20110D-A74F-4190-9D3B-7CA3A6793C14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.CustomInterpreter", "Paradox.Console.CustomInterpreter\Paradox.Console.CustomInterpreter.csproj", "{FD6255D0-61CF-4350-B453-8A37376EBCC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.CustomInterpreter", "Interpreters\Paradox.Console.CustomInterpreter\Paradox.Console.CustomInterpreter.csproj", "{FD6255D0-61CF-4350-B453-8A37376EBCC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.WindowsStore", "Paradox.Console.Sample\Paradox.Console.Sample.WindowsStore\Paradox.Console.Sample.WindowsStore.csproj", "{23CD737B-3720-4830-AE09-3752EE751F97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.WindowsStore", "Samples\Paradox.Console.Sample.WindowsStore\Paradox.Console.Sample.WindowsStore.csproj", "{23CD737B-3720-4830-AE09-3752EE751F97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

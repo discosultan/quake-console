@@ -126,7 +126,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .NET Framework is automatically included -->
-    <ProjectReference Include="..\..\Paradox.Console.CustomInterpreter\Paradox.Console.CustomInterpreter.csproj">
+    <ProjectReference Include="..\..\Interpreters\Paradox.Console.CustomInterpreter\Paradox.Console.CustomInterpreter.csproj">
       <Project>{fd6255d0-61cf-4350-b453-8a37376ebcc1}</Project>
       <Name>Paradox.Console.CustomInterpreter</Name>
     </ProjectReference>
