@@ -201,8 +201,8 @@
     </Compile>
     <Compile Include="ArgumentHelper.cs" />
     <Compile Include="Commands\ClearConsoleCommand.cs" />
-    <Compile Include="Commands\SetCubePosition.cs" />
-    <Compile Include="Commands\SetCubeRotationSpeed.cs" />
+    <Compile Include="Commands\SetCubePositionCommand.cs" />
+    <Compile Include="Commands\SetCubeRotationSpeedCommand.cs" />
     <Compile Include="ConsoleMainPage.xaml.cs">
       <DependentUpon>ConsoleMainPage.xaml</DependentUpon>
     </Compile>

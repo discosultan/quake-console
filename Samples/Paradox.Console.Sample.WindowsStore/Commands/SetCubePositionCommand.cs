@@ -5,15 +5,15 @@ namespace Varus.Paradox.Console.Sample.Commands
     /// <summary>
     /// Sets the position for <see cref="Cube"/>.
     /// </summary>
-    public class SetCubePosition : Command
+    public class SetCubePositionCommand : Command
     {
         private readonly Cube _cube;
 
         /// <summary>
-        /// Constructs a new instance of <see cref="SetCubePosition"/>.
+        /// Constructs a new instance of <see cref="SetCubePositionCommand"/>.
         /// </summary>
         /// <param name="cube">Cube to set rotation speed for.</param>
-        public SetCubePosition(Cube cube)
+        public SetCubePositionCommand(Cube cube)
         {
             _cube = cube;
         }

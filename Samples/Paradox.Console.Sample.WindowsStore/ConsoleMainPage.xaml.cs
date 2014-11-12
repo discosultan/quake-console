@@ -21,8 +21,8 @@ namespace Varus.Paradox.Console.Sample
             Action<Console, Cube, SpriteFont, SpriteFont> postLoad = (console, cube, font1, font2) =>
             {
                 customInterpreter.RegisterCommand("Clear-Console", new ClearConsoleCommand(console));
-                customInterpreter.RegisterCommand("Set-Cube-Rotation-Speed", new SetCubeRotationSpeed(cube));
-                customInterpreter.RegisterCommand("Set-Cube-Position", new SetCubePosition(cube));
+                customInterpreter.RegisterCommand("Set-Cube-Rotation-Speed", new SetCubeRotationSpeedCommand(cube));
+                customInterpreter.RegisterCommand("Set-Cube-Position", new SetCubePositionCommand(cube));
             };
 
             var game = new ConsoleGame(customInterpreter, postLoad);
