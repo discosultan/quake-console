@@ -459,10 +459,8 @@ namespace Varus.Paradox.Console
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.DeleteCurrentChar:
                     if (InputBuffer.Length > InputBuffer.Caret.Index)
-                    {
-                        bool needToMoveCaret = InputBuffer.Caret.Index > 0;
-                        InputBuffer.Remove(InputBuffer.Caret.Index, 1);
-                        if (needToMoveCaret) InputBuffer.Caret.Move(1);
+                    {                        
+                        InputBuffer.Remove(InputBuffer.Caret.Index, 1);                        
                     }
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.Paste:                    
