@@ -11,7 +11,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
 {
     /// <summary>
     /// Runs <see cref="Console"/> commands through an IronPython parser. Supports loading .NET types
-    /// and provides intelligent autocomplete for them.
+    /// and provides autocomplete for them.
     /// </summary>
     public class PythonCommandInterpreter : ICommandInterpreter
     {

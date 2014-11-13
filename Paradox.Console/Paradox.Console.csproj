@@ -332,6 +332,9 @@
   <ItemGroup>
     <Compile Include="Caret.cs" />
     <Compile Include="Console.cs" />
+    <Compile Include="Console.Definitions.cs">
+      <DependentUpon>Console.cs</DependentUpon>
+    </Compile>
     <Compile Include="ConsoleAction.cs" />
     <Compile Include="ConsoleClearFlags.cs" />
     <Compile Include="ConsoleProcessResult.cs" />
