@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SiliconStudio.Core;
 using SiliconStudio.Core.Mathematics;
+using SiliconStudio.Paradox;
 using SiliconStudio.Paradox.Games;
 using SiliconStudio.Paradox.Graphics;
 using SiliconStudio.Paradox.Input;
@@ -13,13 +14,12 @@ namespace Varus.Paradox.Console
     /// <summary>
     /// A game system which enables an in-game window for typing commands.
     /// </summary>
-    public partial class Console : GameSystemBase
+    public partial class Console : GameSystem
     {
         private readonly ICommandInterpreter _commandInterpreter;        
 
         private bool _initialized;        
-        private Texture2D _backgroundTexture;
-        private readonly InputManager _inputManager;
+        private Texture2D _backgroundTexture;        
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private SpriteFont _font;
         private float _padding;
@@ -62,8 +62,7 @@ namespace Varus.Paradox.Console
             
             CharWidthMap = new Dictionary<char, float>();            
             _commandInterpreter = commandInterpreter;
-            _graphicsDeviceManager = (GraphicsDeviceManager)registry.GetSafeServiceAs<IGraphicsDeviceManager>();
-            _inputManager = registry.GetSafeServiceAs<InputManager>();            
+            _graphicsDeviceManager = (GraphicsDeviceManager)registry.GetSafeServiceAs<IGraphicsDeviceManager>();                
             Font = font;            
         }
 
@@ -351,12 +350,12 @@ namespace Varus.Paradox.Console
         
         private void HandleInput()
         {            
-            if (!_inputManager.IsKeyDown(_downKey))
+            if (!Input.IsKeyDown(_downKey))
             {
                 ResetRepeatingPresses();
             }
 
-            foreach (KeyEvent keyEvent in _inputManager.KeyEvents)
+            foreach (KeyEvent keyEvent in Input.KeyEvents)
             {
                 // We are only interested in key presses.
                 if (keyEvent.Type == KeyEventType.Released) continue;
@@ -398,7 +397,7 @@ namespace Varus.Paradox.Console
                     string cmd = InputBuffer.Get();                    
                     // Determine if this is a line break or we should execute command straight away.
                     if (_actionDefinitions.BackwardTryGetValue(ConsoleAction.NextLineModifier, out modifier) &&
-                        _inputManager.IsKeyDown(modifier))
+                        Input.IsKeyDown(modifier))
                     {                        
                         OutputBuffer.AddCommandEntry(cmd);
                     } 
@@ -434,9 +433,9 @@ namespace Varus.Paradox.Console
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.Autocomplete:
                     bool hasModifier = _actionDefinitions.BackwardTryGetValue(ConsoleAction.AutocompleteModifier, out modifier);
-                    if (hasModifier && !_inputManager.IsKeyDown(modifier)) return ConsoleProcessResult.None;
+                    if (hasModifier && !Input.IsKeyDown(modifier)) return ConsoleProcessResult.None;
                     bool canMoveBackwards = _actionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
-                    _commandInterpreter.Autocomplete(InputBuffer, !canMoveBackwards || !_inputManager.IsKeyDown(modifier));
+                    _commandInterpreter.Autocomplete(InputBuffer, !canMoveBackwards || !Input.IsKeyDown(modifier));
                     InputBuffer.Caret.MoveTo(InputBuffer.Length);
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveLeft:
@@ -465,7 +464,7 @@ namespace Varus.Paradox.Console
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.Paste:                    
                     _actionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
-                    if (!_inputManager.IsKeyDown(modifier)) break;
+                    if (!Input.IsKeyDown(modifier)) break;
                     // TODO: Enable clipboard pasting. How to approach this in a cross-platform manner?
                     //string clipboardVal = Clipboard.GetText(TextDataFormat.Text);                        
                     //_currentInput.Append(clipboardVal);
@@ -473,7 +472,7 @@ namespace Varus.Paradox.Console
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.Tab:
                     _actionDefinitions.BackwardTryGetValue(ConsoleAction.TabModifier, out modifier);
-                    if (_inputManager.IsKeyDown(modifier))
+                    if (Input.IsKeyDown(modifier))
                     {
                         InputBuffer.RemoveTab();
                     }
@@ -497,7 +496,7 @@ namespace Varus.Paradox.Console
             List<Keys> uppercaseModifiers;
             _actionDefinitions.BackwardTryGetValues(ConsoleAction.UppercaseModifier, out uppercaseModifiers);
 
-            bool toUpper = uppercaseModifiers != null && uppercaseModifiers.Any(x => _inputManager.IsKeyDown(x));
+            bool toUpper = uppercaseModifiers != null && uppercaseModifiers.Any(x => Input.IsKeyDown(x));
 
             InputBuffer.Write(toUpper
                 ? symbolPair.UppercaseSymbol
