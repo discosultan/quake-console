@@ -22,6 +22,7 @@ namespace Varus.Paradox.Console
             { Keys.Up, ConsoleAction.PreviousCommandInHistory },
             { Keys.Down, ConsoleAction.NextCommandInHistory },            
             { Keys.LeftCtrl, ConsoleAction.CopyPasteModifier },
+            { Keys.RightCtrl, ConsoleAction.CopyPasteModifier },
             { Keys.LeftShift, ConsoleAction.PreviousEntryModifier },
             { Keys.RightShift, ConsoleAction.PreviousEntryModifier },
             { Keys.V, ConsoleAction.Paste },
@@ -29,6 +30,7 @@ namespace Varus.Paradox.Console
             //{ Keys.Tab, ConsoleAction.Autocomplete },            
             { Keys.Space, ConsoleAction.Autocomplete },
             { Keys.LeftCtrl, ConsoleAction.AutocompleteModifier },
+            { Keys.RightCtrl, ConsoleAction.AutocompleteModifier },
             { Keys.Tab, ConsoleAction.Tab },
             { Keys.LeftShift, ConsoleAction.TabModifier },
             { Keys.RightShift, ConsoleAction.TabModifier }
