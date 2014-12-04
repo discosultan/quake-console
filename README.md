@@ -1,8 +1,8 @@
 Paradox.Console
 ===============
+Quake style console for [Paradox Game Engine](http://paradox3d.net/).
 
-A Quake style console for Paradox Game Engine.
-
-[Paradox Game Engine](http://paradox3d.net/)<br/>
-[Console in-action](https://www.youtube.com/watch?v=oVWqy16W0ak)<br/>
-[About the console](http://www.jaanusvarus.com/quake-style-console-for-paradox-game-engine)
+![Quake style console](http://az695587.vo.msecnd.net/images/console.png)
+### Links
+[Video of the console in action](https://www.youtube.com/watch?v=oVWqy16W0ak)<br/>
+[Getting started](http://jaanusvarus.com/quake-style-console-for-paradox-game-engine)
