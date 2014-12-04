@@ -18,17 +18,22 @@ namespace Varus.Paradox.Console
             { Keys.Back, ConsoleAction.DeletePreviousChar },
             { Keys.Delete, ConsoleAction.DeleteCurrentChar },
             { Keys.LeftShift, ConsoleAction.UppercaseModifier },
+            { Keys.RightShift, ConsoleAction.UppercaseModifier },
             { Keys.Up, ConsoleAction.PreviousCommandInHistory },
             { Keys.Down, ConsoleAction.NextCommandInHistory },            
             { Keys.LeftCtrl, ConsoleAction.CopyPasteModifier },
+            { Keys.RightCtrl, ConsoleAction.CopyPasteModifier },
             { Keys.LeftShift, ConsoleAction.PreviousEntryModifier },
+            { Keys.RightShift, ConsoleAction.PreviousEntryModifier },
             { Keys.V, ConsoleAction.Paste },
             { Keys.LeftShift, ConsoleAction.NextLineModifier },
             //{ Keys.Tab, ConsoleAction.Autocomplete },            
             { Keys.Space, ConsoleAction.Autocomplete },
             { Keys.LeftCtrl, ConsoleAction.AutocompleteModifier },
+            { Keys.RightCtrl, ConsoleAction.AutocompleteModifier },
             { Keys.Tab, ConsoleAction.Tab },
-            { Keys.LeftShift, ConsoleAction.TabModifier }
+            { Keys.LeftShift, ConsoleAction.TabModifier },
+            { Keys.RightShift, ConsoleAction.TabModifier }
         };
 
         private Dictionary<Keys, SymbolPair> _symbolDefinitions = new Dictionary<Keys, SymbolPair>
