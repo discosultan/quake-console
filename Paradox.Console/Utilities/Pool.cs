@@ -11,7 +11,7 @@ namespace Varus.Paradox.Console.Utilities
         public Pool(IFactory<T> factory, int initialCapacity = 4)
         {
             Check.ArgumentNotNull(factory, "factory");
-            Check.ArgumentNotLessThan(initialCapacity, 1, "initialSize");            
+            Check.ArgumentNotLessThan(initialCapacity, 1, "initialCapacity");            
 
             _factory = factory;
             _capacity = initialCapacity;

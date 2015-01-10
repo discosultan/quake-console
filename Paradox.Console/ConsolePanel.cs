@@ -14,7 +14,7 @@ namespace Varus.Paradox.Console
     /// <summary>
     /// A game system which enables an in-game window for typing commands.
     /// </summary>
-    public partial class Console : GameSystem
+    public partial class ConsolePanel : GameSystem
     {
         private readonly ICommandInterpreter _commandInterpreter;        
 
@@ -48,12 +48,12 @@ namespace Varus.Paradox.Console
         internal event EventHandler WindowAreaChanged = delegate { };        
 
         /// <summary>
-        /// Initializes a new instance of <see cref="Console"/>.
+        /// Initializes a new instance of <see cref="ConsolePanel"/>.
         /// </summary>
         /// <param name="registry">The registry.</param>
         /// <param name="commandInterpreter">User input interpreter. Manages autocompletion and command execution.</param>
-        /// <param name="font">Font used in the <see cref="Console"/> window.</param>
-        public Console(IServiceRegistry registry, ICommandInterpreter commandInterpreter, SpriteFont font)
+        /// <param name="font">Font used in the <see cref="ConsolePanel"/> window.</param>
+        public ConsolePanel(IServiceRegistry registry, ICommandInterpreter commandInterpreter, SpriteFont font)
             : base(registry)
         {
             Check.ArgumentNotNull(registry, "registry");
@@ -81,17 +81,17 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
-        /// Gets the input part of the <see cref="Console"/>.
+        /// Gets the input part of the <see cref="ConsolePanel"/>.
         /// </summary>
         public InputBuffer InputBuffer { get; private set; }
 
         /// <summary>
-        /// Gets the output part of the <see cref="Console"/>.
+        /// Gets the output part of the <see cref="ConsolePanel"/>.
         /// </summary>
         public OutputBuffer OutputBuffer { get; private set; }
 
         /// <summary>
-        /// Gets if any part of the <see cref="Console"/> is visible.
+        /// Gets if any part of the <see cref="ConsolePanel"/> is visible.
         /// </summary>
         public bool IsVisible
         {
@@ -99,7 +99,7 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
-        /// Gets if the <see cref="Console"/> is currently accepting user input.
+        /// Gets if the <see cref="ConsolePanel"/> is currently accepting user input.
         /// </summary>
         public bool IsAcceptingInput
         {
@@ -144,7 +144,7 @@ namespace Varus.Paradox.Console
         public Color FontColor { get; set; }
 
         /// <summary>
-        /// Gets or sets the time in seconds it takes to fully open or close the <see cref="Console"/>.
+        /// Gets or sets the time in seconds it takes to fully open or close the <see cref="ConsolePanel"/>.
         /// </summary>
         public float OpenCloseTransitionSeconds
         {
@@ -153,7 +153,7 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
-        /// Gets or sets the percentage of height the <see cref="Console"/> window takes in relation to
+        /// Gets or sets the percentage of height the <see cref="ConsolePanel"/> window takes in relation to
         /// application window height. Value in between [0...1].
         /// </summary>
         public float HeightRatio
@@ -167,7 +167,7 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
-        /// Gets or sets the padding to apply to the borders of the <see cref="Console"/> window.
+        /// Gets or sets the padding to apply to the borders of the <see cref="ConsolePanel"/> window.
         /// Note that padding will be automatically decreased if the available window area becomes too low.
         /// </summary>
         public float Padding
@@ -188,7 +188,7 @@ namespace Varus.Paradox.Console
 
         /// <summary>
         /// Gets or sets the dictionary that is used to map keyboard keys to corresponding symbols
-        /// shown in the <see cref="Console"/>.
+        /// shown in the <see cref="ConsolePanel"/>.
         /// </summary>
         public Dictionary<Keys, SymbolPair> SymbolMappings
         {
@@ -238,7 +238,7 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
-        /// Clears the subparts of the <see cref="Console"/>.
+        /// Clears the subparts of the <see cref="ConsolePanel"/>.
         /// </summary>
         /// <param name="clearFlags">Specifies which subparts to clear.</param>
         public void Clear(ConsoleClearFlags clearFlags = ConsoleClearFlags.All)
@@ -258,7 +258,7 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
-        /// Clears the <see cref="Console"/> and sets all the settings
+        /// Clears the <see cref="ConsolePanel"/> and sets all the settings
         /// to their default values.
         /// </summary>
         public void Reset()
@@ -546,7 +546,7 @@ namespace Varus.Paradox.Console
 
         private void SetWindowWidthAndHeight(object sender, PreparingDeviceSettingsEventArgs args)
         {
-            var windowArea = new RectangleF(_windowArea.X, _windowArea.Y, 0, 0)
+            var newWindowArea = new RectangleF(_windowArea.X, _windowArea.Y, 0, 0)
             {
                 Width = args.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth,
                 Height = args.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight * HeightRatio
@@ -554,10 +554,10 @@ namespace Varus.Paradox.Console
             switch (_state)
             {
                 case ConsoleState.Closed:
-                    windowArea.Y = -WindowArea.Height;
+                    newWindowArea.Y = -newWindowArea.Height;
                     break;
             }
-            WindowArea = windowArea;
+            WindowArea = newWindowArea;
             if (_padding > GetMaxAllowedPadding()) 
                 Padding = _padding; // Invoke padding setter.
         }

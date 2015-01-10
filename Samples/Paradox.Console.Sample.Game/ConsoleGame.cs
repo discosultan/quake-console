@@ -16,9 +16,9 @@ namespace Varus.Paradox.Console.Sample
         private const Keys ToggleOpenCloseKey = Keys.OemTilde;
 
         private readonly ICommandInterpreter _interpreter;
-        private readonly Action<Console, Cube, SpriteFont, SpriteFont> _postLoad;
+        private readonly Action<ConsolePanel, Cube, SpriteFont, SpriteFont> _postLoad;
         
-        private Console _console;
+        private ConsolePanel _consolePanel;
         private readonly Cube _cube = new Cube();
         private SpriteFont _lucidaFont;
         private SpriteFont _wingdingsFont;
@@ -29,7 +29,7 @@ namespace Varus.Paradox.Console.Sample
         private Matrix _projection;
         private SpriteBatch _spriteBatch;
 
-        public ConsoleGame(ICommandInterpreter interpreter, Action<Console, Cube, SpriteFont, SpriteFont> postLoad)
+        public ConsoleGame(ICommandInterpreter interpreter, Action<ConsolePanel, Cube, SpriteFont, SpriteFont> postLoad)
         {                        
             _interpreter = interpreter;
             _postLoad = postLoad;
@@ -49,11 +49,11 @@ namespace Varus.Paradox.Console.Sample
             _wingdingsFont = Asset.Load<SpriteFont>("Wingdings");            
 
             // Create console and add it to game systems.
-            _console = new Console(
+            _consolePanel = new ConsolePanel(
                 Services,
                 _interpreter,
                 _lucidaFont) { Padding = 2 };
-            GameSystems.Add(_console);
+            GameSystems.Add(_consolePanel);
 
             // Create cube and load the effect to render it.
             _primitive = GeometricPrimitive.Cube.New(GraphicsDevice, 0.8f);            
@@ -67,7 +67,7 @@ namespace Varus.Paradox.Console.Sample
             _projection = Matrix.PerspectiveFovRH((float)Math.PI / 4.0f, (float)GraphicsDevice.BackBuffer.Width / GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
 
             // Call post-load delegate to allow platform specific code to register stuff with the interpreter.
-            _postLoad(_console, _cube, _lucidaFont, _wingdingsFont);
+            _postLoad(_consolePanel, _cube, _lucidaFont, _wingdingsFont);
 
             // Create SpriteBatch for drawing instruction texts.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -98,7 +98,7 @@ namespace Varus.Paradox.Console.Sample
                 // Check if console state change was toggled.
                 if (Input.IsKeyPressed(ToggleOpenCloseKey))
                 {
-                    _console.ToggleOpenClose();
+                    _consolePanel.ToggleOpenClose();
                 } 
 
                 // Show garbage generation statistics.
@@ -129,7 +129,7 @@ namespace Varus.Paradox.Console.Sample
             // Draw instructions.
             const float padding = 10f;
             string msg = string.Format(
-                "Press {0} to toggle console.\nPress {1} to autocomplete input values.\nPress {2} to navigate through input history.", 
+                "Press {0} to toggle console panel.\nPress {1} to autocomplete input values.\nPress {2} to navigate through input history.", 
                 ToggleOpenCloseKey,
                 Keys.LeftCtrl + " + " + Keys.Space,
                 Keys.Up + " or " + Keys.Down);

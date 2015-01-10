@@ -20,14 +20,14 @@ namespace Varus.Paradox.Console
 
         public int SetValueAndCalculateLines(string value, float screenWidth, bool countPrefix)
         {            
-            Value = value.Replace("\t", _viewBuffer.Console.Tab);
+            Value = value.Replace("\t", _viewBuffer.ConsolePanel.Tab);
             return CalculateLines(screenWidth, countPrefix);
         }
 
         public int CalculateLines(float bufferAreaWidth, bool countPrefix)
         {
             Lines.Clear();
-            string[] values = Value.Split(_viewBuffer.Console.NewLine.AsArray(), StringSplitOptions.None);                        
+            string[] values = Value.Split(_viewBuffer.ConsolePanel.NewLine.AsArray(), StringSplitOptions.None);                        
             for (int i = 0; i < values.Length; i++)
             {
                 CalculateLinesPart(values[i], bufferAreaWidth, i == 0 && countPrefix);
@@ -81,14 +81,14 @@ namespace Varus.Paradox.Console
                 char c = value[i];
 
                 float charWidth;
-                if (!_viewBuffer.Console.CharWidthMap.TryGetValue(c, out charWidth))
+                if (!_viewBuffer.ConsolePanel.CharWidthMap.TryGetValue(c, out charWidth))
                 {
-                    charWidth += _viewBuffer.Console.Font.MeasureString(c.ToString()).X;
-                    _viewBuffer.Console.CharWidthMap.Add(c, charWidth);
+                    charWidth += _viewBuffer.ConsolePanel.Font.MeasureString(c.ToString()).X;
+                    _viewBuffer.ConsolePanel.CharWidthMap.Add(c, charWidth);
                 }
 
                 if (countPrefix)
-                    charWidth += _viewBuffer.Console.InputBuffer.InputPrefixSize.X;
+                    charWidth += _viewBuffer.ConsolePanel.InputBuffer.InputPrefixSize.X;
 
                 if (lineWidthProgress + charWidth > bufferAreaWidth)
                 {

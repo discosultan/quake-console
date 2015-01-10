@@ -10,7 +10,7 @@ namespace Varus.Paradox.Console
     /// </summary>
     public class Caret
     {
-        private readonly Console _console;
+        private readonly ConsolePanel _consolePanel;
         private readonly Timer _caretBlinkingTimer = new Timer { AutoReset = true };
         private readonly StringBuilder _inputBuffer;
 
@@ -19,12 +19,12 @@ namespace Varus.Paradox.Console
 
         internal event EventHandler Moved = delegate { };
 
-        internal Caret(Console console, StringBuilder inputBuffer)
+        internal Caret(ConsolePanel consolePanel, StringBuilder inputBuffer)
         {
-            _console = console;
+            _consolePanel = consolePanel;
             _inputBuffer = inputBuffer;            
 
-            console.FontChanged += (s, e) => CalculateSymbolWidth();            
+            consolePanel.FontChanged += (s, e) => CalculateSymbolWidth();            
         }
 
         /// <summary>
@@ -82,14 +82,14 @@ namespace Varus.Paradox.Console
         {
             if (_drawCaret)
             {
-                _console.SpriteBatch.DrawString(_console.Font, Symbol, position, color);
+                _consolePanel.SpriteBatch.DrawString(_consolePanel.Font, Symbol, position, color);
             }
         }
 
         private void CalculateSymbolWidth()
         {
-            if (_console.Font != null)
-                Width = _console.Font.MeasureString(Symbol).X;            
+            if (_consolePanel.Font != null)
+                Width = _consolePanel.Font.MeasureString(Symbol).X;            
         }
 
         internal void SetDefaults(ConsoleSettings settings)

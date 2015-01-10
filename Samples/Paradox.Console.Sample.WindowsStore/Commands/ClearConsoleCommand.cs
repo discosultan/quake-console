@@ -3,24 +3,24 @@
 namespace Varus.Paradox.Console.Sample.Commands
 {
     /// <summary>
-    /// Clears the <see cref="Console"/> input and output buffers and input history.
+    /// Clears the <see cref="ConsolePanel"/> input and output buffers and input history.
     /// </summary>
     public class ClearConsoleCommand : Command
     {
-        private readonly Console _console;
+        private readonly ConsolePanel _consolePanel;
 
         /// <summary>
         /// constructs a new instance of <see cref="ClearConsoleCommand"/>.
         /// </summary>
-        /// <param name="console">Console to clear.</param>
-        public ClearConsoleCommand(Console console)
+        /// <param name="consolePanel">Console to clear.</param>
+        public ClearConsoleCommand(ConsolePanel consolePanel)
         {
-            _console = console;
+            _consolePanel = consolePanel;
         }
 
         protected override void Try(CommandResult result, string[] args)
         {            
-            _console.Clear();
+            _consolePanel.Clear();
         }
     }
 }

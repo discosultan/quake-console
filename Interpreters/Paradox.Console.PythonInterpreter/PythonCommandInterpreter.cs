@@ -10,7 +10,7 @@ using Varus.Paradox.Console.PythonInterpreter.Utilities;
 namespace Varus.Paradox.Console.PythonInterpreter
 {
     /// <summary>
-    /// Runs <see cref="Console"/> commands through an IronPython parser. Supports loading .NET types
+    /// Runs <see cref="ConsolePanel"/> commands through an IronPython parser. Supports loading .NET types
     /// and provides autocomplete for them.
     /// </summary>
     public class PythonCommandInterpreter : ICommandInterpreter
@@ -151,7 +151,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
         #region Autocomplete
 
         /// <summary>
-        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="InputBuffer"/>.
+        /// Tries to autocomplete the current input value in the <see cref="ConsolePanel"/> <see cref="InputBuffer"/>.
         /// </summary>
         /// <param name="inputBuffer">Console input.</param>
         /// <param name="isNextValue">True if user wants to autocomplete to the next value; false if to the previous value.</param>

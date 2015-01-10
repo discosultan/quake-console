@@ -3,7 +3,7 @@
 namespace Varus.Paradox.Console
 {
     /// <summary>
-    /// Defines which subparts of the <see cref="Console"/> to clear.
+    /// Defines which subparts of the <see cref="ConsolePanel"/> to clear.
     /// </summary>
     [Flags]
     public enum ConsoleClearFlags

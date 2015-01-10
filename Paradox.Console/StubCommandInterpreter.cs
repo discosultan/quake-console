@@ -11,7 +11,8 @@
         /// <param name="outputBuffer">Console output buffer to append any output messages.</param>
         /// <param name="command">Command to execute.</param>
         public void Execute(OutputBuffer outputBuffer, string command)
-        {            
+        {
+            outputBuffer.Append(command);
         }
 
         /// <summary>

@@ -7,11 +7,11 @@ using Varus.Paradox.Console.Utilities;
 namespace Varus.Paradox.Console
 {
     /// <summary>
-    /// Input part of the <see cref="Console"/>. User input, historical commands and autocompletion values will be appended here.
+    /// Input part of the <see cref="ConsolePanel"/>. User input, historical commands and autocompletion values will be appended here.
     /// </summary>
     public class InputBuffer
     {
-        private readonly Console _console;
+        private readonly ConsolePanel _consolePanel;
         private Vector2 _fontSize;
         private string _inputPrefix;                
         private int _startIndex;
@@ -21,17 +21,17 @@ namespace Varus.Paradox.Console
         private bool _dirty;
         private readonly StringBuilder _drawBuffer = new StringBuilder();
 
-        internal InputBuffer(Console console)
+        internal InputBuffer(ConsolePanel consolePanel)
         {
-            _console = console;
-            _console.FontChanged += (s, e) =>
+            _consolePanel = consolePanel;
+            _consolePanel.FontChanged += (s, e) =>
             {
                 MeasureFontSize();
                 CalculateInputPrefixWidth();                
                 _dirty = true;
             };
-            _console.WindowAreaChanged += (s, e) => _dirty = true;            
-            Caret = new Caret(console, _buffer);
+            _consolePanel.WindowAreaChanged += (s, e) => _dirty = true;            
+            Caret = new Caret(consolePanel, _buffer);
             Caret.Moved += (s, e) => _dirty = true;            
 
             MeasureFontSize();
@@ -41,7 +41,7 @@ namespace Varus.Paradox.Console
 
         /// <summary>
         /// Gets or sets the last autocomplete entry which was added to the buffer. Note that
-        /// this value will be set to null whenever anything from the normal <see cref="Console"/>
+        /// this value will be set to null whenever anything from the normal <see cref="ConsolePanel"/>
         /// input pipeline gets appended here.
         /// </summary>
         public string LastAutocompleteEntry { get; set; }
@@ -80,11 +80,11 @@ namespace Varus.Paradox.Console
         /// </summary>
         public float RepeatingInputCooldown
         {
-            get { return _console.RepeatingInputCooldown; }
+            get { return _consolePanel.RepeatingInputCooldown; }
             set
             {
                 Check.ArgumentNotLessThan(value, 0, "value");
-                _console.RepeatingInputCooldown = value;
+                _consolePanel.RepeatingInputCooldown = value;
             }
         }
         /// <summary>
@@ -93,11 +93,11 @@ namespace Varus.Paradox.Console
         /// </summary>
         public float TimeUntilRepeatingInput
         {
-            get { return _console.TimeUntilRepeatingInput; }
+            get { return _consolePanel.TimeUntilRepeatingInput; }
             set
             {
                 Check.ArgumentNotLessThan(value, 0, "value");
-                _console.TimeUntilRepeatingInput = value;
+                _consolePanel.TimeUntilRepeatingInput = value;
             }
         } 
         /// <summary>
@@ -140,8 +140,8 @@ namespace Varus.Paradox.Console
             int counter = 0;
             for (int i = Caret.Index - 1; i >= 0; i--)
             {                
-                if (counter >= _console.Tab.Length) break;
-                if (_buffer[i] != _console.Tab[_console.Tab.Length - counter++ - 1])
+                if (counter >= _consolePanel.Tab.Length) break;
+                if (_buffer[i] != _consolePanel.Tab[_consolePanel.Tab.Length - counter++ - 1])
                 {
                     isTab = false;
                     break;
@@ -150,9 +150,9 @@ namespace Varus.Paradox.Console
             int numToRemove = counter;
             if (isTab)
             {
-                _buffer.Remove(Math.Max(0, Caret.Index - _console.Tab.Length), numToRemove);
+                _buffer.Remove(Math.Max(0, Caret.Index - _consolePanel.Tab.Length), numToRemove);
             }
-            Caret.Move(-_console.Tab.Length);
+            Caret.Move(-_consolePanel.Tab.Length);
         }
         /// <summary>
         /// Sets the value typed into the buffer.
@@ -221,9 +221,9 @@ namespace Varus.Paradox.Console
         internal void Draw()
         {            
             // Draw input prefix.
-            var inputPosition = new Vector2(_console.Padding, _console.WindowArea.Y + _console.WindowArea.Height - _console.Padding - _fontSize.Y);
-            _console.SpriteBatch.DrawString(
-                _console.Font, 
+            var inputPosition = new Vector2(_consolePanel.Padding, _consolePanel.WindowArea.Y + _consolePanel.WindowArea.Height - _consolePanel.Padding - _fontSize.Y);
+            _consolePanel.SpriteBatch.DrawString(
+                _consolePanel.Font, 
                 InputPrefix, 
                 inputPosition, 
                 InputPrefixColor);
@@ -232,12 +232,12 @@ namespace Varus.Paradox.Console
             if (_buffer.Length > 0)
             {                
                 _buffer.ClearAndCopyTo(_drawBuffer, _startIndex, _endIndex - _startIndex + 1);
-                _console.SpriteBatch.DrawString(_console.Font, _drawBuffer, inputPosition, _console.FontColor);
+                _consolePanel.SpriteBatch.DrawString(_consolePanel.Font, _drawBuffer, inputPosition, _consolePanel.FontColor);
             }
             // Draw caret. 
             _buffer.ClearAndCopyTo(_drawBuffer, _startIndex, Caret.Index - _startIndex);
-            inputPosition.X = _console.Padding + InputPrefixSize.X + _console.Font.MeasureString(_drawBuffer).X;
-            Caret.Draw(ref inputPosition, _console.FontColor);            
+            inputPosition.X = _consolePanel.Padding + InputPrefixSize.X + _consolePanel.Font.MeasureString(_drawBuffer).X;
+            Caret.Draw(ref inputPosition, _consolePanel.FontColor);            
         }
 
         /// <summary>
@@ -252,17 +252,17 @@ namespace Varus.Paradox.Console
 
         private void MeasureFontSize()
         {
-            _fontSize = _console.Font.MeasureString("x");
+            _fontSize = _consolePanel.Font.MeasureString("x");
         }
 
         private void CalculateInputPrefixWidth()
         {            
-            InputPrefixSize = _console.Font.MeasureString(InputPrefix);
+            InputPrefixSize = _consolePanel.Font.MeasureString(InputPrefix);
         }
 
         private void CalculateStartAndEndIndices()
         {
-            float windowWidth = _console.WindowArea.Width - _console.Padding * 2 - InputPrefixSize.X;
+            float windowWidth = _consolePanel.WindowArea.Width - _consolePanel.Padding * 2 - InputPrefixSize.X;
 
             if (Caret.Index > _buffer.Length - 1)
                 windowWidth -= Caret.Width;
@@ -283,10 +283,10 @@ namespace Varus.Paradox.Console
                 char c = _buffer[indexer++];
 
                 float charWidth;
-                if (!_console.CharWidthMap.TryGetValue(c, out charWidth))
+                if (!_consolePanel.CharWidthMap.TryGetValue(c, out charWidth))
                 {
-                    charWidth = _console.Font.MeasureString(c.ToString()).X;
-                    _console.CharWidthMap.Add(c, charWidth);
+                    charWidth = _consolePanel.Font.MeasureString(c.ToString()).X;
+                    _consolePanel.CharWidthMap.Add(c, charWidth);
                 }
                 
                 widthProgress += charWidth;

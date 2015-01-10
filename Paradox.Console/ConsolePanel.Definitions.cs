@@ -5,7 +5,7 @@ using Varus.Paradox.Console.Utilities;
 
 namespace Varus.Paradox.Console
 {
-    public partial class Console
+    public partial class ConsolePanel
     {
         private readonly BiDirectionalDictionary<Keys, ConsoleAction> _actionDefinitions = new BiDirectionalDictionary<Keys, ConsoleAction>
         {

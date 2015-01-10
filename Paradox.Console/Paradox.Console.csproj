@@ -18,9 +18,11 @@
     <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <SiliconStudioCurrentPackagePath>$(MSBuildThisFileDirectory)..\Paradox.Console.pdxpkg</SiliconStudioCurrentPackagePath>
+    <!-- fails if undefined and no current package -->
+    <SiliconStudioCompileAssetBuildPath>fake</SiliconStudioCompileAssetBuildPath>
+    <!-- <SiliconStudioCurrentPackagePath>$(MSBuildThisFileDirectory)..\Paradox.Console.pdxpkg</SiliconStudioCurrentPackagePath>
     <SiliconStudioPackageProps>$([System.IO.Path]::ChangeExtension('$(SiliconStudioCurrentPackagePath)', '.props'))</SiliconStudioPackageProps>
-    <SiliconStudioProjectType>Library</SiliconStudioProjectType>
+    <SiliconStudioProjectType>Library</SiliconStudioProjectType> -->
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -331,10 +333,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Caret.cs" />
-    <Compile Include="Console.cs" />
-    <Compile Include="Console.Definitions.cs">
-      <DependentUpon>Console.cs</DependentUpon>
+    <Compile Include="ConsolePanel.Definitions.cs">
+      <DependentUpon>ConsolePanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="ConsolePanel.cs" />
     <Compile Include="ConsoleAction.cs" />
     <Compile Include="ConsoleClearFlags.cs" />
     <Compile Include="ConsoleProcessResult.cs" />

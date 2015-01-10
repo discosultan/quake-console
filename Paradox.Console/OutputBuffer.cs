@@ -8,7 +8,7 @@ using Varus.Paradox.Console.Utilities;
 namespace Varus.Paradox.Console
 {
     /// <summary>
-    /// Output part of the <see cref="Console"/>. Command execution info will be appended here.
+    /// Output part of the <see cref="ConsolePanel"/>. Command execution info will be appended here.
     /// </summary>
     public class OutputBuffer
     {
@@ -21,31 +21,31 @@ namespace Varus.Paradox.Console
         private readonly StringBuilder _stringBuilder = new StringBuilder();
         private readonly List<OutputBufferEntry> _commandEntries = new List<OutputBufferEntry>();
         private readonly CircularArray<OutputBufferEntry> _entries = new CircularArray<OutputBufferEntry>();
-        private readonly Console _console;
+        private readonly ConsolePanel _consolePanel;
 
         /// <summary>
         /// Gets or sets if rows which run out of the visible area of the console should be removed.
         /// </summary>
         public bool RemoveOverflownEntries { get; set; }
 
-        internal OutputBuffer(Console console)
+        internal OutputBuffer(ConsolePanel consolePanel)
         {            
-            _console = console;
+            _consolePanel = consolePanel;
             _entryPool = new Pool<OutputBufferEntry>(new OutputBufferEntryFactory(this));
 
             // TODO: set flags only and do any calculation in Update.
-            console.PaddingChanged += (s, e) =>
+            consolePanel.PaddingChanged += (s, e) =>
             {                
                 CalculateRows();
                 RemoveOverflownBufferEntries();
             };
-            console.FontChanged += (s, e) =>
+            consolePanel.FontChanged += (s, e) =>
             {
                 CalculateFontSize();                
                 CalculateRows();
                 RemoveOverflownBufferEntries();                
             };
-            console.WindowAreaChanged += (s, e) =>
+            consolePanel.WindowAreaChanged += (s, e) =>
             {                
                 CalculateRows();
                 RemoveOverflownBufferEntries();
@@ -55,9 +55,9 @@ namespace Varus.Paradox.Console
             CalculateRows();                
         }
 
-        internal Console Console
+        internal ConsolePanel ConsolePanel
         {
-            get { return _console; }
+            get { return _consolePanel; }
         }
 
         internal bool HasCommandEntry()
@@ -70,7 +70,7 @@ namespace Varus.Paradox.Console
             if (value == null) return;
 
             var entry = _entryPool.Fetch();
-            entry.SetValueAndCalculateLines(value, _console.WindowArea.Width - _console.Padding * 2, true);
+            entry.SetValueAndCalculateLines(value, _consolePanel.WindowArea.Width - _consolePanel.Padding * 2, true);
             _commandEntries.Add(entry);
         }
 
@@ -89,7 +89,7 @@ namespace Varus.Paradox.Console
 
         private void CalculateFontSize()
         {
-            _fontSize = _console.Font.MeasureString(MeasureFontSizeSymbol);
+            _fontSize = _consolePanel.Font.MeasureString(MeasureFontSizeSymbol);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace Varus.Paradox.Console
             if (message == null) return;            
 
             var viewBufferEntry = _entryPool.Fetch();
-            _numRows += viewBufferEntry.SetValueAndCalculateLines(message, _console.WindowArea.Width - _console.Padding * 2, false);
+            _numRows += viewBufferEntry.SetValueAndCalculateLines(message, _consolePanel.WindowArea.Width - _consolePanel.Padding * 2, false);
             _entries.Enqueue(viewBufferEntry);
             RemoveOverflownBufferEntries();
         }
@@ -130,8 +130,8 @@ namespace Varus.Paradox.Console
             // TODO: Add padding??
             // Draw from bottom to top.
             var viewPosition = new Vector2(
-                _console.Padding, 
-                _console.WindowArea.Y + _console.WindowArea.Height - _console.Padding - _console.InputBuffer.InputPrefixSize.Y - _fontSize.Y);
+                _consolePanel.Padding, 
+                _consolePanel.WindowArea.Y + _consolePanel.WindowArea.Height - _consolePanel.Padding - _consolePanel.InputBuffer.InputPrefixSize.Y - _fontSize.Y);
 
             int rowCounter = 0;
 
@@ -155,18 +155,18 @@ namespace Varus.Paradox.Console
                 Vector2 tempViewPos = viewPosition;
                 if (drawPrefix)
                 {
-                    _console.SpriteBatch.DrawString(
-                        _console.Font,
-                        _console.InputBuffer.InputPrefix,
+                    _consolePanel.SpriteBatch.DrawString(
+                        _consolePanel.Font,
+                        _consolePanel.InputBuffer.InputPrefix,
                         tempViewPos,
-                        _console.InputBuffer.InputPrefixColor);
-                    tempViewPos.X += _console.InputBuffer.InputPrefixSize.X;
+                        _consolePanel.InputBuffer.InputPrefixColor);
+                    tempViewPos.X += _consolePanel.InputBuffer.InputPrefixSize.X;
                 }
-                _console.SpriteBatch.DrawString(
-                    _console.Font,
+                _consolePanel.SpriteBatch.DrawString(
+                    _consolePanel.Font,
                     entry.Lines[j],
                     tempViewPos, 
-                    _console.FontColor);
+                    _consolePanel.FontColor);
                 viewPosition.Y -= _fontSize.Y;
                 rowCounter++;
             }
@@ -191,14 +191,14 @@ namespace Varus.Paradox.Console
             //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / _fontSize.Y) - 1, 0);            
 
             // Disregard top padding and allow row which is only partly visible.
-            _maxNumRows = Math.Max((int)Math.Ceiling(((_console.WindowArea.Height - _console.Padding) / _fontSize.Y)) - 1, 0);
+            _maxNumRows = Math.Max((int)Math.Ceiling(((_consolePanel.WindowArea.Height - _consolePanel.Padding) / _fontSize.Y)) - 1, 0);
             
             _numRows = GetNumRows(_commandEntries) + GetNumRows(_entries);
         }
 
         private int GetNumRows(IEnumerable<OutputBufferEntry> collection)
         {
-            return collection.Sum(entry => entry.CalculateLines(_console.WindowArea.Width - _console.Padding * 2, false));
+            return collection.Sum(entry => entry.CalculateLines(_consolePanel.WindowArea.Width - _consolePanel.Padding * 2, false));
         }
 
         internal void SetDefaults(ConsoleSettings settings)
