@@ -1,8 +1,9 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace Varus.Paradox.Console.Utilities
 {
-    internal static class Utilities
+    internal static class StringExtensions
     {
         public static bool IsEmptyOrWhitespace(this StringBuilder value)
         {
@@ -25,8 +26,14 @@ namespace Varus.Paradox.Console.Utilities
             }
         }
 
+        public static string[] Split(this string value, string separator, StringSplitOptions options)
+        {
+            return value.Split(separator.AsArray(), options);
+        }
+
+        // Not thread safe!.
         private static readonly string[] Array = new string[1];
-        public static string[] AsArray(this string value)
+        private static string[] AsArray(this string value)
         {
             Array[0] = value;
             return Array;

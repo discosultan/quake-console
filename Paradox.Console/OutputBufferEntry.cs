@@ -27,7 +27,7 @@ namespace Varus.Paradox.Console
         public int CalculateLines(float bufferAreaWidth, bool countPrefix)
         {
             Lines.Clear();
-            string[] values = Value.Split(_viewBuffer.ConsolePanel.NewLine.AsArray(), StringSplitOptions.None);                        
+            string[] values = Value.Split(_viewBuffer.ConsolePanel.NewLine, StringSplitOptions.None);                        
             for (int i = 0; i < values.Length; i++)
             {
                 CalculateLinesPart(values[i], bufferAreaWidth, i == 0 && countPrefix);

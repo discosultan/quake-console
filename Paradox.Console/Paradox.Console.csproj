@@ -357,7 +357,7 @@
     <Compile Include="Utilities\IFactory.cs" />
     <Compile Include="Utilities\Pool.cs" />
     <Compile Include="Utilities\Timer.cs" />
-    <Compile Include="Utilities\Utilities.cs" />
+    <Compile Include="Utilities\StringExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
   <Import Project="$(SiliconStudioPackageProps)" Condition="Exists('$(SiliconStudioPackageProps)')" />

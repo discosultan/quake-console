@@ -408,7 +408,7 @@ namespace Varus.Paradox.Console
                             cmd = OutputBuffer.DequeueCommandEntry() + cmd;                            
                         }
 
-                        string[] cmdSplit = cmd.Split(NewLine.AsArray(), StringSplitOptions.None);
+                        string[] cmdSplit = cmd.Split(NewLine, StringSplitOptions.None);
                         foreach (string split in cmdSplit)
                         {
                             // Save command to history.
