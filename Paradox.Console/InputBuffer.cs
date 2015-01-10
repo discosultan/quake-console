@@ -7,11 +7,11 @@ using Varus.Paradox.Console.Utilities;
 namespace Varus.Paradox.Console
 {
     /// <summary>
-    /// Input part of the <see cref="ConsolePanel"/>. User input, historical commands and autocompletion values will be appended here.
+    /// Input part of the <see cref="ConsoleShell"/>. User input, historical commands and autocompletion values will be appended here.
     /// </summary>
     public class InputBuffer
     {
-        private readonly ConsolePanel _consolePanel;
+        private readonly ConsoleShell _consolePanel;
         private Vector2 _fontSize;
         private string _inputPrefix;                
         private int _startIndex;
@@ -21,7 +21,7 @@ namespace Varus.Paradox.Console
         private bool _dirty;
         private readonly StringBuilder _drawBuffer = new StringBuilder();
 
-        internal InputBuffer(ConsolePanel consolePanel)
+        internal InputBuffer(ConsoleShell consolePanel)
         {
             _consolePanel = consolePanel;
             _consolePanel.FontChanged += (s, e) =>
@@ -41,7 +41,7 @@ namespace Varus.Paradox.Console
 
         /// <summary>
         /// Gets or sets the last autocomplete entry which was added to the buffer. Note that
-        /// this value will be set to null whenever anything from the normal <see cref="ConsolePanel"/>
+        /// this value will be set to null whenever anything from the normal <see cref="ConsoleShell"/>
         /// input pipeline gets appended here.
         /// </summary>
         public string LastAutocompleteEntry { get; set; }

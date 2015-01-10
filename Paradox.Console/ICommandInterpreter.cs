@@ -1,12 +1,12 @@
 ﻿namespace Varus.Paradox.Console
 {
     /// <summary>
-    /// A contract for a <see cref="ConsolePanel"/> command interpreter. Manages command execution and autocompletion features.
+    /// A contract for a <see cref="ConsoleShell"/> command interpreter. Manages command execution and autocompletion features.
     /// </summary>
     public interface ICommandInterpreter
     {
         /// <summary>
-        /// Executes a <see cref="ConsolePanel"/> command.
+        /// Executes a <see cref="ConsoleShell"/> command.
         /// </summary>
         /// <param name="outputBuffer">Buffer to append data which is shown to the user.</param>
         /// <param name="command">Command to execute.</param>

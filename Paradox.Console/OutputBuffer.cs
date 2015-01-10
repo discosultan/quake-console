@@ -21,14 +21,14 @@ namespace Varus.Paradox.Console
         private readonly StringBuilder _stringBuilder = new StringBuilder();
         private readonly List<OutputBufferEntry> _commandEntries = new List<OutputBufferEntry>();
         private readonly CircularArray<OutputBufferEntry> _entries = new CircularArray<OutputBufferEntry>();
-        private readonly ConsolePanel _consolePanel;
+        private readonly ConsoleShell _consolePanel;
 
         /// <summary>
         /// Gets or sets if rows which run out of the visible area of the console should be removed.
         /// </summary>
         public bool RemoveOverflownEntries { get; set; }
 
-        internal OutputBuffer(ConsolePanel consolePanel)
+        internal OutputBuffer(ConsoleShell consolePanel)
         {            
             _consolePanel = consolePanel;
             _entryPool = new Pool<OutputBufferEntry>(new OutputBufferEntryFactory(this));
@@ -55,7 +55,7 @@ namespace Varus.Paradox.Console
             CalculateRows();                
         }
 
-        internal ConsolePanel ConsolePanel
+        internal ConsoleShell ConsolePanel
         {
             get { return _consolePanel; }
         }

@@ -19,7 +19,7 @@ namespace Varus.Paradox.Console.Sample
             pythonInterpreter.RunScript("from threading import Timer");
 
             // Define types to load after game has been loaded.
-            Action<ConsolePanel, Cube, SpriteFont, SpriteFont> postLoad = (console, cube, font1, font2) =>
+            Action<ConsoleShell, Cube, SpriteFont, SpriteFont> postLoad = (console, cube, font1, font2) =>
             {
                 pythonInterpreter.AddVariable("cube", cube);
                 pythonInterpreter.AddVariable("console", console);

@@ -10,7 +10,7 @@ namespace Varus.Paradox.Console
     /// </summary>
     public class Caret
     {
-        private readonly ConsolePanel _consolePanel;
+        private readonly ConsoleShell _consolePanel;
         private readonly Timer _caretBlinkingTimer = new Timer { AutoReset = true };
         private readonly StringBuilder _inputBuffer;
 
@@ -19,7 +19,7 @@ namespace Varus.Paradox.Console
 
         internal event EventHandler Moved = delegate { };
 
-        internal Caret(ConsolePanel consolePanel, StringBuilder inputBuffer)
+        internal Caret(ConsoleShell consolePanel, StringBuilder inputBuffer)
         {
             _consolePanel = consolePanel;
             _inputBuffer = inputBuffer;            

@@ -76,7 +76,7 @@ namespace Varus.Paradox.Console.CustomInterpreter
         }
 
         /// <summary>
-        /// Tries to autocomplete the current input value in the <see cref="ConsolePanel"/> <see cref="InputBuffer"/>.
+        /// Tries to autocomplete the current input value in the <see cref="ConsoleShell"/> <see cref="InputBuffer"/>.
         /// </summary>
         /// <param name="inputBuffer">Console input.</param>
         /// <param name="isNextValue">True if user wants to autocomplete to the next value; false if to the previous value.</param>
@@ -108,7 +108,7 @@ namespace Varus.Paradox.Console.CustomInterpreter
         /// Registers a new command with the interpreter.
         /// </summary>
         /// <param name="commandName">
-        /// Name of the command. This is the name user must enter into the <see cref="ConsolePanel"/> to execute the command.
+        /// Name of the command. This is the name user must enter into the <see cref="ConsoleShell"/> to execute the command.
         /// </param>
         /// <param name="command">Command to interpreter.</param>
         public void RegisterCommand(string commandName, Command command)

@@ -16,9 +16,9 @@ namespace Varus.Paradox.Console.Sample
         private const Keys ToggleOpenCloseKey = Keys.OemTilde;
 
         private readonly ICommandInterpreter _interpreter;
-        private readonly Action<ConsolePanel, Cube, SpriteFont, SpriteFont> _postLoad;
+        private readonly Action<ConsoleShell, Cube, SpriteFont, SpriteFont> _postLoad;
         
-        private ConsolePanel _consolePanel;
+        private ConsoleShell _consolePanel;
         private readonly Cube _cube = new Cube();
         private SpriteFont _lucidaFont;
         private SpriteFont _wingdingsFont;
@@ -29,7 +29,7 @@ namespace Varus.Paradox.Console.Sample
         private Matrix _projection;
         private SpriteBatch _spriteBatch;
 
-        public ConsoleGame(ICommandInterpreter interpreter, Action<ConsolePanel, Cube, SpriteFont, SpriteFont> postLoad)
+        public ConsoleGame(ICommandInterpreter interpreter, Action<ConsoleShell, Cube, SpriteFont, SpriteFont> postLoad)
         {                        
             _interpreter = interpreter;
             _postLoad = postLoad;
@@ -49,7 +49,7 @@ namespace Varus.Paradox.Console.Sample
             _wingdingsFont = Asset.Load<SpriteFont>("Wingdings");            
 
             // Create console and add it to game systems.
-            _consolePanel = new ConsolePanel(
+            _consolePanel = new ConsoleShell(
                 Services,
                 _interpreter,
                 _lucidaFont) { Padding = 2 };

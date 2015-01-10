@@ -333,10 +333,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Caret.cs" />
-    <Compile Include="ConsolePanel.Definitions.cs">
-      <DependentUpon>ConsolePanel.cs</DependentUpon>
+    <Compile Include="ConsoleShell.Definitions.cs">
+      <DependentUpon>ConsoleShell.cs</DependentUpon>
     </Compile>
-    <Compile Include="ConsolePanel.cs" />
+    <Compile Include="ConsoleShell.cs" />
     <Compile Include="ConsoleAction.cs" />
     <Compile Include="ConsoleClearFlags.cs" />
     <Compile Include="ConsoleProcessResult.cs" />

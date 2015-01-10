@@ -18,7 +18,7 @@ namespace Varus.Paradox.Console.Sample
             InitializeComponent();
 
             var customInterpreter = new CustomCommandInterpreter();
-            Action<ConsolePanel, Cube, SpriteFont, SpriteFont> postLoad = (console, cube, font1, font2) =>
+            Action<ConsoleShell, Cube, SpriteFont, SpriteFont> postLoad = (console, cube, font1, font2) =>
             {
                 customInterpreter.RegisterCommand("Clear-Console", new ClearConsoleCommand(console));
                 customInterpreter.RegisterCommand("Set-Cube-Rotation-Speed", new SetCubeRotationSpeedCommand(cube));
