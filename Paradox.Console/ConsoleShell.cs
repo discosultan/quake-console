@@ -50,18 +50,20 @@ namespace Varus.Paradox.Console
         /// <summary>
         /// Initializes a new instance of <see cref="ConsoleShell"/>.
         /// </summary>
-        /// <param name="registry">The registry.</param>
-        /// <param name="commandInterpreter">User input interpreter. Manages autocompletion and command execution.</param>
+        /// <param name="registry">The registry.</param>        
         /// <param name="font">Font used in the <see cref="ConsoleShell"/> window.</param>
-        public ConsoleShell(IServiceRegistry registry, ICommandInterpreter commandInterpreter, SpriteFont font)
+        /// <param name="commandInterpreter">
+        /// User input interpreter. Manages autocompletion and the logic behind command execution.
+        /// Pass NULL to use a stub command interpreter (useful for testing out shell itself).
+        /// </param>
+        public ConsoleShell(IServiceRegistry registry, SpriteFont font, ICommandInterpreter commandInterpreter)
             : base(registry)
         {
-            Check.ArgumentNotNull(registry, "registry");
-            Check.ArgumentNotNull(commandInterpreter, "commandInterpreter");
-            Check.ArgumentNotNull(font, "font");            
+            Check.ArgumentNotNull(registry, "registry", "Cannot instantiate the shell without services container.");
+            Check.ArgumentNotNull(font, "font", "Cannot instantiate the shell without a font.");
             
             CharWidthMap = new Dictionary<char, float>();            
-            _commandInterpreter = commandInterpreter;
+            _commandInterpreter = commandInterpreter ?? new StubCommandInterpreter();
             _graphicsDeviceManager = (GraphicsDeviceManager)registry.GetSafeServiceAs<IGraphicsDeviceManager>();                
             Font = font;            
         }
@@ -73,8 +75,8 @@ namespace Varus.Paradox.Console
             get { return _windowArea; }
             set
             {
-                Check.ArgumentNotLessThan(value.Width, 0, "value");
-                Check.ArgumentNotLessThan(value.Height, 0, "value");
+                value.Width = Math.Max(value.Width, 0);
+                value.Height = Math.Max(value.Height, 0);                
                 _windowArea = value; 
                 WindowAreaChanged(this, EventArgs.Empty);
             }
@@ -114,7 +116,7 @@ namespace Varus.Paradox.Console
             get { return _font; }
             set
             {
-                Check.ArgumentNotNull(value, "value");
+                Check.ArgumentNotNull(value, "value", "Font cannot be null.");
                 _font = value;                
                 CharWidthMap.Clear();                
                 FontChanged(this, EventArgs.Empty);               
@@ -195,7 +197,7 @@ namespace Varus.Paradox.Console
             get { return _symbolDefinitions; }
             set
             {
-                Check.ArgumentNotNull(value, "value");
+                Check.ArgumentNotNull(value, "value", "Symbol mappings cannot be null.");
                 _symbolDefinitions = value;
             }
         }        

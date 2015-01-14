@@ -3,7 +3,7 @@
     /// <summary>
     /// Provides a stub command interpreter which does nothing.
     /// </summary>
-    public class StubCommandInterpreter : ICommandInterpreter
+    internal class StubCommandInterpreter : ICommandInterpreter
     {
         /// <summary>
         /// Does nothing.

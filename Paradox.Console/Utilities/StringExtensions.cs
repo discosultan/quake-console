@@ -26,17 +26,12 @@ namespace Varus.Paradox.Console.Utilities
             }
         }
 
+        // Not thread safe!
+        private static readonly string[] _array = new string[1];
         public static string[] Split(this string value, string separator, StringSplitOptions options)
         {
-            return value.Split(separator.AsArray(), options);
-        }
-
-        // Not thread safe!.
-        private static readonly string[] Array = new string[1];
-        private static string[] AsArray(this string value)
-        {
-            Array[0] = value;
-            return Array;
-        }
+            _array[0] = separator;
+            return value.Split(_array, options);
+        }        
     }
 }

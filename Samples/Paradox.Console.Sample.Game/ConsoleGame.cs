@@ -49,10 +49,10 @@ namespace Varus.Paradox.Console.Sample
             _wingdingsFont = Asset.Load<SpriteFont>("Wingdings");            
 
             // Create console and add it to game systems.
-            _consolePanel = new ConsoleShell(
-                Services,
-                _interpreter,
-                _lucidaFont) { Padding = 2 };
+            _consolePanel = new ConsoleShell(Services, _lucidaFont, _interpreter)
+            {
+                Padding = 2
+            };
             GameSystems.Add(_consolePanel);
 
             // Create cube and load the effect to render it.
