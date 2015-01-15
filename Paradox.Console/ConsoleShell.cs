@@ -16,29 +16,30 @@ namespace Varus.Paradox.Console
     /// </summary>
     public partial class ConsoleShell : GameSystem
     {
-        private readonly ICommandInterpreter _commandInterpreter;        
-
-        private bool _initialized;        
-        private Texture2D _backgroundTexture;        
+        // General.
+        private readonly ICommandInterpreter _commandInterpreter;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
+        private readonly Timer _transitionTimer = new Timer { AutoReset = false };
+        
+        private Texture2D _backgroundTexture;
         private SpriteFont _font;
-        private float _padding;
+        private RectangleF _windowArea;                        
         private float? _initialPadding;
-        private RectangleF _windowArea;        
-        private readonly Timer _transitionTimer = new Timer { AutoReset = false };        
-        private ConsoleState _state = ConsoleState.Closed;        
+        private float _padding;
         private float _heightRatio;
+        private ConsoleState _state = ConsoleState.Closed;
+        private bool _initialized;
 
-        internal Dictionary<char, float> CharWidthMap { get; private set; }
-
-        // History.
-        private string _lastHistoryString;
+        // Input history.        
         private readonly Stack<string> _inputHistoryBackward = new Stack<string>();
         private readonly Stack<string> _inputHistoryForward = new Stack<string>();
 
-        // Input.        
+        private string _lastHistoryString;
+
+        // User input.        
         private readonly Timer _repeatedPressTresholdTimer = new Timer { AutoReset = false };
         private readonly Timer _repeatedPressIntervalTimer = new Timer { AutoReset = true };
+
         private bool _startRepeatedProcess;
         private bool _isFastRepeating;
         private Keys _downKey;
@@ -66,21 +67,7 @@ namespace Varus.Paradox.Console
             _commandInterpreter = commandInterpreter ?? new StubCommandInterpreter();
             _graphicsDeviceManager = (GraphicsDeviceManager)registry.GetSafeServiceAs<IGraphicsDeviceManager>();                
             Font = font;            
-        }
-
-        internal SpriteBatch SpriteBatch { get; private set; }
-
-        internal RectangleF WindowArea
-        {
-            get { return _windowArea; }
-            set
-            {
-                value.Width = Math.Max(value.Width, 0);
-                value.Height = Math.Max(value.Height, 0);                
-                _windowArea = value; 
-                WindowAreaChanged(this, EventArgs.Empty);
-            }
-        }
+        }        
 
         /// <summary>
         /// Gets the input part of the <see cref="ConsoleShell"/>.
@@ -123,18 +110,6 @@ namespace Varus.Paradox.Console
             }
         }
 
-        internal float RepeatingInputCooldown
-        {
-            get { return _repeatedPressIntervalTimer.TargetTime; }
-            set { _repeatedPressIntervalTimer.TargetTime = value; }
-        }
-
-        internal float TimeUntilRepeatingInput
-        {
-            get { return _repeatedPressTresholdTimer.TargetTime; }
-            set { _repeatedPressTresholdTimer.TargetTime = value; }
-        }
-
         /// <summary>
         /// Gets or sets the background color. Supports transparency.
         /// </summary>
@@ -164,7 +139,7 @@ namespace Varus.Paradox.Console
             set
             {
                 _heightRatio = MathUtil.Clamp(value, 0, 1.0f);
-                SetWindowWidthAndHeight();                
+                SetWindowWidthAndHeight(GraphicsDevice.BackBuffer.Width, GraphicsDevice.BackBuffer.Height);
             }
         }
 
@@ -181,7 +156,7 @@ namespace Varus.Paradox.Console
                 // can already set the padding. We can set it after loading once _initialPadding has been set.
                 _initialPadding = value;
                 _padding = MathUtil.Clamp(
-                    value, 
+                    value,
                     0,
                     GetMaxAllowedPadding());
                 PaddingChanged(this, EventArgs.Empty);
@@ -200,25 +175,34 @@ namespace Varus.Paradox.Console
                 Check.ArgumentNotNull(value, "value", "Symbol mappings cannot be null.");
                 _symbolDefinitions = value;
             }
-        }        
+        } 
 
-        protected override void LoadContent()
+        internal Dictionary<char, float> CharWidthMap { get; private set; }
+
+        internal SpriteBatch SpriteBatch { get; private set; }
+
+        internal RectangleF WindowArea
         {
-            _graphicsDeviceManager.PreparingDeviceSettings += SetWindowWidthAndHeight;
-            SetWindowWidthAndHeight();            
+            get { return _windowArea; }
+            set
+            {
+                value.Width = Math.Max(value.Width, 0);
+                value.Height = Math.Max(value.Height, 0);
+                _windowArea = value;
+                WindowAreaChanged(this, EventArgs.Empty);
+            }
+        }
 
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
-            _backgroundTexture = Texture2D.New(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
-            OutputBuffer = new OutputBuffer(this);
-            InputBuffer = new InputBuffer(this);
+        internal float RepeatingInputCooldown
+        {
+            get { return _repeatedPressIntervalTimer.TargetTime; }
+            set { _repeatedPressIntervalTimer.TargetTime = value; }
+        }
 
-            SetDefaults(_defaultSettings);
-
-            if (_initialized) return;
-
-            _initialized = true;
-            if (_initialPadding.HasValue)
-                Padding = _initialPadding.Value;
+        internal float TimeUntilRepeatingInput
+        {
+            get { return _repeatedPressTresholdTimer.TargetTime; }
+            set { _repeatedPressTresholdTimer.TargetTime = value; }
         }
 
         /// <summary>
@@ -251,12 +235,12 @@ namespace Varus.Paradox.Console
             }
             if ((clearFlags & ConsoleClearFlags.InputBuffer) != 0)
             {
-                InputBuffer.Clear();                
+                InputBuffer.Clear();
             }
             if ((clearFlags & ConsoleClearFlags.InputHistory) != 0)
             {
                 ClearHistory();
-            }       
+            }
         }
 
         /// <summary>
@@ -272,15 +256,15 @@ namespace Varus.Paradox.Console
         /// <inheritdoc/>        
         public override void Update(GameTime gameTime)
         {
-            var deltaSeconds = (float)gameTime.Elapsed.TotalSeconds; 
+            var deltaSeconds = (float)gameTime.Elapsed.TotalSeconds;
             switch (_state)
             {
                 case ConsoleState.Closing:
                     UpdateTimer(deltaSeconds, ConsoleState.Closed);
                     WindowArea = new RectangleF(
-                        WindowArea.X, 
-                        -WindowArea.Height * _transitionTimer.Progress, 
-                        WindowArea.Width, 
+                        WindowArea.X,
+                        -WindowArea.Height * _transitionTimer.Progress,
+                        WindowArea.Width,
                         WindowArea.Height);
                     InputBuffer.Update(deltaSeconds);
                     break;
@@ -288,11 +272,11 @@ namespace Varus.Paradox.Console
                     UpdateTimer(deltaSeconds, ConsoleState.Open);
                     WindowArea = new RectangleF(
                         WindowArea.X,
-                        -WindowArea.Height + WindowArea.Height * _transitionTimer.Progress, 
+                        -WindowArea.Height + WindowArea.Height * _transitionTimer.Progress,
                         WindowArea.Width,
                         WindowArea.Height);
                     goto case ConsoleState.Open;
-                case ConsoleState.Open:                    
+                case ConsoleState.Open:
                     HandleInput();
                     if (_startRepeatedProcess && !_isFastRepeating)
                     {
@@ -308,7 +292,7 @@ namespace Varus.Paradox.Console
                         _repeatedPressIntervalTimer.Update(deltaSeconds);
                         if (_repeatedPressIntervalTimer.Finished)
                         {
-                            HandleKey(_downKey);                            
+                            HandleKey(_downKey);
                         }
                     }
                     InputBuffer.Update(deltaSeconds);
@@ -333,15 +317,34 @@ namespace Varus.Paradox.Console
                     // Draw output buffer.                    
                     OutputBuffer.Draw();
                     // Draw input buffer.
-                    InputBuffer.Draw();                    
+                    InputBuffer.Draw();
                     SpriteBatch.End();
                     break;
             }
         }
 
+        protected override void LoadContent()
+        {
+            _graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceChanged;
+            SetWindowWidthAndHeight(GraphicsDevice.BackBuffer.Width, GraphicsDevice.BackBuffer.Height);            
+
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            _backgroundTexture = Texture2D.New(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
+            OutputBuffer = new OutputBuffer(this);
+            InputBuffer = new InputBuffer(this);
+
+            SetDefaults(_defaultSettings);
+
+            if (_initialized) return;
+
+            _initialized = true;
+            if (_initialPadding.HasValue)
+                Padding = _initialPadding.Value;
+        }
+
         protected override void UnloadContent()
         {
-            _graphicsDeviceManager.PreparingDeviceSettings -= SetWindowWidthAndHeight;
+            _graphicsDeviceManager.PreparingDeviceSettings -= OnPreparingDeviceChanged;
 
             SpriteBatch.Dispose();
             _backgroundTexture.Dispose();
@@ -405,7 +408,7 @@ namespace Varus.Paradox.Console
                     } 
                     else
                     {
-                        if (OutputBuffer.HasCommandEntry())
+                        if (OutputBuffer.HasCommandEntry)
                         {
                             cmd = OutputBuffer.DequeueCommandEntry() + cmd;                            
                         }
@@ -523,6 +526,34 @@ namespace Varus.Paradox.Console
         #endregion                
         
 
+        #region Input History
+
+        private void ManageHistory(Stack<string> to, Stack<string> from)
+        {
+            // Check if there are any entries in the history.
+            if (from.Count <= 0) return;
+
+            // Add current to reverse history if it is not whitespace.
+            if (!InputBuffer.IsEmptyOrWhitespace())
+            {
+                to.Push(InputBuffer.Get());
+            }
+
+            _lastHistoryString = from.Pop();
+            InputBuffer.LastAutocompleteEntry = null;
+            InputBuffer.Set(_lastHistoryString);
+        }
+
+        private void ClearHistory()
+        {
+            _lastHistoryString = null;
+            _inputHistoryBackward.Clear();
+            _inputHistoryForward.Clear();
+        }
+
+        #endregion
+
+
         private void UpdateTimer(float deltaSeconds, ConsoleState stateToSetWhenFinished)
         {
             _transitionTimer.Update(deltaSeconds);
@@ -532,26 +563,21 @@ namespace Varus.Paradox.Console
             }
         }
 
-        private void SetWindowWidthAndHeight()
+        private void OnPreparingDeviceChanged(object sender, PreparingDeviceSettingsEventArgs args)
         {
-            if (GraphicsDevice == null) return;
-            SetWindowWidthAndHeight(null, new PreparingDeviceSettingsEventArgs(new GraphicsDeviceInformation
-            {
-                PresentationParameters =
-                    new PresentationParameters
-                    {
-                        BackBufferWidth = GraphicsDevice.BackBuffer.Width,
-                        BackBufferHeight = GraphicsDevice.BackBuffer.Height
-                    }
-            }));
+            SetWindowWidthAndHeight(
+                args.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth,
+                args.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight);
         }
 
-        private void SetWindowWidthAndHeight(object sender, PreparingDeviceSettingsEventArgs args)
+        private void SetWindowWidthAndHeight(int width, int height)
         {
+            if (GraphicsDevice == null) return;
+
             var newWindowArea = new RectangleF(_windowArea.X, _windowArea.Y, 0, 0)
             {
-                Width = args.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth,
-                Height = args.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight * HeightRatio
+                Width = width,
+                Height = height * HeightRatio
             };
             switch (_state)
             {
@@ -576,33 +602,7 @@ namespace Varus.Paradox.Console
             _isFastRepeating = false;
             _repeatedPressTresholdTimer.Reset();
             _repeatedPressIntervalTimer.Reset();
-        }
-
-
-        #region Input history
-
-        private void ManageHistory(Stack<string> to, Stack<string> from)
-        {
-            // Check if there are any entries in the history.
-            if (from.Count <= 0) return;
-
-            // Add current to reverse history if it is not whitespace.
-            if (!InputBuffer.IsEmptyOrWhitespace())
-            {
-                to.Push(InputBuffer.Get());
-            }
-
-            _lastHistoryString = from.Pop();
-            InputBuffer.LastAutocompleteEntry = null;
-            InputBuffer.Set(_lastHistoryString);            
-        }
-
-        private void ClearHistory()
-        {
-            _lastHistoryString = null;
-            _inputHistoryBackward.Clear();
-            _inputHistoryForward.Clear();
-        }
+        }        
 
         private void SetDefaults(ConsoleSettings settings)
         {
@@ -618,8 +618,6 @@ namespace Varus.Paradox.Console
 
             InputBuffer.SetDefaults(settings);
             OutputBuffer.SetDefaults(settings);
-        }
-
-        #endregion                
+        }           
     }
 }

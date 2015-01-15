@@ -12,14 +12,15 @@ namespace Varus.Paradox.Console
     public class InputBuffer
     {
         private readonly ConsoleShell _consolePanel;
+        private readonly StringBuilder _inputBuffer = new StringBuilder();
+        private readonly StringBuilder _drawBuffer = new StringBuilder(); // Helper buffer for drawing to avoid unnecessary string allocations.      
+  
+        private string _inputPrefix;
         private Vector2 _fontSize;
-        private string _inputPrefix;                
         private int _startIndex;
-        private int _endIndex;
-        private readonly StringBuilder _buffer = new StringBuilder();
+        private int _endIndex;        
         private int _numPosToMoveWhenOutOfScreen;
-        private bool _dirty;
-        private readonly StringBuilder _drawBuffer = new StringBuilder();
+        private bool _dirty;        
 
         internal InputBuffer(ConsoleShell consolePanel)
         {
@@ -31,13 +32,11 @@ namespace Varus.Paradox.Console
                 _dirty = true;
             };
             _consolePanel.WindowAreaChanged += (s, e) => _dirty = true;            
-            Caret = new Caret(consolePanel, _buffer);
+            Caret = new Caret(consolePanel, _inputBuffer);
             Caret.Moved += (s, e) => _dirty = true;            
 
             MeasureFontSize();
-        }
-
-        internal Vector2 InputPrefixSize { get; set; }
+        }        
 
         /// <summary>
         /// Gets or sets the last autocomplete entry which was added to the buffer. Note that
@@ -45,10 +44,12 @@ namespace Varus.Paradox.Console
         /// input pipeline gets appended here.
         /// </summary>
         public string LastAutocompleteEntry { get; set; }
+
         /// <summary>
         /// Gets the <see cref="Caret"/> associated with the buffer. This indicates where user input will be appended.
         /// </summary>
         public Caret Caret { get; private set; }
+
         /// <summary>
         /// Gets or sets the symbol that is shown in the beginning of the <see cref="InputBuffer"/>.
         /// </summary>
@@ -63,17 +64,20 @@ namespace Varus.Paradox.Console
                 _dirty = true;
             }
         }
+
         /// <summary>
         /// Gets or sets the color for the input prefix symbol.
         /// </summary>
         public Color InputPrefixColor { get; set; }
+
         /// <summary>
         /// Gets or sets the number of characters currently in the buffer.
         /// </summary>
         public int Length
         {
-            get { return _buffer.Length; }
+            get { return _inputBuffer.Length; }
         }
+
         /// <summary>
         /// Gets or sets the time in seconds it takes to append a new symbol in case user is holding down a key
         /// and repeating input has been activated.
@@ -87,6 +91,7 @@ namespace Varus.Paradox.Console
                 _consolePanel.RepeatingInputCooldown = value;
             }
         }
+
         /// <summary>
         /// Gets or sets the time in seconds it takes after user started holding down a key to enable repeating input.
         /// Repeating input means that the keys hold down will be processed repeatedly without having to repress the keys.
@@ -100,6 +105,7 @@ namespace Varus.Paradox.Console
                 _consolePanel.TimeUntilRepeatingInput = value;
             }
         } 
+
         /// <summary>
         /// Gets or sets the number of symbols that will be brought into <see cref="InputBuffer"/> view once the user moves
         /// <see cref="Caret"/> out of the visible area.
@@ -113,6 +119,9 @@ namespace Varus.Paradox.Console
                 _numPosToMoveWhenOutOfScreen = value;
             }
         }
+
+        internal Vector2 InputPrefixSize { get; set; }
+
         /// <summary>
         /// Writes symbol to the <see cref="InputBuffer"/>.
         /// </summary>
@@ -120,9 +129,10 @@ namespace Varus.Paradox.Console
         public void Write(string symbol)
         {
             if (string.IsNullOrEmpty(symbol)) return;            
-            _buffer.Insert(Caret.Index, symbol);            
+            _inputBuffer.Insert(Caret.Index, symbol);            
             Caret.Move(symbol.Length);            
         }
+
         /// <summary>
         /// Removes symbols from the <see cref="InputBuffer"/>.
         /// </summary>
@@ -132,46 +142,29 @@ namespace Varus.Paradox.Console
         {
             //Caret.Move(-length);
             Caret.MoveTo(startIndex);
-            _buffer.Remove(startIndex, length);                       
-        }
-        internal void RemoveTab()
-        {
-            bool isTab = true;
-            int counter = 0;
-            for (int i = Caret.Index - 1; i >= 0; i--)
-            {                
-                if (counter >= _consolePanel.Tab.Length) break;
-                if (_buffer[i] != _consolePanel.Tab[_consolePanel.Tab.Length - counter++ - 1])
-                {
-                    isTab = false;
-                    break;
-                }
-            }
-            int numToRemove = counter;
-            if (isTab)
-            {
-                _buffer.Remove(Math.Max(0, Caret.Index - _consolePanel.Tab.Length), numToRemove);
-            }
-            Caret.Move(-_consolePanel.Tab.Length);
-        }
+            _inputBuffer.Remove(startIndex, length);                       
+        }        
+        
         /// <summary>
         /// Sets the value typed into the buffer.
         /// </summary>
         /// <param name="value">Value to set.</param>
         public void Set(string value)
         {
-            _buffer.Clear();
-            if (value != null) _buffer.Append(value);
-            Caret.MoveTo(_buffer.Length);            
+            _inputBuffer.Clear();
+            if (value != null) _inputBuffer.Append(value);
+            Caret.MoveTo(_inputBuffer.Length);            
         }
+
         /// <summary>
         /// Gets the current value typed into the buffer.
         /// </summary>
         /// <returns>Value of <see cref="InputBuffer"/>.</returns>
         public string Get()
         {
-            return _buffer.ToString();
+            return _inputBuffer.ToString();
         }
+
         /// <summary>
         /// Gets a substring of the buffer.
         /// </summary>
@@ -180,8 +173,9 @@ namespace Varus.Paradox.Console
         /// <returns>Substring of the buffer.</returns>
         public string Substring(int startIndex, int length)
         {            
-            return _buffer.Substring(startIndex, length);
+            return _inputBuffer.Substring(startIndex, length);
         }
+
         /// <summary>
         /// Gets a substring of the buffer.
         /// </summary>
@@ -189,24 +183,63 @@ namespace Varus.Paradox.Console
         /// <returns>Substring of the buffer.</returns>
         public string Substring(int startIndex)
         {            
-            return _buffer.Substring(startIndex);
+            return _inputBuffer.Substring(startIndex);
         }
+
+        /// <summary>
+        /// Clears the input from the buffer.
+        /// </summary>
+        public void Clear()
+        {
+            _inputBuffer.Clear();
+            Caret.Move(int.MinValue);
+        }        
+
+        /// <inheritdoc/>
+        public override string ToString()
+        {
+            return _inputBuffer.ToString();
+        }
+
+        /// <summary>
+        /// Gets the symbol at the specified index.
+        /// </summary>
+        /// <param name="i">Index to take symbol from.</param>
+        /// <returns>Indexed symbol.</returns>
+        public char this[int i]
+        {
+            get { return _inputBuffer[i]; }
+        }
+
+        internal void RemoveTab()
+        {
+            bool isTab = true;
+            int counter = 0;
+            for (int i = Caret.Index - 1; i >= 0; i--)
+            {
+                if (counter >= _consolePanel.Tab.Length) break;
+                if (_inputBuffer[i] != _consolePanel.Tab[_consolePanel.Tab.Length - counter++ - 1])
+                {
+                    isTab = false;
+                    break;
+                }
+            }
+            int numToRemove = counter;
+            if (isTab)
+            {
+                _inputBuffer.Remove(Math.Max(0, Caret.Index - _consolePanel.Tab.Length), numToRemove);
+            }
+            Caret.Move(-_consolePanel.Tab.Length);
+        }
+
         /// <summary>
         /// Gets or sets if the buffer is empty or contains only whitespace symbols.
         /// </summary>
         /// <returns>True if empty or contains only whitespace(s).</returns>
         internal bool IsEmptyOrWhitespace()
         {
-            return _buffer.IsEmptyOrWhitespace();
-        }
-        /// <summary>
-        /// Clears the input from the buffer.
-        /// </summary>
-        public void Clear()
-        {
-            _buffer.Clear();
-            Caret.Move(int.MinValue);         
-        }
+            return _inputBuffer.IsEmptyOrWhitespace();
+        }        
 
         internal void Update(float deltaSeconds)
         {
@@ -229,25 +262,24 @@ namespace Varus.Paradox.Console
                 InputPrefixColor);
             // Draw input buffer.
             inputPosition.X += InputPrefixSize.X;
-            if (_buffer.Length > 0)
+            if (_inputBuffer.Length > 0)
             {                
-                _buffer.ClearAndCopyTo(_drawBuffer, _startIndex, _endIndex - _startIndex + 1);
+                _inputBuffer.ClearAndCopyTo(_drawBuffer, _startIndex, _endIndex - _startIndex + 1);
                 _consolePanel.SpriteBatch.DrawString(_consolePanel.Font, _drawBuffer, inputPosition, _consolePanel.FontColor);
             }
             // Draw caret. 
-            _buffer.ClearAndCopyTo(_drawBuffer, _startIndex, Caret.Index - _startIndex);
+            _inputBuffer.ClearAndCopyTo(_drawBuffer, _startIndex, Caret.Index - _startIndex);
             inputPosition.X = _consolePanel.Padding + InputPrefixSize.X + _consolePanel.Font.MeasureString(_drawBuffer).X;
             Caret.Draw(ref inputPosition, _consolePanel.FontColor);            
         }
 
-        /// <summary>
-        /// Gets the symbol at specified index.
-        /// </summary>
-        /// <param name="i">Index to take symbol from.</param>
-        /// <returns>Indexed symbol.</returns>
-        public char this[int i]
-        { 
-            get { return _buffer[i]; }
+        internal void SetDefaults(ConsoleSettings settings)
+        {
+            InputPrefix = settings.InputPrefix;
+            InputPrefixColor = settings.InputPrefixColor;
+            NumPositionsToMoveWhenOutOfScreen = settings.NumPositionsToMoveWhenOutOfScreen;
+
+            Caret.SetDefaults(settings);
         }
 
         private void MeasureFontSize()
@@ -264,23 +296,22 @@ namespace Varus.Paradox.Console
         {
             float windowWidth = _consolePanel.WindowArea.Width - _consolePanel.Padding * 2 - InputPrefixSize.X;
 
-            if (Caret.Index > _buffer.Length - 1)
+            if (Caret.Index > _inputBuffer.Length - 1)
                 windowWidth -= Caret.Width;
 
             while (Caret.Index < _startIndex)
             {
                 _startIndex = Math.Max(_startIndex - NumPositionsToMoveWhenOutOfScreen, 0);
             }
-                        
-            _endIndex = Math.Max(_endIndex, Caret.Index);
-            _endIndex = Math.Min(_endIndex, _buffer.Length - 1);            
+                                    
+            _endIndex = MathUtil.Clamp(_endIndex, Caret.Index, _inputBuffer.Length - 1);
 
             float widthProgress = 0f;
             int indexer = _startIndex;
             int targetIndex = Caret.Index;            
-            while (indexer < _buffer.Length)
+            while (indexer < _inputBuffer.Length)
             {
-                char c = _buffer[indexer++];
+                char c = _inputBuffer[indexer++];
 
                 float charWidth;
                 if (!_consolePanel.CharWidthMap.TryGetValue(c, out charWidth))
@@ -298,7 +329,7 @@ namespace Varus.Paradox.Console
                     if (targetIndex >= _startIndex)
                     {
                         _startIndex += NumPositionsToMoveWhenOutOfScreen;
-                        _startIndex = Math.Min(_startIndex, _buffer.Length - 1);
+                        _startIndex = Math.Min(_startIndex, _inputBuffer.Length - 1);
                     }
                     CalculateStartAndEndIndices();
                     break;
@@ -306,21 +337,6 @@ namespace Varus.Paradox.Console
 
                 _endIndex = indexer - 1;
             }
-        }
-
-        internal void SetDefaults(ConsoleSettings settings)
-        {
-            InputPrefix = settings.InputPrefix;
-            InputPrefixColor = settings.InputPrefixColor;
-            NumPositionsToMoveWhenOutOfScreen = settings.NumPositionsToMoveWhenOutOfScreen;
-
-            Caret.SetDefaults(settings);
-        }
-        
-        /// <inheritdoc/>
-        public override string ToString()
-        {
-            return _buffer.ToString();
         }
     }
 }

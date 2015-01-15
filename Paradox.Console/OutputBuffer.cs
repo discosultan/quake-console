@@ -14,45 +14,56 @@ namespace Varus.Paradox.Console
     {
         private const string MeasureFontSizeSymbol = "x";
 
-        private int _maxNumRows;
-        private int _numRows;   
-        private Vector2 _fontSize;
+        private readonly ConsoleShell _consolePanel;
+        private readonly CircularArray<OutputBufferEntry> _entries = new CircularArray<OutputBufferEntry>();
+        private readonly List<OutputBufferEntry> _commandEntries = new List<OutputBufferEntry>();
         private readonly Pool<OutputBufferEntry> _entryPool;
         private readonly StringBuilder _stringBuilder = new StringBuilder();
-        private readonly List<OutputBufferEntry> _commandEntries = new List<OutputBufferEntry>();
-        private readonly CircularArray<OutputBufferEntry> _entries = new CircularArray<OutputBufferEntry>();
-        private readonly ConsoleShell _consolePanel;
 
-        /// <summary>
-        /// Gets or sets if rows which run out of the visible area of the console should be removed.
-        /// </summary>
-        public bool RemoveOverflownEntries { get; set; }
+        private Vector2 _fontSize;
+        private int _maxNumRows;
+        private int _numRows;           
+        private bool _removeOverflownEntries;        
 
         internal OutputBuffer(ConsoleShell consolePanel)
         {            
             _consolePanel = consolePanel;
             _entryPool = new Pool<OutputBufferEntry>(new OutputBufferEntryFactory(this));
 
-            // TODO: set flags only and do any calculation in Update.
+            // TODO: Set flags only and do any calculation in Update. While this would win in performance
+            // TODO: in some cases, I'm not convinced it's worth the hit against readability.
             consolePanel.PaddingChanged += (s, e) =>
             {                
                 CalculateRows();
-                RemoveOverflownBufferEntries();
+                RemoveOverflownBufferEntriesIfAllowed();
             };
             consolePanel.FontChanged += (s, e) =>
             {
                 CalculateFontSize();                
                 CalculateRows();
-                RemoveOverflownBufferEntries();                
+                RemoveOverflownBufferEntriesIfAllowed();                
             };
             consolePanel.WindowAreaChanged += (s, e) =>
             {                
                 CalculateRows();
-                RemoveOverflownBufferEntries();
+                RemoveOverflownBufferEntriesIfAllowed();
             };
 
             CalculateFontSize();
-            CalculateRows();                
+            CalculateRows();
+        }
+
+        /// <summary>
+        /// Gets or sets if rows which run out of the visible area of the console should be removed.
+        /// </summary>
+        public bool RemoveOverflownEntries 
+        {
+            get { return _removeOverflownEntries; }
+            set 
+            { 
+                _removeOverflownEntries = value;
+                RemoveOverflownBufferEntriesIfAllowed();
+            }
         }
 
         internal ConsoleShell ConsolePanel
@@ -60,9 +71,32 @@ namespace Varus.Paradox.Console
             get { return _consolePanel; }
         }
 
-        internal bool HasCommandEntry()
+        internal bool HasCommandEntry
         {
-            return _commandEntries.Count > 0;
+            get { return _commandEntries.Count > 0; }
+        }        
+
+        /// <summary>
+        /// Appends a message to the buffer.
+        /// </summary>
+        /// <param name="message">Message to append.</param>
+        public void Append(string message)
+        {
+            if (message == null) return;            
+
+            var viewBufferEntry = _entryPool.Fetch();
+            _numRows += viewBufferEntry.SetValueAndCalculateLines(message, _consolePanel.WindowArea.Width - _consolePanel.Padding * 2, false);
+            _entries.Enqueue(viewBufferEntry);
+            RemoveOverflownBufferEntriesIfAllowed();
+        }
+
+        /// <summary>
+        /// Clears all the information in the buffer.
+        /// </summary>
+        public void Clear()
+        {
+            _entries.Clear();
+            _commandEntries.Clear();
         }
 
         internal void AddCommandEntry(string value)
@@ -76,58 +110,19 @@ namespace Varus.Paradox.Console
 
         internal string DequeueCommandEntry()
         {
-            _stringBuilder.Clear();            
+            _stringBuilder.Clear();
             for (int i = 0; i < _commandEntries.Count; i++)
             {
                 _stringBuilder.Append(_commandEntries[i].Value);
                 //if (i != _commandEntries.Count - 1)
-                    _stringBuilder.Append("\n");
+                _stringBuilder.Append("\n");
             }
             _commandEntries.Clear();
             return _stringBuilder.ToString();
         }        
 
-        private void CalculateFontSize()
-        {
-            _fontSize = _consolePanel.Font.MeasureString(MeasureFontSizeSymbol);
-        }
-
-        /// <summary>
-        /// Appends a message to the buffer.
-        /// </summary>
-        /// <param name="message">Message to append.</param>
-        public void Append(string message)
-        {
-            if (message == null) return;            
-
-            var viewBufferEntry = _entryPool.Fetch();
-            _numRows += viewBufferEntry.SetValueAndCalculateLines(message, _consolePanel.WindowArea.Width - _consolePanel.Padding * 2, false);
-            _entries.Enqueue(viewBufferEntry);
-            RemoveOverflownBufferEntries();
-        }
-        /// <summary>
-        /// Clears all the information in the buffer.
-        /// </summary>
-        public void Clear()
-        {
-            _entries.Clear();
-            _commandEntries.Clear();
-        }
-
         internal void Draw()
         {
-            // Draw from top to bottom.
-            //var viewPosition = new Vector2(_console.Padding, _console.WindowArea.Y + _console.Padding);
-            //foreach (OutputBufferEntry entry in _entries)
-            //{
-            //    foreach (string line in entry.Lines)
-            //    {
-            //        _console.SpriteBatch.DrawString(_console.Font, line, viewPosition, _console.FontColor);
-            //        viewPosition.Y += _fontSize.Y;
-            //    }
-            //}
-
-            // TODO: Add padding??
             // Draw from bottom to top.
             var viewPosition = new Vector2(
                 _consolePanel.Padding, 
@@ -146,6 +141,10 @@ namespace Varus.Paradox.Console
                 if (rowCounter >= _maxNumRows) return;
                 DrawRow(_entries[i], ref viewPosition, ref rowCounter, false);
             }
+        }
+
+        internal void SetDefaults(ConsoleSettings settings)
+        {
         }
 
         private void DrawRow(OutputBufferEntry entry, ref Vector2 viewPosition, ref int rowCounter, bool drawPrefix)
@@ -172,25 +171,34 @@ namespace Varus.Paradox.Console
             }
         }
 
-        private void RemoveOverflownBufferEntries()
+        private void RemoveOverflownBufferEntriesIfAllowed()
         {
             if (!RemoveOverflownEntries) return;
-
-            // TODO: Fix removal for multiline entries.
+            
             while (_numRows > _maxNumRows)
             {
-                OutputBufferEntry entry = _entries.Dequeue();
-                _numRows -= entry.Lines.Count;
-                _entryPool.Release(entry);
+                OutputBufferEntry entry = _entries.Peek();
+
+                // Remove entry only if it is completely hidden from view.
+                if (_numRows - entry.Lines.Count >= _maxNumRows)
+                {
+                    _numRows -= entry.Lines.Count;
+                    _entries.Dequeue();
+                    _entryPool.Release(entry);
+                }
+                else
+                {
+                    break;
+                }
             }
         }
 
         private void CalculateRows()
         {
-            // Take top padding into account and to now show row which is partly visible.
+            // Take top padding into account and hide any row which is only partly visible.
             //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / _fontSize.Y) - 1, 0);            
 
-            // Disregard top padding and allow row which is only partly visible.
+            // Disregard top padding and allow any row which is only partly visible.
             _maxNumRows = Math.Max((int)Math.Ceiling(((_consolePanel.WindowArea.Height - _consolePanel.Padding) / _fontSize.Y)) - 1, 0);
             
             _numRows = GetNumRows(_commandEntries) + GetNumRows(_entries);
@@ -201,8 +209,9 @@ namespace Varus.Paradox.Console
             return collection.Sum(entry => entry.CalculateLines(_consolePanel.WindowArea.Width - _consolePanel.Padding * 2, false));
         }
 
-        internal void SetDefaults(ConsoleSettings settings)
-        {            
-        }
+        private void CalculateFontSize()
+        {
+            _fontSize = _consolePanel.Font.MeasureString(MeasureFontSizeSymbol);
+        }        
     }
 }

@@ -95,6 +95,11 @@ namespace Varus.Paradox.Console.Utilities
             return result;
         }
 
+        public T Peek()
+        {
+            return _array[_startIndex];
+        }
+
         private void EnsureArrayCapacity()
         {
             if (Length >= _array.Length)
