@@ -32,7 +32,7 @@
     <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Windows-Direct3D11\Debug\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <IntermediateOutputPath>obj\Windows\Debug\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -44,32 +44,8 @@
     <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
     <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
     <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Windows-Direct3D11\Release\</OutputPath>
+    <OutputPath>bin\Release\</OutputPath>
     <IntermediateOutputPath>obj\Windows\Release\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_DESKTOP</DefineConstants>
-    <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Windows-Direct3D11\Testing\</OutputPath>
-    <IntermediateOutputPath>obj\Windows\Testing\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_DESKTOP</DefineConstants>
-    <SiliconStudioPlatform>Windows</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>Windows</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Windows-Direct3D11\AppStore\</OutputPath>
-    <IntermediateOutputPath>obj\Windows\AppStore\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -96,32 +72,6 @@
     <SiliconStudioBuildProfile>WindowsStore</SiliconStudioBuildProfile>
     <OutputPath>..\Bin\WindowsStore-Direct3D11\Release\</OutputPath>
     <IntermediateOutputPath>obj\WindowsStore\Release\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>;2008</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|WindowsStore' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
-    <SiliconStudioPlatform>WindowsStore</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>WindowsStore</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsStore-Direct3D11\Testing\</OutputPath>
-    <IntermediateOutputPath>obj\WindowsStore\Testing\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>;2008</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|WindowsStore' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
-    <SiliconStudioPlatform>WindowsStore</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>WindowsStore</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsStore-Direct3D11\AppStore\</OutputPath>
-    <IntermediateOutputPath>obj\WindowsStore\AppStore\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <NoWarn>;2008</NoWarn>
@@ -153,32 +103,6 @@
     <WarningLevel>4</WarningLevel>
     <NoWarn>;2008</NoWarn>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|WindowsPhone' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_PHONE</DefineConstants>
-    <SiliconStudioPlatform>WindowsPhone</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>WindowsPhone</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsPhone-Direct3D11\Testing\</OutputPath>
-    <IntermediateOutputPath>obj\WindowsPhone\Testing\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>;2008</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|WindowsPhone' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_PHONE</DefineConstants>
-    <SiliconStudioPlatform>WindowsPhone</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>WindowsPhone</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\WindowsPhone-Direct3D11\AppStore\</OutputPath>
-    <IntermediateOutputPath>obj\WindowsPhone\AppStore\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>;2008</NoWarn>
-  </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Android' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
@@ -203,34 +127,6 @@
     <SiliconStudioBuildProfile>Android</SiliconStudioBuildProfile>
     <OutputPath>..\Bin\Android-OpenGLES\Release\</OutputPath>
     <IntermediateOutputPath>obj\Android\Release\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
-    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|Android' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_MONO;SILICONSTUDIO_PLATFORM_MONO_MOBILE;SILICONSTUDIO_PLATFORM_ANDROID</DefineConstants>
-    <SiliconStudioPlatform>Android</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>Android</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Android-OpenGLES\Testing\</OutputPath>
-    <IntermediateOutputPath>obj\Android\Testing\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
-    <AndroidLinkMode>SdkOnly</AndroidLinkMode>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|Android' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_MONO;SILICONSTUDIO_PLATFORM_MONO_MOBILE;SILICONSTUDIO_PLATFORM_ANDROID</DefineConstants>
-    <SiliconStudioPlatform>Android</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>Android</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\Android-OpenGLES\AppStore\</OutputPath>
-    <IntermediateOutputPath>obj\Android\AppStore\</IntermediateOutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
@@ -268,38 +164,6 @@
     <ConsolePause>false</ConsolePause>
     <MtouchUseSGen>True</MtouchUseSGen>
     <CodesignKey>iPhone Developer</CodesignKey>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|iPhone' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_MONO;SILICONSTUDIO_PLATFORM_MONO_MOBILE;SILICONSTUDIO_PLATFORM_IOS</DefineConstants>
-    <SiliconStudioPlatform>iOS</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>iOS</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\iOS-OpenGLES\Testing\</OutputPath>
-    <IntermediateOutputPath>obj\iOS\Testing\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <MtouchUseSGen>True</MtouchUseSGen>
-    <MtouchDebug>True</MtouchDebug>
-    <CodesignKey>iPhone Distribution</CodesignKey>
-    <BuildIpa>True</BuildIpa>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|iPhone' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_MONO;SILICONSTUDIO_PLATFORM_MONO_MOBILE;SILICONSTUDIO_PLATFORM_IOS</DefineConstants>
-    <SiliconStudioPlatform>iOS</SiliconStudioPlatform>
-    <SiliconStudioParadoxGraphicsApi>OpenGLES</SiliconStudioParadoxGraphicsApi>
-    <SiliconStudioBuildProfile>iOS</SiliconStudioBuildProfile>
-    <OutputPath>..\Bin\iOS-OpenGLES\AppStore\</OutputPath>
-    <IntermediateOutputPath>obj\iOS\AppStore\</IntermediateOutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <MtouchUseSGen>True</MtouchUseSGen>
-    <CodesignKey>iPhone Distribution</CodesignKey>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>

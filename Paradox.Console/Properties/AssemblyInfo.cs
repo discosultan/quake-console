@@ -5,9 +5,9 @@ using System.Resources;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Paradox.Console")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Quake style console for Paradox Game Engine")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Jaanus Varus")]
 [assembly: AssemblyProduct("Paradox.Console")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]

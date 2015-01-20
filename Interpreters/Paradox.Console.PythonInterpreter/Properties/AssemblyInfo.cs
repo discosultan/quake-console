@@ -6,9 +6,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Paradox.Console.PythonInterpreter")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("IronPython interpreter for Paradox.Console")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Jaanus Varus")]
 [assembly: AssemblyProduct("Paradox.Console.PythonInterpreter")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
