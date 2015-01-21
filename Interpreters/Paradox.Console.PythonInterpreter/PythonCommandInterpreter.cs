@@ -57,7 +57,9 @@ namespace Varus.Paradox.Console.PythonInterpreter
         };
         private const char AccessorSymbol = '.';
         private const char AssignmentSymbol = '=';
-        private const char SpaceSymbol = ' ';        
+        private const char SpaceSymbol = ' ';
+        private const char FunctionStartSymbol = '(';
+        private const char FunctionParamSeparatorSymbol = ',';
 
         /// <summary>
         /// Constructs a new instance of <see cref="PythonCommandInterpreter"/>.
@@ -446,7 +448,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 _instancesAndStaticsDirty = true;                
             }
             // Add static members.
-            AddMembers(_staticMembers, type, BindingFlags.Public | BindingFlags.Static, includeSubTypes);            
+            AddMembers(_staticMembers, type, BindingFlags.Static | BindingFlags.Public, includeSubTypes);            
             // Add instance members.
             AddMembers(_instanceMembers, type, BindingFlags.Instance | BindingFlags.Public, includeSubTypes);
             
