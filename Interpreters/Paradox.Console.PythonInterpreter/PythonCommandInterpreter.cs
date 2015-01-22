@@ -35,7 +35,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
         private string[] _instancesAndStatics;        
 
         // Members starting with these names will not be included in autocomplete entries.
-        private readonly string[] AutocompleteFilters =
+        private static readonly string[] AutocompleteFilters =
         {
             ".ctor", // Constructor.
             "op_", // Operators.
@@ -43,15 +43,15 @@ namespace Varus.Paradox.Console.PythonInterpreter
             "get_", "set_" // Properties.
         };
 
-        private readonly string[] TypeFilters =
+        private static readonly string[] TypeFilters =
         {
             "Void"
         };
-        private readonly char[] Operators =
+        private static readonly char[] Operators =
         {
             '+', '-', '*', '/', '%'
         };
-        private readonly char[] AutocompleteBoundaryDenoters =
+        private static readonly char[] AutocompleteBoundaryDenoters =
         {
             ' ', '(', ')', '[', ']', '{', '}', '/', '=', '.'
         };
@@ -178,7 +178,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 }
                 FindAutocompleteForEntries(inputBuffer, _instancesAndStatics, command, startIndex, isNextValue);
             }
-            else // Accessor or assignment.
+            else // Accessor or assignment or method.
             {
                 // We also need to find the value for whatever was before the type accessor.
                 int chainEndIndex = FindPreviousLinkEndIndex(inputBuffer, startIndex - 1);
@@ -188,26 +188,31 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 MemberTypeInfo? lastChainLink = FindMemberTypeInfo();
                 if (!lastChainLink.HasValue) return;
 
-                if (completionType == AutocompletionType.Accessor)
+                switch (completionType)
                 {
-                    MemberTypeInfoCollection autocompleteValues;
-                    if (lastChainLink.Value.IsInstance)
-                        _instanceMembers.TryGetValue(lastChainLink.Value.Type, out autocompleteValues);
-                    else
-                        _staticMembers.TryGetValue(lastChainLink.Value.Type, out autocompleteValues);
-                    if (autocompleteValues == null) return;
-                    FindAutocompleteForEntries(inputBuffer, autocompleteValues.Names, command, startIndex, isNextValue);
-                }
-                else // Assignment.
-                {
-                    FindAutocompleteForEntries(
-                        inputBuffer,
-                        _instances.Where(x => x.Value == lastChainLink.Value.Type)
-                            .Union(_statics.Where(x => x.Value == lastChainLink.Value.Type))
-                            .Select(x => x.Key).ToArray(),
-                        command, 
-                        startIndex, 
-                        isNextValue);
+                    case AutocompletionType.Accessor:                    
+                        MemberTypeInfoCollection autocompleteValues;
+                        if (lastChainLink.Value.IsInstance)
+                            _instanceMembers.TryGetValue(lastChainLink.Value.Type, out autocompleteValues);
+                        else
+                            _staticMembers.TryGetValue(lastChainLink.Value.Type, out autocompleteValues);
+                        if (autocompleteValues == null) return;
+                        FindAutocompleteForEntries(inputBuffer, autocompleteValues.Names, command, startIndex, isNextValue);                    
+                        break;
+                    case AutocompletionType.Assignment:
+                        FindAutocompleteForEntries(
+                            inputBuffer,
+                            _instances.Where(x => x.Value == lastChainLink.Value.Type)
+                                .Union(_statics.Where(x => x.Value == lastChainLink.Value.Type))
+                                .Select(x => x.Key)
+                                .ToArray(),
+                            command, 
+                            startIndex, 
+                            isNextValue);
+                        break;
+                    case AutocompletionType.Method:
+                        // TODO: implement.
+                        break;
                 }
             }
         }        
@@ -239,11 +244,13 @@ namespace Varus.Paradox.Console.PythonInterpreter
             return lookupIndex + (length << 16);
         }
 
-        private int FindPreviousLinkEndIndex(InputBuffer inputBuffer, int startIndex)
+        private static int FindPreviousLinkEndIndex(InputBuffer inputBuffer, int startIndex)
         {
             int chainEndIndex = -1;
             for (int i = startIndex; i >= 0; i--)
-                if (inputBuffer[i] == AccessorSymbol || inputBuffer[i] == AssignmentSymbol)
+                if (inputBuffer[i] == AccessorSymbol || 
+                    inputBuffer[i] == AssignmentSymbol ||
+                    inputBuffer[i] == FunctionStartSymbol)
                 {
                     chainEndIndex = i - 1;
                     break;
@@ -262,6 +269,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 char c = inputBuffer[i];
                 if (c == SpaceSymbol) continue;                
                 if (c == AccessorSymbol) return AutocompletionType.Accessor;
+                if (c == FunctionStartSymbol || c == FunctionParamSeparatorSymbol) return AutocompletionType.Method;
                 if (c == AssignmentSymbol)
                 {
                     if (i <= 0) return AutocompletionType.Assignment;
