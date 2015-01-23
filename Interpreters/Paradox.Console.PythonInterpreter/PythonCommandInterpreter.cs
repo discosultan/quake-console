@@ -30,9 +30,10 @@ namespace Varus.Paradox.Console.PythonInterpreter
         private readonly Dictionary<Type, MemberTypeInfoCollection> _staticMembers = new Dictionary<Type, MemberTypeInfoCollection>();
         private readonly Dictionary<Type, MemberTypeInfoCollection> _instanceMembers = new Dictionary<Type, MemberTypeInfoCollection>();
         private readonly Dictionary<string, Type> _instances = new Dictionary<string, Type>();
-        private readonly Dictionary<string, Type> _statics = new Dictionary<string, Type>();
+        private readonly Dictionary<string, Type> _statics = new Dictionary<string, Type>();        
+        private readonly Dictionary<Type, string[]> _instancesAndStaticsForTypes = new Dictionary<Type,string[]>();
         private bool _instancesAndStaticsDirty = true;
-        private string[] _instancesAndStatics;        
+        private string[] _instancesAndStatics;
 
         // Members starting with these names will not be included in autocomplete entries.
         private static readonly string[] AutocompleteFilters =
@@ -174,6 +175,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
                             .OrderBy(x => x)
                             .Union(_statics.Select(x => x.Key).OrderBy(x => x))
                             .ToArray();
+                    _instancesAndStaticsForTypes.Clear(); // TODO: Maybe populate it here already? Currently deferred.
                     _instancesAndStaticsDirty = false;
                 }
                 FindAutocompleteForEntries(inputBuffer, _instancesAndStatics, command, startIndex, isNextValue);
@@ -196,28 +198,46 @@ namespace Varus.Paradox.Console.PythonInterpreter
                             _instanceMembers.TryGetValue(lastChainLink.Value.Type, out autocompleteValues);
                         else
                             _staticMembers.TryGetValue(lastChainLink.Value.Type, out autocompleteValues);
-                        if (autocompleteValues == null) return;
+                        if (autocompleteValues == null) break;
                         FindAutocompleteForEntries(inputBuffer, autocompleteValues.Names, command, startIndex, isNextValue);                    
                         break;
                     case AutocompletionType.Assignment:
                         FindAutocompleteForEntries(
                             inputBuffer,
-                            _instances.Where(x => x.Value == lastChainLink.Value.Type)
-                                .Union(_statics.Where(x => x.Value == lastChainLink.Value.Type))
-                                .Select(x => x.Key)
-                                .ToArray(),
+                            GetAvailableNamesForType(lastChainLink.Value.Type),
                             command, 
                             startIndex, 
                             isNextValue);
                         break;
                     case AutocompletionType.Method:
-                        // TODO: implement.
+                        ParameterInfo[] paramInfo = lastChainLink.Value.ParameterInfo;
+                        if (paramInfo == null) break;
+                        FindAutocompleteForEntries(
+                            inputBuffer,
+                            GetAvailableNamesForType(paramInfo[0].ParameterType), // TODO: overloads.
+                            command,
+                            startIndex,
+                            isNextValue);
                         break;
                 }
             }
         }        
 
-        private int FindBoundaryIndices(InputBuffer inputBuffer, int lookupIndex, bool allowSpaces = false)
+        private string[] GetAvailableNamesForType(Type type)
+        {
+            string[] results;
+            if (_instancesAndStaticsDirty || !_instancesAndStaticsForTypes.TryGetValue(type, out results))
+            {
+                results = _instances.Where(x => x.Value == type)
+                    .Union(_statics.Where(x => x.Value == type))
+                    .Select(x => x.Key)
+                    .ToArray();
+                _instancesAndStaticsForTypes.Add(type, results);
+            }
+            return results;
+        }
+
+        private static int FindBoundaryIndices(InputBuffer inputBuffer, int lookupIndex, bool allowSpaces = false)
         {
             if (inputBuffer.Length == 0) return 0;
 
@@ -258,7 +278,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
             return chainEndIndex;
         }
 
-        private AutocompletionType FindAutocompleteType(InputBuffer inputBuffer, int startIndex)
+        private static AutocompletionType FindAutocompleteType(InputBuffer inputBuffer, int startIndex)
         {
             if (startIndex == 0) return AutocompletionType.Regular;            
             startIndex--;            
@@ -292,7 +312,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 int startIndex = indices & 0xff;
                 int length = indices >> 16;
 
-                var chainLink = inputBuffer.Substring(startIndex, length).Trim();
+                string chainLink = inputBuffer.Substring(startIndex, length).Trim();
                 _accessorChain.Push(chainLink);
 
                 int previousLinkEndIndex = FindPreviousLinkEndIndex(inputBuffer, startIndex - 1);
@@ -316,7 +336,7 @@ namespace Varus.Paradox.Console.PythonInterpreter
             string link = _accessorChain.Pop();
             Type type;
             if (_instances.TryGetValue(link, out type))
-            {                
+            {                                
                 return FindMemberTypeInfo(new MemberTypeInfo { IsInstance = true, Type = type });
             }
             if (_statics.TryGetValue(link, out type))
@@ -348,7 +368,14 @@ namespace Varus.Paradox.Console.PythonInterpreter
                 if (indexOfLink == -1) return null;
 
                 Type type = memberInfo.UnderlyingTypes[indexOfLink];
-                previous = new MemberTypeInfo { IsInstance = true, Type = type };
+                previous = new MemberTypeInfo
+                {
+                    IsInstance = true, 
+                    Type = type, 
+                    Name = link, 
+                    MemberType = memberInfo.MemberTypes[indexOfLink], 
+                    ParameterInfo = memberInfo.MethodParamTypes[indexOfLink]
+                };
             }
         }
 
@@ -497,14 +524,22 @@ namespace Varus.Paradox.Console.PythonInterpreter
             return true;
         }
 
-        private MemberTypeInfoCollection AutocompleteMembersQuery(IEnumerable<MemberInfo> members)
+        private static MemberTypeInfoCollection AutocompleteMembersQuery(IEnumerable<MemberInfo> members)
         {
             var result = new MemberTypeInfoCollection();
 
             var ordered = members.Where(x => !AutocompleteFilters.Any(y => x.Name.StartsWith(y, StringComparisonMethod))) // Filter.
                                  .DistinctBy(x => x.Name) // Distinctly named values only.
                                  .OrderBy(x => x.Name); // Order alphabetically.
-            ordered.ForEach(x => result.Add(x.Name, x.GetUnderlyingType(), x.MemberType));
+            ordered.ForEach(x =>
+            {
+                ParameterInfo[] parameters = null;
+                if (x.MemberType == MemberTypes.Method)
+                {                    
+                    parameters = ((MethodInfo)x).GetParameters();
+                }
+                result.Add(x.Name, x.GetUnderlyingType(), x.MemberType, parameters);
+            });
 
             return result;
         }
