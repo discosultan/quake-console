@@ -10,7 +10,7 @@ namespace Varus.Paradox.Console
     /// <summary>
     /// Output part of the <see cref="ConsolePanel"/>. Command execution info will be appended here.
     /// </summary>
-    public class OutputBuffer
+    public class OutputBuffer : IOutputBuffer
     {
         private const string MeasureFontSizeSymbol = "x";
 

@@ -8,7 +8,7 @@ namespace Varus.Paradox.Console
     /// <summary>
     /// A blinking caret inside the <see cref="InputBuffer"/> to show the location of the cursor.
     /// </summary>
-    public class Caret
+    public class Caret : ICaret
     {
         private readonly ConsoleShell _consolePanel;
         private readonly Timer _caretBlinkingTimer = new Timer { AutoReset = true };

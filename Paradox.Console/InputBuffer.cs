@@ -9,7 +9,7 @@ namespace Varus.Paradox.Console
     /// <summary>
     /// Input part of the <see cref="ConsoleShell"/>. User input, historical commands and autocompletion values will be appended here.
     /// </summary>
-    public class InputBuffer
+    public class InputBuffer : IInputBuffer
     {
         private readonly ConsoleShell _consolePanel;
         private readonly StringBuilder _inputBuffer = new StringBuilder();
@@ -51,6 +51,11 @@ namespace Varus.Paradox.Console
         public Caret Caret { get; private set; }
 
         /// <summary>
+        /// Gets the <see cref="Caret"/> associated with the buffer. This indicates where user input will be appended.
+        /// </summary>
+        ICaret IInputBuffer.Caret { get { return Caret; } }
+
+        /// <summary>
         /// Gets or sets the symbol that is shown in the beginning of the <see cref="InputBuffer"/>.
         /// </summary>
         public string InputPrefix
@@ -71,7 +76,7 @@ namespace Varus.Paradox.Console
         public Color InputPrefixColor { get; set; }
 
         /// <summary>
-        /// Gets or sets the number of characters currently in the buffer.
+        /// Gets the number of characters currently in the buffer.
         /// </summary>
         public int Length
         {

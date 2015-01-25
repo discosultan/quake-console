@@ -1,0 +1,254 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{23CD737B-3720-4830-AE09-3752EE751F97}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Varus.Paradox.Console.Sample</RootNamespace>
+    <AssemblyName>Paradox.Console.Sample</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformVersion>8.1</TargetPlatformVersion>
+    <MinimumVisualStudioVersion>12</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{BC8A1FFA-BEE3-4634-8014-F334798102B3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PackageCertificateKeyFile>Paradox.Console.WindowsStore.WindowsStore_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <BaseIntermediateOutputPath>obj\</BaseIntermediateOutputPath>
+    <SiliconStudioPackageGuid>{fe8f27ab-fa5a-4571-959d-c534a68ca402}</SiliconStudioPackageGuid>
+    <!-- Force msbuild to check to rebuild this assembly instead of letting VS IDE guess -->
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SiliconStudioCurrentPackagePath>$(MSBuildThisFileDirectory)..\Paradox.Console.pdxpkg</SiliconStudioCurrentPackagePath>
+    <SiliconStudioPackageProps>$([System.IO.Path]::ChangeExtension('$(SiliconStudioCurrentPackagePath)', '.props'))</SiliconStudioPackageProps>
+    <SiliconStudioProjectType>Executable</SiliconStudioProjectType>
+    <SiliconStudioPlatform>WindowsStore</SiliconStudioPlatform>
+    <SiliconStudioParadoxGraphicsApi>Direct3D11</SiliconStudioParadoxGraphicsApi>
+    <SiliconStudioBuildProfile>WindowsStore</SiliconStudioBuildProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|ARM' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-ARM-Direct3D11\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-ARM\Debug\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>ARM</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|ARM' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-ARM-Direct3D11\Release\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-ARM\Release\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>ARM</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|ARM' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-ARM-Direct3D11\Testing\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-ARM\Testing\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>ARM</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|ARM' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-ARM-Direct3D11\AppStore\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-ARM\AppStore\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>ARM</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-x64-Direct3D11\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-x64\Debug\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-x64-Direct3D11\Release\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-x64\Release\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|x64' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-x64-Direct3D11\Testing\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-x64\Testing\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|x64' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-x64-Direct3D11\AppStore\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-x64\AppStore\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x64</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-x86-Direct3D11\Debug\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-x86\Debug\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-x86-Direct3D11\Release\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-x86\Release\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Testing|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-x86-Direct3D11\Testing\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-x86\Testing\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'AppStore|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE;SILICONSTUDIO_PLATFORM_WINDOWS;SILICONSTUDIO_PLATFORM_WINDOWS_RUNTIME;SILICONSTUDIO_PLATFORM_WINDOWS_STORE</DefineConstants>
+    <OutputPath>..\Bin\WindowsStore-x86-Direct3D11\AppStore\</OutputPath>
+    <IntermediateOutputPath>obj\WindowsStore-x86\AppStore\</IntermediateOutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
+    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <SDKReference Include="Microsoft.VCLibs, Version=12.0">
+      <Name>Microsoft Visual C++ 2013 Runtime Package for Windows</Name>
+    </SDKReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Interpreters\Paradox.Console.Interpreters.Custom\Paradox.Console.Interpreters.Custom.csproj">
+      <Project>{fd6255d0-61cf-4350-b453-8a37376ebcc1}</Project>
+      <Name>Paradox.Console.Interpreters.Custom</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Paradox.Console\Paradox.Console.csproj">
+      <Project>{a9f5f139-3dd2-4ba3-8fb9-60c9c1e300bd}</Project>
+      <Name>Paradox.Console</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Paradox.Console.Sample.Game\Paradox.Console.Sample.Game.csproj">
+      <Project>{ddf725a7-6bb1-453f-adcf-95543e368dec}</Project>
+      <Name>Paradox.Console.Sample.Game</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ArgumentHelper.cs" />
+    <Compile Include="Commands\ClearConsoleCommand.cs" />
+    <Compile Include="Commands\SetCubePositionCommand.cs" />
+    <Compile Include="Commands\SetCubeRotationSpeedCommand.cs" />
+    <Compile Include="ConsoleMainPage.xaml.cs">
+      <DependentUpon>ConsoleMainPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+    <None Include="Paradox.Console.WindowsStore.WindowsStore_TemporaryKey.pfx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Assets\Logo.scale-80.png" />
+    <Content Include="Assets\SmallLogo.scale-180.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\Square310x310Logo.scale-80.png" />
+    <Content Include="Assets\Square70x70Logo.scale-180.png" />
+    <Content Include="Assets\StoreLogo.scale-180.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-100.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="ConsoleMainPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup />
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">
+    <VisualStudioVersion>12.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <Import Project="$(SiliconStudioPackageProps)" Condition="Exists('$(SiliconStudioPackageProps)')" />
+  <Import Project="$(SiliconStudioParadoxDir)\Targets\SiliconStudio.Common.targets" Condition="Exists('$(SiliconStudioParadoxDir)\Targets\SiliconStudio.Common.targets')" />
+  <Target Name="EnsureSiliconStudioParadoxInstalled" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(SiliconStudioParadoxDir)' == ''" Text="Paradox SDK was not found. Check Paradox is installed and the global env variable [SiliconStudioParadoxDir] is setup correctly" />
+    <Error Condition="!Exists('$(SiliconStudioParadoxDir)\Targets\SiliconStudio.Common.targets')" Text="Invalid Paradox SDK installation. Target file [$(SiliconStudioParadoxDir)\Targets\SiliconStudio.Common.targets] was not found." />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+    Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

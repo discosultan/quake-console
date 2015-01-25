@@ -10,12 +10,12 @@
         /// </summary>
         /// <param name="outputBuffer">Buffer to append data which is shown to the user.</param>
         /// <param name="command">Command to execute.</param>
-        void Execute(OutputBuffer outputBuffer, string command);
+        void Execute(IOutputBuffer outputBuffer, string command);
         /// <summary>
         /// Tries to autocomplete the current user input in the <see cref="InputBuffer"/>.
         /// </summary>
         /// <param name="inputBuffer">Buffer to read from and autocomplete user input.</param>
         /// <param name="isNextValue">Indicator which indicates whether we should move forward or backward with the autocomplete entries.</param>
-        void Autocomplete(InputBuffer inputBuffer, bool isNextValue);
+        void Autocomplete(IInputBuffer inputBuffer, bool isNextValue);
     }
 }

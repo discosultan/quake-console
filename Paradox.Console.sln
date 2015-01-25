@@ -3,24 +3,28 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Windows", "Samples\Paradox.Console.Sample.Windows\Paradox.Console.Sample.Windows.csproj", "{C6159437-FCEE-4BF7-9B30-9C8A766DCA54}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Windows", "Sample\Paradox.Console.Sample.Windows\Paradox.Console.Sample.Windows.csproj", "{C6159437-FCEE-4BF7-9B30-9C8A766DCA54}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Game", "Samples\Paradox.Console.Sample.Game\Paradox.Console.Sample.Game.csproj", "{DDF725A7-6BB1-453F-ADCF-95543E368DEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.Game", "Sample\Paradox.Console.Sample.Game\Paradox.Console.Sample.Game.csproj", "{DDF725A7-6BB1-453F-ADCF-95543E368DEC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console", "Paradox.Console\Paradox.Console.csproj", "{A9F5F139-3DD2-4BA3-8FB9-60C9C1E300BD}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{6B6BA0E8-9F1E-4527-83AA-5909A0E75029}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{6B6BA0E8-9F1E-4527-83AA-5909A0E75029}"
 	ProjectSection(SiliconStudioPackage) = preProject
-		Samples/Paradox.Console.pdxpkg = Samples/Paradox.Console.pdxpkg
+		Sample/Paradox.Console.pdxpkg = Sample/Paradox.Console.pdxpkg
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.PythonInterpreter", "Interpreters\Paradox.Console.PythonInterpreter\Paradox.Console.PythonInterpreter.csproj", "{8AFDC539-5AE3-4245-82E0-5A1238017138}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Interpreters.Python", "Interpreters\Python\Paradox.Console.Interpreters.Python\Paradox.Console.Interpreters.Python.csproj", "{8AFDC539-5AE3-4245-82E0-5A1238017138}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interpreters", "Interpreters", "{7A20110D-A74F-4190-9D3B-7CA3A6793C14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.CustomInterpreter", "Interpreters\Paradox.Console.CustomInterpreter\Paradox.Console.CustomInterpreter.csproj", "{FD6255D0-61CF-4350-B453-8A37376EBCC1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Interpreters.Custom", "Interpreters\Paradox.Console.Interpreters.Custom\Paradox.Console.Interpreters.Custom.csproj", "{FD6255D0-61CF-4350-B453-8A37376EBCC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.WindowsStore", "Samples\Paradox.Console.Sample.WindowsStore\Paradox.Console.Sample.WindowsStore.csproj", "{23CD737B-3720-4830-AE09-3752EE751F97}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Sample.WindowsStore", "Sample\Paradox.Console.Sample.WindowsStore\Paradox.Console.Sample.WindowsStore.csproj", "{23CD737B-3720-4830-AE09-3752EE751F97}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Python", "Python", "{D2584D29-8AAB-4FE1-9B0A-9F47EDA16D29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Interpreters.Python.Tests", "Interpreters\Python\Paradox.Console.Interpreters.Python.Tests\Paradox.Console.Interpreters.Python.Tests.csproj", "{3B9CD898-9D09-4830-BC3F-496CF4111452}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -485,6 +489,58 @@ Global
 		{23CD737B-3720-4830-AE09-3752EE751F97}.Testing|WindowsStore-ARM.ActiveCfg = Testing|x86
 		{23CD737B-3720-4830-AE09-3752EE751F97}.Testing|WindowsStore-x64.ActiveCfg = Testing|x86
 		{23CD737B-3720-4830-AE09-3752EE751F97}.Testing|WindowsStore-x86.ActiveCfg = Testing|x86
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|Android.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|Any CPU.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|Any CPU.Build.0 = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|iPhone.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|Mixed Platforms.Build.0 = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|Windows.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|WindowsPhone.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|WindowsStore.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|WindowsStore-ARM.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|WindowsStore-x64.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.AppStore|WindowsStore-x86.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Android.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|WindowsPhone.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|WindowsStore.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|WindowsStore-ARM.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|WindowsStore-x64.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|WindowsStore-x86.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|Android.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|Windows.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|WindowsPhone.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|WindowsStore.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|WindowsStore-ARM.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|WindowsStore-x64.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Release|WindowsStore-x86.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|Android.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|Any CPU.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|Any CPU.Build.0 = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|iPhone.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|Mixed Platforms.Build.0 = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|Windows.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|WindowsPhone.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|WindowsStore.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|WindowsStore-ARM.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|WindowsStore-x64.ActiveCfg = Release|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Testing|WindowsStore-x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -492,8 +548,10 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{C6159437-FCEE-4BF7-9B30-9C8A766DCA54} = {6B6BA0E8-9F1E-4527-83AA-5909A0E75029}
 		{DDF725A7-6BB1-453F-ADCF-95543E368DEC} = {6B6BA0E8-9F1E-4527-83AA-5909A0E75029}
-		{8AFDC539-5AE3-4245-82E0-5A1238017138} = {7A20110D-A74F-4190-9D3B-7CA3A6793C14}
+		{8AFDC539-5AE3-4245-82E0-5A1238017138} = {D2584D29-8AAB-4FE1-9B0A-9F47EDA16D29}
 		{FD6255D0-61CF-4350-B453-8A37376EBCC1} = {7A20110D-A74F-4190-9D3B-7CA3A6793C14}
 		{23CD737B-3720-4830-AE09-3752EE751F97} = {6B6BA0E8-9F1E-4527-83AA-5909A0E75029}
+		{D2584D29-8AAB-4FE1-9B0A-9F47EDA16D29} = {7A20110D-A74F-4190-9D3B-7CA3A6793C14}
+		{3B9CD898-9D09-4830-BC3F-496CF4111452} = {D2584D29-8AAB-4FE1-9B0A-9F47EDA16D29}
 	EndGlobalSection
 EndGlobal
