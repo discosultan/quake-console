@@ -1,5 +1,3 @@
-using SiliconStudio.Core.Mathematics;
-
 namespace Varus.Paradox.Console
 {
     public interface IInputBuffer
@@ -22,6 +20,11 @@ namespace Varus.Paradox.Console
         int Length { get; }
 
         /// <summary>
+        /// Gets or sets the value typed into the buffer.
+        /// </summary>
+        string Value { get; set; }
+
+        /// <summary>
         /// Writes symbol to the <see cref="InputBuffer"/>.
         /// </summary>
         /// <param name="symbol">Symbol to write.</param>
@@ -32,19 +35,7 @@ namespace Varus.Paradox.Console
         /// </summary>
         /// <param name="startIndex">Index from which to start removing.</param>
         /// <param name="length">Number of symbols to remove.</param>
-        void Remove(int startIndex, int length);
-
-        /// <summary>
-        /// Sets the value typed into the buffer.
-        /// </summary>
-        /// <param name="value">Value to set.</param>
-        void Set(string value);
-
-        /// <summary>
-        /// Gets the current value typed into the buffer.
-        /// </summary>
-        /// <returns>Value of <see cref="InputBuffer"/>.</returns>
-        string Get();
+        void Remove(int startIndex, int length);        
 
         /// <summary>
         /// Gets a substring of the buffer.

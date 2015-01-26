@@ -79,13 +79,13 @@ namespace Varus.Paradox.Console.Interpreters.Custom
         /// Tries to autocomplete the current input value in the <see cref="ConsoleShell"/> <see cref="InputBuffer"/>.
         /// </summary>
         /// <param name="inputBuffer">Console input.</param>
-        /// <param name="isNextValue">True if user wants to autocomplete to the next value; false if to the previous value.</param>
-        public void Autocomplete(IInputBuffer inputBuffer, bool isNextValue)
+        /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
+        public void Autocomplete(IInputBuffer inputBuffer, bool forward)
         {
             if (_autocompleteEntries == null)                            
                 _autocompleteEntries = _commandMap.Keys.OrderBy(x => x).ToArray();
 
-            string currentInput = inputBuffer.Get();
+            string currentInput = inputBuffer.Value;
 
             int index = _autocompleteEntries.IndexOf(x => x.Equals(currentInput, StringComparisonMethod));
             if (index == -1 || inputBuffer.LastAutocompleteEntry == null) inputBuffer.LastAutocompleteEntry = currentInput;

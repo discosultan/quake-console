@@ -510,6 +510,7 @@ Global
 		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
 		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
 		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Windows.ActiveCfg = Debug|Any CPU
+		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|Windows.Build.0 = Debug|Any CPU
 		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|WindowsPhone.ActiveCfg = Debug|Any CPU
 		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|WindowsStore.ActiveCfg = Debug|Any CPU
 		{3B9CD898-9D09-4830-BC3F-496CF4111452}.Debug|WindowsStore-ARM.ActiveCfg = Debug|Any CPU

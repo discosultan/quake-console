@@ -135,7 +135,7 @@ namespace Varus.Paradox.Console
         {
             if (string.IsNullOrEmpty(symbol)) return;            
             _inputBuffer.Insert(Caret.Index, symbol);            
-            Caret.Move(symbol.Length);            
+            Caret.MoveBy(symbol.Length);            
         }
 
         /// <summary>
@@ -146,28 +146,22 @@ namespace Varus.Paradox.Console
         public void Remove(int startIndex, int length)
         {
             //Caret.Move(-length);
-            Caret.MoveTo(startIndex);
+            Caret.Index = startIndex;
             _inputBuffer.Remove(startIndex, length);                       
-        }        
-        
-        /// <summary>
-        /// Sets the value typed into the buffer.
-        /// </summary>
-        /// <param name="value">Value to set.</param>
-        public void Set(string value)
-        {
-            _inputBuffer.Clear();
-            if (value != null) _inputBuffer.Append(value);
-            Caret.MoveTo(_inputBuffer.Length);            
         }
 
         /// <summary>
-        /// Gets the current value typed into the buffer.
+        /// Gets or sets the value typed into the buffer.
         /// </summary>
-        /// <returns>Value of <see cref="InputBuffer"/>.</returns>
-        public string Get()
+        public string Value
         {
-            return _inputBuffer.ToString();
+            get { return _inputBuffer.ToString(); }
+            set
+            {
+                _inputBuffer.Clear();
+                if (value != null) _inputBuffer.Append(value);
+                Caret.Index = _inputBuffer.Length;
+            }
         }
 
         /// <summary>
@@ -197,7 +191,7 @@ namespace Varus.Paradox.Console
         public void Clear()
         {
             _inputBuffer.Clear();
-            Caret.Move(int.MinValue);
+            Caret.MoveBy(int.MinValue);
         }        
 
         /// <inheritdoc/>
@@ -234,7 +228,7 @@ namespace Varus.Paradox.Console
             {
                 _inputBuffer.Remove(Math.Max(0, Caret.Index - _consolePanel.Tab.Length), numToRemove);
             }
-            Caret.Move(-_consolePanel.Tab.Length);
+            Caret.MoveBy(-_consolePanel.Tab.Length);
         }
 
         /// <summary>

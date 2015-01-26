@@ -16,6 +16,7 @@ namespace Varus.Paradox.Console
 
         private bool _drawCaret;
         private string _symbol;
+        private int _index;
 
         internal event EventHandler Moved = delegate { };
 
@@ -28,9 +29,17 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
-        /// Gets or sets the index the cursor is at in the <see cref="InputBuffer"/>.
+        /// Gets or sets the character index the cursor is at in the <see cref="InputBuffer"/>.
         /// </summary>
-        public int Index { get; private set; }
+        public int Index
+        {
+            get { return _index; }
+            set
+            {
+                _index = MathUtil.Clamp(value, 0, _inputBuffer.Length); 
+                Moved(this, EventArgs.Empty);
+            }
+        }
 
         /// <summary>
         /// Gets or sets the time in seconds to toggle visibility.
@@ -57,16 +66,16 @@ namespace Varus.Paradox.Console
 
         internal float Width { get; private set; }
 
-        internal void Move(int amount)
+        /// <summary>
+        /// Moves the caret by the specified amount of characters.
+        /// </summary>
+        /// <param name="amount">
+        /// Amount of chars to move caret by. Positive amount will move to the right,
+        /// negative to the left.
+        /// </param>
+        internal void MoveBy(int amount)
         {
-            Index = MathUtil.Clamp(Index + amount, 0, _inputBuffer.Length);            
-            Moved(this, EventArgs.Empty);            
-        }
-
-        internal void MoveTo(int pos)
-        {
-            Index = pos;
-            Moved(this, EventArgs.Empty);
+            Index = Index + amount;            
         }
 
         internal void Update(float deltaSeconds)

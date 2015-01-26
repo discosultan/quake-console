@@ -27,6 +27,11 @@
 
     public struct Pauciloquent
     {
+        public Pauciloquent(int moment)
+        {
+            Moment = moment;
+        }
+
         public int Moment;
     }
 

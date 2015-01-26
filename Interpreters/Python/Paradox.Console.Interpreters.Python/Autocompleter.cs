@@ -35,6 +35,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
         internal void Reset()
         {
             _instancesAndStatics.Clear();
+            _instancesAndStaticsForTypes.Clear();
         }
 
         internal void Autocomplete(IInputBuffer inputBuffer, bool isNextValue)
@@ -49,10 +50,12 @@ namespace Varus.Paradox.Console.Interpreters.Python
             {
                 if (_interpreter._instancesAndStaticsDirty)
                 {
+                    _instancesAndStatics.Clear();
+                    _instancesAndStaticsForTypes.Clear();
                     _instancesAndStatics.AddRange(_interpreter._instances.Select(x => x.Key)
                         .OrderBy(x => x)
                         .Union(_interpreter._statics.Select(x => x.Key).OrderBy(x => x)));
-                    _instancesAndStaticsForTypes.Clear(); // TODO: Maybe populate it here already? Currently deferred.
+                    //_instancesAndStaticsForTypes.Clear(); // TODO: Maybe populate it here already? Currently deferred.
                     _interpreter._instancesAndStaticsDirty = false;
                 }
                 FindAutocompleteForEntries(inputBuffer, _instancesAndStatics, command, startIndex, isNextValue);
@@ -136,7 +139,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
         private string[] GetAvailableNamesForType(Type type)
         {
             string[] results;
-            if (_interpreter._instancesAndStaticsDirty || !_instancesAndStaticsForTypes.TryGetValue(type, out results))
+            if (/*_interpreter._instancesAndStaticsDirty ||*/ !_instancesAndStaticsForTypes.TryGetValue(type, out results))
             {
                 results = _interpreter._instances.Where(x => x.Value == type)
                     .Union(_interpreter._statics.Where(x => x.Value == type))

@@ -21,6 +21,16 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _stringBuffer.Remove(startIndex, length);
         }
 
+        public string Value
+        {
+            get { return _stringBuffer.ToString(); }
+            set
+            {
+                _stringBuffer.Clear();
+                _stringBuffer.Append(value);
+            }
+        }
+
         public void Set(string value)
         {
             _stringBuffer.Clear();

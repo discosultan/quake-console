@@ -15,7 +15,7 @@
         /// Tries to autocomplete the current user input in the <see cref="InputBuffer"/>.
         /// </summary>
         /// <param name="inputBuffer">Buffer to read from and autocomplete user input.</param>
-        /// <param name="isNextValue">Indicator which indicates whether we should move forward or backward with the autocomplete entries.</param>
-        void Autocomplete(IInputBuffer inputBuffer, bool isNextValue);
+        /// <param name="forward">Indicator which indicates whether we should move forward or backward with the autocomplete entries.</param>
+        void Autocomplete(IInputBuffer inputBuffer, bool forward);
     }
 }

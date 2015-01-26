@@ -81,10 +81,10 @@ namespace Varus.Paradox.Console.Interpreters.Python
         /// Tries to autocomplete the current input value in the <see cref="ConsoleShell"/> <see cref="InputBuffer"/>.
         /// </summary>
         /// <param name="inputBuffer">Console input.</param>
-        /// <param name="isNextValue">True if user wants to autocomplete to the next value; false if to the previous value.</param>
-        public void Autocomplete(IInputBuffer inputBuffer, bool isNextValue)
+        /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
+        public void Autocomplete(IInputBuffer inputBuffer, bool forward)
         {
-            _autocompleter.Autocomplete(inputBuffer, isNextValue);
+            _autocompleter.Autocomplete(inputBuffer, forward);
         }
 
         /// <summary>

@@ -19,8 +19,8 @@
         /// Does nothing.
         /// </summary>
         /// <param name="inputBuffer">Console input.</param>
-        /// <param name="isNextValue">True if user wants to autocomplete to the next value; false if to the previous value.</param>
-        public void Autocomplete(IInputBuffer inputBuffer, bool isNextValue)
+        /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
+        public void Autocomplete(IInputBuffer inputBuffer, bool forward)
         {            
         }
     }

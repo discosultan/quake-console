@@ -399,7 +399,7 @@ namespace Varus.Paradox.Console
             switch (action)
             {                                    
                 case ConsoleAction.ExecuteCommand:
-                    string cmd = InputBuffer.Get();                    
+                    string cmd = InputBuffer.Value;                    
                     // Determine if this is a line break or we should execute command straight away.
                     if (_actionDefinitions.BackwardTryGetValue(ConsoleAction.NextLineModifier, out modifier) &&
                         Input.IsKeyDown(modifier))
@@ -428,7 +428,7 @@ namespace Varus.Paradox.Console
                     }
                     InputBuffer.Clear();
                     InputBuffer.LastAutocompleteEntry = null;
-                    InputBuffer.Caret.Move(int.MinValue);                    
+                    InputBuffer.Caret.MoveBy(int.MinValue);                    
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.PreviousCommandInHistory:
                     ManageHistory(_inputHistoryForward, _inputHistoryBackward);
@@ -441,19 +441,19 @@ namespace Varus.Paradox.Console
                     if (hasModifier && !Input.IsKeyDown(modifier)) return ConsoleProcessResult.None;
                     bool canMoveBackwards = _actionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
                     _commandInterpreter.Autocomplete(InputBuffer, !canMoveBackwards || !Input.IsKeyDown(modifier));
-                    InputBuffer.Caret.MoveTo(InputBuffer.Length);
+                    InputBuffer.Caret.Index = InputBuffer.Length;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveLeft:
-                    InputBuffer.Caret.Move(-1);
+                    InputBuffer.Caret.MoveBy(-1);
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveRight:
-                    InputBuffer.Caret.Move(1);
+                    InputBuffer.Caret.MoveBy(1);
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveToBeginning:
-                    InputBuffer.Caret.MoveTo(0);
+                    InputBuffer.Caret.Index = 0;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveToEnd:
-                    InputBuffer.Caret.MoveTo(InputBuffer.Length);
+                    InputBuffer.Caret.Index = InputBuffer.Length;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.DeletePreviousChar:
                     if (InputBuffer.Length > 0 && InputBuffer.Caret.Index > 0)
@@ -536,12 +536,12 @@ namespace Varus.Paradox.Console
             // Add current to reverse history if it is not whitespace.
             if (!InputBuffer.IsEmptyOrWhitespace())
             {
-                to.Push(InputBuffer.Get());
+                to.Push(InputBuffer.Value);
             }
 
             _lastHistoryString = from.Pop();
             InputBuffer.LastAutocompleteEntry = null;
-            InputBuffer.Set(_lastHistoryString);
+            InputBuffer.Value = _lastHistoryString;
         }
 
         private void ClearHistory()
