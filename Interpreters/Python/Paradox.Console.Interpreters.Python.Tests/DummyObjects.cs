@@ -2,6 +2,8 @@
 {
     public class Kickup
     {
+        public static int Eider;
+
         public string Cymidine;
 
         public Pauciloquent Pauciloquent { get; set; }

@@ -24,6 +24,8 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         private const string EnumTypeName = "Behen";
         private const string EnumFirstMemberName = "Razor";
         private const string TargetMethodSecondParamTypeName = "Pauciloquent";
+        private const string StaticTypeName = "Kickup";
+        private const string StaticTypeFirstMember = "Eider";
 
         private IInputBuffer _inputBuffer;
         private ICaret _caret;
@@ -44,7 +46,7 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.AddVariable(StringInstanceNameAndValue, StringInstanceNameAndValue);
         }
 
-        // Loaded instance_a, instance_z, Behen, Kickup, Pauciloquent, String, Type
+        // Loaded instance_a, instance_z, Behen, Eider, Kickup, Pauciloquent, String, Type
 
 
         #region General        
@@ -240,6 +242,17 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             Assert.AreEqual(FirstInstanceName + Accessor + "ToString", _inputBuffer.Value);
         }
 
+        [Test]
+        public void StaticTypeInput_Accessor_CaretAtEnd_Autocomplete_FirstMemberSelected()
+        {
+            _inputBuffer.Value = StaticTypeName + Accessor;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMember, _inputBuffer.Value);
+        }
+
         #endregion
 
 
@@ -359,6 +372,29 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.Autocomplete(_inputBuffer, true);
 
             Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName, _inputBuffer.Value);
+        }
+
+        [Test]
+        public void InstanceMethodInput_MethodStart_MethodParamSeparator_CaretAtSeparator_Autocomplete_FirstParamTypeSelected()
+        {
+            _inputBuffer.Value = TargetMethodName + MethodStart + Accessor;
+            _caret.Index = _inputBuffer.Length - Accessor.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName, _inputBuffer.Value);
+        }
+
+        [Test]
+        [Ignore("Currently interpreter is expected to cut input buffer ending after autocompleted value. We might want to change that.")]
+        public void InstanceMethodInput_MethodStart_Space_MethodParamSeparator_CaretAtSpace_Autocomplete_FirstParamTypeSelected()
+        {
+            _inputBuffer.Value = TargetMethodName + MethodStart + Space + Accessor;
+            _caret.Index = _inputBuffer.Length - Accessor.Length - Space.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + MethodParamSeparator, _inputBuffer.Value);
         }
 
         #endregion
