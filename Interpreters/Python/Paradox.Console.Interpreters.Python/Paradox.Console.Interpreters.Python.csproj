@@ -68,6 +68,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Autocompleter.cs" />
+    <Compile Include="AutocompletionContext.cs" />
     <Compile Include="AutocompletionType.cs" />
     <Compile Include="MemberCollection.cs" />
     <Compile Include="Member.cs" />

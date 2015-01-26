@@ -6,22 +6,12 @@
 
         public Pauciloquent Pauciloquent { get; set; }
 
-        private Behen _behen;
-
         public void SetBehen(Behen behen)
-        {
-            _behen = behen;
+        {            
         }
 
         public void SetBehen(Behen behen, Pauciloquent pauciloquent)
-        {
-            SetBehen(behen);
-            Pauciloquent = pauciloquent;
-        }
-
-        public Behen GetBehen()
-        {
-            return _behen;
+        {            
         }
     }
 

@@ -9,17 +9,17 @@ namespace Varus.Paradox.Console.Interpreters.Python
         public List<string> Names { get; private set; }
         public List<Type> UnderlyingTypes { get; private set; }
         public List<MemberTypes> MemberTypes { get; private set; }
-        public List<ParameterInfo[]> ParamInfos { get; private set; }
+        public List<ParameterInfo[][]> ParamInfos { get; private set; }
 
         public MemberCollection()
         {
             Names = new List<string>();
             UnderlyingTypes = new List<Type>();
             MemberTypes = new List<MemberTypes>();
-            ParamInfos = new List<ParameterInfo[]>();
+            ParamInfos = new List<ParameterInfo[][]>();
         }
 
-        public void Add(string name, Type type, MemberTypes memberType, ParameterInfo[] methodParamTypes)
+        public void Add(string name, Type type, MemberTypes memberType, ParameterInfo[][] methodParamTypes)
         {
             Names.Add(name);
             UnderlyingTypes.Add(type);
@@ -37,15 +37,6 @@ namespace Varus.Paradox.Console.Interpreters.Python
             }
             memberType = GetMemberByIndex(index, isInstance);
             return true;
-        }
-
-        public IEnumerable<Member> GetMembersForOverloads(string name, bool isInstance)
-        {
-            for (int i = 0; i < Names.Count; i++)
-            {
-                if (Names[i].Equals(name, StringComparison.Ordinal))
-                    yield return GetMemberByIndex(i, isInstance);
-            }
         }
 
         private Member GetMemberByIndex(int index, bool isInstance)

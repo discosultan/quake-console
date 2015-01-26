@@ -97,7 +97,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
             return true;
         }
 
-        private void AddMembers(Dictionary<Type, MemberCollection> dict, Type type, BindingFlags flags, bool includeSubTypes)
+        private void AddMembers(IDictionary<Type, MemberCollection> dict, Type type, BindingFlags flags, bool includeSubTypes)
         {
             if (!dict.ContainsKey(type))
             {
@@ -105,7 +105,20 @@ namespace Varus.Paradox.Console.Interpreters.Python
                 dict.Add(type, memberInfo);
                 if (includeSubTypes)
                 {
-                    memberInfo.UnderlyingTypes.ForEach(x => AddType(x));
+                    for (int i = 0; i < memberInfo.Names.Count; i++)
+                    {
+                        AddType(memberInfo.UnderlyingTypes[i]);
+                        if (memberInfo.ParamInfos[i] != null)
+                        {
+                            memberInfo.ParamInfos[i].ForEach(overload =>
+                            {
+                                if (overload != null)
+                                {
+                                    overload.ForEach(parameter => AddType(parameter.ParameterType));
+                                }
+                            });
+                        }
+                    }
                 }
             }
         }
@@ -135,18 +148,25 @@ namespace Varus.Paradox.Console.Interpreters.Python
         {
             var result = new MemberCollection();
 
-            var ordered = members.Where(x => !AutocompleteFilters.Any(y => x.Name.StartsWith(y, PythonInterpreter.StringComparisonMethod))) // Filter.
-                //.DistinctBy(x => x.Name) // Distinctly named values only.
-                                 .OrderBy(x => x.Name); // Order alphabetically.
-            ordered.ForEach(x =>
-            {
-                ParameterInfo[] parameters = null;
-                if (x.MemberType == MemberTypes.Method)
+            var ordered = members.Where(x => !AutocompleteFilters
+                .Any(y => x.Name.StartsWith(y, PythonInterpreter.StringComparisonMethod))) // Filter.
+                .GroupBy(x => x.Name) // Distinctly named values only.
+                .OrderBy(x => x.Key) // Order alphabetically.            
+                .Select(group => // Pick member from first, param overloads from all
                 {
-                    parameters = ((MethodInfo)x).GetParameters();
-                }
-                result.Add(x.Name, x.GetUnderlyingType(), x.MemberType, parameters);
-            });
+                    MemberInfo firstMember = group.First();
+                    return new
+                    {
+                        firstMember.Name,
+                        Type = firstMember.GetUnderlyingType(), 
+                        firstMember.MemberType,
+                        Parameters =
+                            firstMember.MemberType == MemberTypes.Method
+                                ? group.Select(x => ((MethodInfo) x).GetParameters()).ToArray()
+                                : null
+                    };
+                });                
+            ordered.ForEach(x => result.Add(x.Name, x.Type, x.MemberType, x.Parameters));
 
             return result;
         }

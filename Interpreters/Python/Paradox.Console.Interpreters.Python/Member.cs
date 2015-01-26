@@ -9,7 +9,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
         public Type Type { get; set; }                
         public string Name { get; set; }
         public MemberTypes MemberType { get; set; }
-        public ParameterInfo[] ParameterInfo { get; set; }
+        public ParameterInfo[][] ParameterInfo { get; set; }
         public bool IsInstance { get; set; }
     }
 }

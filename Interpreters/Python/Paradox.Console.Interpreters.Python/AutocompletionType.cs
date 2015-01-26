@@ -4,7 +4,6 @@
     {
         Regular,
         Accessor,
-        Assignment,
-        Method
-    }
+        Assignment        
+    }    
 }

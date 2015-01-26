@@ -31,17 +31,6 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             }
         }
 
-        public void Set(string value)
-        {
-            _stringBuffer.Clear();
-            _stringBuffer.Append(value);
-        }
-
-        public string Get()
-        {
-            return _stringBuffer.ToString();
-        }
-
         public string Substring(int startIndex, int length)
         {
             return _stringBuffer.ToString().Substring(startIndex, length);

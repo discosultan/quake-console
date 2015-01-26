@@ -47,7 +47,7 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         // Loaded instance_a, instance_z, Behen, Kickup, Pauciloquent, String, Type
 
 
-        #region General
+        #region General        
 
         [Test]
         public void NoInput_AutocompleteOnce_FirstInstanceSelected()
@@ -102,7 +102,7 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.Autocomplete(_inputBuffer, true);
 
             Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
-        }
+        }        
 
         [Test]
         public void InstancePrefix_CaretAtZero_Autocomplete_FirstInstanceSelected()
@@ -199,7 +199,19 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
 
             Assert.AreEqual(FirstInstanceName + Accessor + TargetFirstMemberName, _inputBuffer.Value);
         }
-        
+
+        [Test]
+        public void Space_FirstInstanceInput_Accessor_CaretAtEnd_Autocomplete_FirstMemberSelected()
+        {
+            _inputBuffer.Value = Space + FirstInstanceName + Accessor;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+
+            Assert.AreEqual(Space + FirstInstanceName + Accessor + TargetFirstMemberName, _inputBuffer.Value);
+        }
+
         [Test]
         public void FirstInstanceInput_Accessor_Space_CaretAtEnd_Autocomplete_FirstMemberSelected()
         {
@@ -209,6 +221,23 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.Autocomplete(_inputBuffer, true);
 
             Assert.AreEqual(FirstInstanceName + Accessor + Space + TargetFirstMemberName, _inputBuffer.Value);
+        }
+
+        [Test]
+        public void FirstInstanceInput_Accessor_AutocompleteToOverloadedMember_CaretAtEnd_Autocomplete_OverloadSkipped()
+        {
+            _inputBuffer.Value = FirstInstanceName + Accessor;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true); // Cymidine
+            _interpreter.Autocomplete(_inputBuffer, true); // Equals            
+            _interpreter.Autocomplete(_inputBuffer, true); // GetHashcode
+            _interpreter.Autocomplete(_inputBuffer, true); // GetType
+            _interpreter.Autocomplete(_inputBuffer, true); // Pauciloquent
+            _interpreter.Autocomplete(_inputBuffer, true); // SetBehen            
+            _interpreter.Autocomplete(_inputBuffer, true); // ToString
+
+            Assert.AreEqual(FirstInstanceName + Accessor + "ToString", _inputBuffer.Value);
         }
 
         #endregion
@@ -251,6 +280,7 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         }
 
         #endregion
+
 
         #region Methods
 
@@ -307,6 +337,28 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.Autocomplete(_inputBuffer, true);
 
             Assert.AreEqual(TargetMethodName + MethodStart + MethodParamSeparator + MethodEnd + FirstInstanceName, _inputBuffer.Value);
+        }
+
+        [Test]
+        public void InstanceMethodInput_MethodStart_InstancePrefix_CaretAtEnd_Autocomplete_FirstInstanceSelected()
+        {
+            _inputBuffer.Value = TargetMethodName + MethodStart + InstancePrefix;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(TargetMethodName + MethodStart + FirstInstanceName, _inputBuffer.Value);
+        }
+
+        [Test]
+        public void InstanceMethodInput_MethodStart_FirstParamType_Accessor_CaretAtEnd_Autocomplete_FirstParamValueSelected()
+        {
+            _inputBuffer.Value = TargetMethodName + MethodStart + EnumTypeName + Accessor;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName, _inputBuffer.Value);
         }
 
         #endregion
