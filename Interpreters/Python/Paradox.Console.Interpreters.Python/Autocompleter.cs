@@ -54,8 +54,17 @@ namespace Varus.Paradox.Console.Interpreters.Python
                     Member lastChainLink = FindLastChainLinkMember(accessorChain);                    
                     if (lastChainLink != null && lastChainLink.ParameterInfo != null)
                     {
-                        var numParams = newCommandLength_whichParamAt_newStartIndex_numParams & 0xff;
-                        ParameterInfo[] overload = lastChainLink.ParameterInfo.FirstOrDefault(x => x.Length == numParams);
+                        var numParams = (int)(newCommandLength_whichParamAt_newStartIndex_numParams & 0xff);
+                        ParameterInfo[] overload = null;                        
+                        for (int i = numParams; i <= lastChainLink.ParameterInfo.Max(x => x.Length); i++)
+                        {
+                            ParameterInfo[] overloadCandidate = lastChainLink.ParameterInfo.FirstOrDefault(x => x.Length == i);
+                            if (overloadCandidate != null)
+                            {
+                                overload = overloadCandidate;
+                                break;
+                            }                            
+                        }                         
                         if (overload != null)
                         {
                             var paramIndex = newCommandLength_whichParamAt_newStartIndex_numParams >> 32 & 0xff;

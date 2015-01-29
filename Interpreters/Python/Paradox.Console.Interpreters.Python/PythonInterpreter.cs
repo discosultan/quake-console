@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.Scripting.Hosting;
+using Varus.Paradox.Console.Interpreters.Python.Utilities;
 
 namespace Varus.Paradox.Console.Interpreters.Python
 {
@@ -112,27 +113,48 @@ namespace Varus.Paradox.Console.Interpreters.Python
         /// <typeparam name="T">Type of variable to add.</typeparam>
         /// <param name="name">Name of the variable.</param>
         /// <param name="obj">Object to add.</param>
-        public void AddVariable<T>(string name, T obj)
+        /// <param name="addSubTypes">
+        /// Determines if subtypes of passed variable type will also be automatically added to IronPython environment.
+        /// </param>
+        public void AddVariable<T>(string name, T obj, bool addSubTypes = true)
         {
-            _typeLoader.AddVariable(name, obj);
+            _typeLoader.AddVariable(name, obj, addSubTypes);
+        }
+
+        /// <summary>
+        /// Loads type to IronPython.
+        /// </summary>
+        /// <param name="type">Type to load.</param>
+        /// <param name="addSubTypes">
+        /// Determines if subtypes of passed type will also be automatically added to IronPython environment.
+        /// </param>
+        public void AddType(Type type, bool addSubTypes = true)
+        {
+            _typeLoader.AddType(type, addSubTypes);
         }
 
         /// <summary>
         /// Loads types to IronPython.
         /// </summary>
         /// <param name="types">Types to load.</param>
-        public void AddTypes(params Type[] types)
+        /// <param name="addSubTypes">
+        /// Determines if subtypes of passed types will also be automatically added to IronPython environment.
+        /// </param>
+        public void AddTypes(IEnumerable<Type> types, bool addSubTypes = true)
         {
-            _typeLoader.AddTypes(types);
+            types.ForEach(type => _typeLoader.AddType(type, addSubTypes));
         }
 
         /// <summary>
         /// Loads all the public non-nested types from the assembly to IronPython.
         /// </summary>
         /// <param name="assembly">Assembly to get types from.</param>
-        public void AddAssembly(Assembly assembly)
+        /// /// <param name="addSubTypes">
+        /// Determines if subtypes of passed assembly's types will also be automatically added to IronPython environment.
+        /// </param>
+        public void AddAssembly(Assembly assembly, bool addSubTypes = true)
         {
-            _typeLoader.AddAssembly(assembly);
+            _typeLoader.AddAssembly(assembly, addSubTypes);
         }
 
         /// <summary>
@@ -159,6 +181,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
             _statics.Clear();            
             InstancesAndStaticsDirty = true;
             RunScript("import clr");
+            RunScript("from System import Array");
         }             
     }
 }

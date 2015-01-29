@@ -9,7 +9,7 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         private const string FirstInstanceName = "instance_a";
         private const string SecondInstanceName = "instance_b";
         private const string StringInstanceNameAndValue = "instance_c";
-        private const string LastStaticName = "Type";
+        private const string LastStaticName = "UnicodeCategory";
         private const string Accessor = ".";
         private const string Assignment = "=";
         private const string Space = " ";
@@ -19,7 +19,9 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         private const string TargetFirstMemberName = "Cymidine";
         private const string TargetSecondMemberName = "Equals";
         private const string TargetLastMemberName = "ToString";
-        private const string TargetStringFieldName = "instance_a.Cymidine";
+        private const string TargetFieldName = "instance_a.Cymidine";
+        private const string TargetRecursiveFieldName = "instance_a.Gusher.Nolt";
+        private const string TargetRecursiveFieldTypeMemberName = "Apprehender";
         private const string TargetMethodName = "instance_a.SetBehen";
         private const string EnumTypeName = "Behen";
         private const string EnumFirstMemberName = "Razor";
@@ -27,6 +29,8 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         private const string StaticTypeName = "Kickup";
         private const string StaticTypeFirstMemberName = "Eider";
         private const string StaticTypeFirstMemberFirstMemberName = "B";
+        private const string StaticTypeMethodName = "Pauciloquent.Horopter";
+        private const string StaticTypeMethodParamName = "Behen";
 
         private IInputBuffer _inputBuffer;
         private ICaret _caret;
@@ -44,7 +48,7 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             // Should be automatically ordered by names.
             _interpreter.AddVariable(SecondInstanceName, _target);
             _interpreter.AddVariable(FirstInstanceName, _target);
-            _interpreter.AddVariable(StringInstanceNameAndValue, StringInstanceNameAndValue);
+            _interpreter.AddVariable(StringInstanceNameAndValue, StringInstanceNameAndValue);            
         }
 
         // Loaded instance_a, instance_z, Behen, Eider, Kickup, Pauciloquent, String, Type
@@ -236,6 +240,7 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.Autocomplete(_inputBuffer, true); // Equals            
             _interpreter.Autocomplete(_inputBuffer, true); // GetHashcode
             _interpreter.Autocomplete(_inputBuffer, true); // GetType
+            _interpreter.Autocomplete(_inputBuffer, true); // Gusher
             _interpreter.Autocomplete(_inputBuffer, true); // Pauciloquent
             _interpreter.Autocomplete(_inputBuffer, true); // SetBehen            
             _interpreter.Autocomplete(_inputBuffer, true); // ToString
@@ -265,6 +270,17 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMemberName + Accessor + StaticTypeFirstMemberFirstMemberName, _inputBuffer.Value);
         }
 
+        [Test]
+        public void InstanceTypeMembersMember_Accessor_CaretAtEnd_Autocomplete_TypeLoaderWasRecursive()
+        {
+            _inputBuffer.Value = TargetRecursiveFieldName + Accessor;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(TargetRecursiveFieldName + Accessor + TargetRecursiveFieldTypeMemberName, _inputBuffer.Value);
+        }
+
         #endregion
 
 
@@ -273,35 +289,35 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         [Test]
         public void InstanceStringFieldInput_Assignment_CaretAtEnd_Autocomplete_StringInstanceSelected()
         {
-            _inputBuffer.Value = TargetStringFieldName + Assignment;
+            _inputBuffer.Value = TargetFieldName + Assignment;
             _caret.Index = _inputBuffer.Length;
 
             _interpreter.Autocomplete(_inputBuffer, true);
 
-            Assert.AreEqual(TargetStringFieldName + Assignment + StringInstanceNameAndValue, _inputBuffer.Value);
+            Assert.AreEqual(TargetFieldName + Assignment + StringInstanceNameAndValue, _inputBuffer.Value);
         }
 
         [Test]
         public void InstanceStringFieldInput_Assignment_CaretAtEnd_AutocompleteTwice_StringTypeSelected()
         {
-            _inputBuffer.Value = TargetStringFieldName + Assignment;
+            _inputBuffer.Value = TargetFieldName + Assignment;
             _caret.Index = _inputBuffer.Length;
 
             _interpreter.Autocomplete(_inputBuffer, true);
             _interpreter.Autocomplete(_inputBuffer, true);
 
-            Assert.AreEqual(TargetStringFieldName + Assignment + "String", _inputBuffer.Value);
+            Assert.AreEqual(TargetFieldName + Assignment + "String", _inputBuffer.Value);
         }
 
         [Test]
         public void InstanceStringFieldInput_Assignment_Space_CaretAtEnd_Autocomplete_StringInstanceSelected()
         {
-            _inputBuffer.Value = TargetStringFieldName + Assignment + Space;
+            _inputBuffer.Value = TargetFieldName + Assignment + Space;
             _caret.Index = _inputBuffer.Length;
 
             _interpreter.Autocomplete(_inputBuffer, true);
 
-            Assert.AreEqual(TargetStringFieldName + Assignment + Space + StringInstanceNameAndValue, _inputBuffer.Value);
+            Assert.AreEqual(TargetFieldName + Assignment + Space + StringInstanceNameAndValue, _inputBuffer.Value);
         }
 
         #endregion
@@ -408,6 +424,17 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.Autocomplete(_inputBuffer, true);
 
             Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + MethodParamSeparator, _inputBuffer.Value);
+        }
+
+        [Test]
+        public void TwoParamMethod_MethodStart_CaretAtEnd_Autocomplete_FirstParamSelected()
+        {
+            _inputBuffer.Value = StaticTypeMethodName + MethodStart;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(StaticTypeMethodName + MethodStart + StaticTypeMethodParamName, _inputBuffer.Value);
         }
 
         #endregion

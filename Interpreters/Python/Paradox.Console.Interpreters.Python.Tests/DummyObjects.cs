@@ -6,7 +6,9 @@
 
         public string Cymidine;
 
-        public Pauciloquent Pauciloquent { get; set; }
+        public Gusher Gusher;        
+
+        public Pauciloquent Pauciloquent { get; set; }                
 
         public void SetBehen(Behen behen)
         {            
@@ -24,8 +26,20 @@
             B = moment;
         }
 
+        public static void Horopter(Behen behen1, Behen behen2) { }
+
         public int B;
-        public static int A;
+        public static int A;        
+    }
+
+    public class Gusher
+    {
+        public Nolt Nolt;
+    }
+
+    public class Nolt
+    {
+        public int Apprehender;
     }
 
     public enum Behen

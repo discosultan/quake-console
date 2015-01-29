@@ -31,7 +31,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
             _interpreter = interpreter;
         }
 
-        internal void AddVariable<T>(string name, T obj)
+        internal void AddVariable<T>(string name, T obj, bool fullyRecursive)
         {
             if (name == null) throw new ArgumentException("name");
             if (obj == null) throw new ArgumentException("obj");
@@ -53,35 +53,35 @@ namespace Varus.Paradox.Console.Interpreters.Python
 
             if (_interpreter.InstanceMembers.ContainsKey(type)) return;
 
-            AddType(type, true);
+            AddTypeImpl(type, fullyRecursive);
         }
 
-        internal void AddTypes(params Type[] types)
+        internal void AddType(Type type, bool fullyRecursive)
         {
-            if (types == null) throw new ArgumentException("types");
+            if (type == null) throw new ArgumentException("type");
 
-            types.ForEach(x => AddType(x));
+            AddTypeImpl(type, fullyRecursive);            
         }
 
-        internal void AddAssembly(Assembly assembly)
+        internal void AddAssembly(Assembly assembly, bool fullyRecursive)
         {
             if (assembly == null) throw new ArgumentException("assembly");
 
-            AddTypes(assembly.GetTypes());
+            assembly.GetTypes().ForEach(x => AddTypeImpl(x, fullyRecursive));
         }
 
         internal void Reset()
         {
             _referencedAssemblies.Clear();
-            _addedTypes.Clear();
+            _addedTypes.Clear();            
         }
 
-        private bool AddType(Type type, bool includeSubTypes = false)
+        private bool AddTypeImpl(Type type, bool fullyRecursive)
         {
             if (type == null) return false;
 
             // Load type and stop if it is already loaded.
-            if (!LoadTypeInPython(type)) return false;
+            if (!LoadTypeInPython(type)) return false;            
 
             // Add static.
             if (!_interpreter.Statics.ContainsKey(type.Name))
@@ -90,31 +90,31 @@ namespace Varus.Paradox.Console.Interpreters.Python
                 _interpreter.InstancesAndStaticsDirty = true;
             }
             // Add static members.
-            AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, includeSubTypes);
+            AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, fullyRecursive);
             // Add instance members.
-            AddMembers(_interpreter.InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, includeSubTypes);
+            AddMembers(_interpreter.InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, fullyRecursive);
 
             return true;
         }
 
-        private void AddMembers(IDictionary<Type, MemberCollection> dict, Type type, BindingFlags flags, bool includeSubTypes)
+        private void AddMembers(IDictionary<Type, MemberCollection> dict, Type type, BindingFlags flags, bool fullyRecursive)
         {
             if (!dict.ContainsKey(type))
             {
                 MemberCollection memberInfo = AutocompleteMembersQuery(type.GetMembers(flags));
                 dict.Add(type, memberInfo);
-                if (includeSubTypes)
+                if (fullyRecursive)
                 {
                     for (int i = 0; i < memberInfo.Names.Count; i++)
-                    {
-                        AddType(memberInfo.UnderlyingTypes[i]);
+                    {                        
+                        AddTypeImpl(memberInfo.UnderlyingTypes[i], true);
                         if (memberInfo.ParamInfos[i] != null)
                         {
                             memberInfo.ParamInfos[i].ForEach(overload =>
                             {
                                 if (overload != null)
                                 {
-                                    overload.ForEach(parameter => AddType(parameter.ParameterType));
+                                    overload.ForEach(parameter => AddTypeImpl(parameter.ParameterType, true));
                                 }
                             });
                         }
@@ -122,12 +122,17 @@ namespace Varus.Paradox.Console.Interpreters.Python
                 }
             }
         }
-
+        
         private bool LoadTypeInPython(Type type)
         {
+            bool isArray = type.IsArray;
+            if (isArray)
+                type = type.GetElementType();
+
             if (type == null || // Not null.
                 type.IsGenericType || // Not a generic type (requires special handling).
                 !type.IsPublic || // Not a public type.
+                type.IsAbstract || // Not an abstract type.
                 type.DeclaringType != null || // IronPython does not support importing nested classes.
                 TypeFilters.Any(x => x.Equals(type.Name, PythonInterpreter.StringComparisonMethod)) || // Not filtered.
                 !_addedTypes.Add(type)) // Not already added.                 
@@ -139,9 +144,10 @@ namespace Varus.Paradox.Console.Interpreters.Python
             if (_referencedAssemblies.Add(assemblyName))
                 _interpreter.RunScript("clr.AddReference('" + assemblyName + "')");
 
-            _interpreter.RunScript("from " + type.Namespace + " import " + type.Name);
+            string script = "from " + type.Namespace + " import " + type.Name;            
+            _interpreter.RunScript(script);
 
-            return true;
+            return !isArray;
         }
 
         private static MemberCollection AutocompleteMembersQuery(IEnumerable<MemberInfo> members)
