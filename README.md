@@ -1,10 +1,17 @@
 Paradox.Console
 ===============
+
 Quake style console for [Paradox Game Engine](http://paradox3d.net/).<br/>
 [Video of the console in action.](https://www.youtube.com/watch?v=oVWqy16W0ak)<br/>
+
 ![Quake style console](http://az695587.vo.msecnd.net/images/console.png)
+
 ## Getting Started
-[Small blog post describing how to setup the console.](http://jaanusvarus.com/quake-style-console-for-paradox-game-engine)
+
+- [Console with IronPython interpreter nuget.](http://www.nuget.org/packages/Paradox.Console.PythonInterpreter)
+- [Console with custom interpreter nuget.](http://www.nuget.org/packages/Paradox.Console.CustomInterpreter)
+- [Console without interpreter nuget.](http://www.nuget.org/packages/Paradox.Console)
+- [Small blog post describing how to setup the console.](http://jaanusvarus.com/quake-style-console-for-paradox-game-engine)
 
 ## Assemblies
 

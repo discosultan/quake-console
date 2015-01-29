@@ -25,7 +25,8 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         private const string EnumFirstMemberName = "Razor";
         private const string TargetMethodSecondParamTypeName = "Pauciloquent";
         private const string StaticTypeName = "Kickup";
-        private const string StaticTypeFirstMember = "Eider";
+        private const string StaticTypeFirstMemberName = "Eider";
+        private const string StaticTypeFirstMemberFirstMemberName = "B";
 
         private IInputBuffer _inputBuffer;
         private ICaret _caret;
@@ -250,7 +251,18 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
 
             _interpreter.Autocomplete(_inputBuffer, true);
 
-            Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMember, _inputBuffer.Value);
+            Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMemberName, _inputBuffer.Value);
+        }
+
+        [Test]
+        public void StaticTypeMember_Accessor_CaretAtEnd_Autocomplete_MemberMemberSelected()
+        {
+            _inputBuffer.Value = StaticTypeName + Accessor + StaticTypeFirstMemberName + Accessor;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMemberName + Accessor + StaticTypeFirstMemberFirstMemberName, _inputBuffer.Value);
         }
 
         #endregion

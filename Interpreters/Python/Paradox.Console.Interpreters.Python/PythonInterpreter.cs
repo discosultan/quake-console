@@ -14,20 +14,17 @@ namespace Varus.Paradox.Console.Interpreters.Python
     {
         internal const StringComparison StringComparisonMethod = StringComparison.Ordinal;
 
+        private readonly ScriptEngine _scriptEngine = IronPython.Hosting.Python.CreateEngine();
         private readonly Autocompleter _autocompleter;
         private readonly TypeLoader _typeLoader;
 
-        private readonly ScriptEngine _scriptEngine = IronPython.Hosting.Python.CreateEngine();
-        internal ScriptScope _scriptScope;        
+        // Autocomplete information.
+        private readonly Dictionary<Type, MemberCollection> _staticMembers = new Dictionary<Type, MemberCollection>();
+        private readonly Dictionary<Type, MemberCollection> _instanceMembers = new Dictionary<Type, MemberCollection>();
+        private readonly Dictionary<string, Member> _instances = new Dictionary<string, Member>();
+        private readonly Dictionary<string, Member> _statics = new Dictionary<string, Member>();
 
-        private bool _initialized;
-
-        // Autocomplete entries.
-        internal readonly Dictionary<Type, MemberCollection> _staticMembers = new Dictionary<Type, MemberCollection>();
-        internal readonly Dictionary<Type, MemberCollection> _instanceMembers = new Dictionary<Type, MemberCollection>();
-        internal readonly Dictionary<string, Type> _instances = new Dictionary<string, Type>();
-        internal readonly Dictionary<string, Type> _statics = new Dictionary<string, Type>();        
-        internal bool _instancesAndStaticsDirty = true;        
+        private bool _initialized;        
 
         /// <summary>
         /// Constructs a new instance of <see cref="PythonInterpreter"/>.
@@ -37,13 +34,20 @@ namespace Varus.Paradox.Console.Interpreters.Python
             _autocompleter = new Autocompleter(this);
             _typeLoader = new TypeLoader(this);
             Reset();            
-            EchoEnabled = true;
+            EchoEnabled = true;            
         }
 
         /// <summary>
         /// Gets or sets if the user entered command should be shown in the output.
         /// </summary>
         public bool EchoEnabled { get; set; }
+
+        internal ScriptScope ScriptScope { get; private set; }
+        internal Dictionary<Type, MemberCollection> StaticMembers { get { return _staticMembers; } }
+        internal Dictionary<Type, MemberCollection> InstanceMembers { get { return _instanceMembers; } }
+        internal Dictionary<string, Member> Instances { get { return _instances; }}
+        internal Dictionary<string, Member> Statics { get { return _statics; } }
+        internal bool InstancesAndStaticsDirty { get; set; }
 
         /// <summary>
         /// Executes a command by running it through the IronPython parser.
@@ -138,7 +142,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
         /// <returns>Value returned by the IronPython engine.</returns>
         public dynamic RunScript(string script)
         {
-            return _scriptEngine.CreateScriptSourceFromString(script).Compile().Execute(_scriptScope);
+            return _scriptEngine.CreateScriptSourceFromString(script).Compile().Execute(ScriptScope);
         }
 
         /// <summary>
@@ -146,14 +150,14 @@ namespace Varus.Paradox.Console.Interpreters.Python
         /// </summary>
         public void Reset()
         {
-            _scriptScope = _scriptEngine.CreateScope();
+            ScriptScope = _scriptEngine.CreateScope();
             _typeLoader.Reset();
             _autocompleter.Reset();
             _instanceMembers.Clear();
             _staticMembers.Clear();
             _instances.Clear();
             _statics.Clear();            
-            _instancesAndStaticsDirty = true;
+            InstancesAndStaticsDirty = true;
             RunScript("import clr");
         }             
     }

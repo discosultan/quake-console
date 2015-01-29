@@ -78,13 +78,13 @@ namespace Varus.Paradox.Console.Interpreters.Python
             {
                 if (typeToPrefer == null || !string.IsNullOrWhiteSpace(command))
                 {
-                    if (_interpreter._instancesAndStaticsDirty)
+                    if (_interpreter.InstancesAndStaticsDirty)
                     {
                         Reset();
-                        _instancesAndStatics.AddRange(_interpreter._instances.Select(x => x.Key)
+                        _instancesAndStatics.AddRange(_interpreter.Instances.Select(x => x.Key)
                             .OrderBy(x => x)
-                            .Union(_interpreter._statics.Select(x => x.Key).OrderBy(x => x)));
-                        _interpreter._instancesAndStaticsDirty = false;
+                            .Union(_interpreter.Statics.Select(x => x.Key).OrderBy(x => x)));
+                        _interpreter.InstancesAndStaticsDirty = false;
                     }
                     FindAutocompleteForEntries(inputBuffer, _instancesAndStatics, command, startIndex, isNextValue);
                 }
@@ -107,9 +107,9 @@ namespace Varus.Paradox.Console.Interpreters.Python
                     case AutocompletionType.Accessor:                        
                         MemberCollection autocompleteValues;
                         if (lastChainLink.IsInstance)
-                            _interpreter._instanceMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
+                            _interpreter.InstanceMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
                         else
-                            _interpreter._staticMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
+                            _interpreter.StaticMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
                         if (autocompleteValues == null) break;
                         FindAutocompleteForEntries(inputBuffer, autocompleteValues.Names, command, startIndex, isNextValue);
                         break;
@@ -177,8 +177,8 @@ namespace Varus.Paradox.Console.Interpreters.Python
             string[] results;
             if (!_instancesAndStaticsForTypes.TryGetValue(type, out results))
             {
-                results = _interpreter._instances.Where(x => x.Value == type)
-                    .Union(_interpreter._statics.Where(x => x.Value == type))
+                results = _interpreter.Instances.Where(x => x.Value.Type == type)
+                    .Union(_interpreter.Statics.Where(x => x.Value.Type == type))
                     .Select(x => x.Key)
                     .ToArray();
                 _instancesAndStaticsForTypes.Add(type, results);
@@ -284,15 +284,14 @@ namespace Varus.Paradox.Console.Interpreters.Python
             if (accessorChain.Count == 0) return null;
 
             string link = accessorChain.Pop();
-            Member memberType;
-            Type type;
-            if (_interpreter._instances.TryGetValue(link, out type))
+            Member member;            
+            if (_interpreter.Instances.TryGetValue(link, out member))
             {
-                memberType = new Member { IsInstance = true, Type = type };
+                member.IsInstance = true;                
             }
-            else if (_interpreter._statics.TryGetValue(link, out type))
+            else if (_interpreter.Statics.TryGetValue(link, out member))
             {
-                memberType = new Member { IsInstance = false, Type = type };
+                member.IsInstance = false;                
             }
             else
             {
@@ -301,28 +300,28 @@ namespace Varus.Paradox.Console.Interpreters.Python
 
             if (accessorChain.Count == 0)
             {                
-                return memberType;
+                return member;
             }
 
             while (true)
             {
                 link = accessorChain.Pop();
-                MemberCollection memberInfo;
-                if (memberType.IsInstance)
+                MemberCollection membersCollection;
+                if (member.IsInstance)
                 {
-                    if (!_interpreter._instanceMembers.TryGetValue(memberType.Type, out memberInfo)) return null;
+                    if (!_interpreter.InstanceMembers.TryGetValue(member.Type, out membersCollection)) return null;
                 }
                 else // static type
                 {
-                    if (!_interpreter._staticMembers.TryGetValue(memberType.Type, out memberInfo)) return null;
+                    if (!_interpreter.StaticMembers.TryGetValue(member.Type, out membersCollection)) return null;
                 }
 
-                if (!memberInfo.TryGetMemberByName(link, memberType.IsInstance, out memberType))
-                    return null;
+                member = membersCollection.TryGetMemberByName(link, true);
+                if (member == null) return null;                
 
                 if (accessorChain.Count == 0)
                 {
-                    return memberType;
+                    return member;
                 }
             }
         }

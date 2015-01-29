@@ -2,7 +2,7 @@
 {
     public class Kickup
     {
-        public static int Eider;
+        public static Pauciloquent Eider;
 
         public string Cymidine;
 
@@ -21,10 +21,11 @@
     {
         public Pauciloquent(int moment)
         {
-            Moment = moment;
+            B = moment;
         }
 
-        public int Moment;
+        public int B;
+        public static int A;
     }
 
     public enum Behen

@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console", "Paradox.
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{6B6BA0E8-9F1E-4527-83AA-5909A0E75029}"
 	ProjectSection(SiliconStudioPackage) = preProject
-		Sample/Paradox.Console.pdxpkg = Sample/Paradox.Console.pdxpkg
+		Sample/Paradox.Console.Sample.pdxpkg = Sample/Paradox.Console.Sample.pdxpkg
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Paradox.Console.Interpreters.Python", "Interpreters\Python\Paradox.Console.Interpreters.Python\Paradox.Console.Interpreters.Python.csproj", "{8AFDC539-5AE3-4245-82E0-5A1238017138}"
