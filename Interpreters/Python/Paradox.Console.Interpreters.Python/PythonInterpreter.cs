@@ -14,18 +14,17 @@ namespace Varus.Paradox.Console.Interpreters.Python
     {
         internal const StringComparison StringComparisonMethod = StringComparison.Ordinal;
 
+        private readonly ScriptEngine _scriptEngine = IronPython.Hosting.Python.CreateEngine();
         private readonly Autocompleter _autocompleter;
         private readonly TypeLoader _typeLoader;
 
-        private readonly ScriptEngine _scriptEngine = IronPython.Hosting.Python.CreateEngine();             
-
-        private bool _initialized;
-
-        // Autocomplete entries.
+        // Autocomplete information.
         private readonly Dictionary<Type, MemberCollection> _staticMembers = new Dictionary<Type, MemberCollection>();
         private readonly Dictionary<Type, MemberCollection> _instanceMembers = new Dictionary<Type, MemberCollection>();
         private readonly Dictionary<string, Member> _instances = new Dictionary<string, Member>();
-        private readonly Dictionary<string, Member> _statics = new Dictionary<string, Member>();        
+        private readonly Dictionary<string, Member> _statics = new Dictionary<string, Member>();
+
+        private bool _initialized;        
 
         /// <summary>
         /// Constructs a new instance of <see cref="PythonInterpreter"/>.
