@@ -36,7 +36,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
             if (name == null) throw new ArgumentException("name");
             if (obj == null) throw new ArgumentException("obj");
 
-            if (_interpreter._instances.ContainsKey(name))
+            if (_interpreter.Instances.ContainsKey(name))
                 throw new InvalidOperationException("Variable with the name " + name + " already exists.");
 
             Type type = typeof(T);
@@ -45,13 +45,13 @@ namespace Varus.Paradox.Console.Interpreters.Python
             if (type.DeclaringType != null)
                 throw new InvalidOperationException("Nested types are not supported.");
 
-            _interpreter._scriptScope.SetVariable(name, obj);
+            _interpreter.ScriptScope.SetVariable(name, obj);
 
             // Add instance.
-            _interpreter._instances.Add(name, type);
-            _interpreter._instancesAndStaticsDirty = true;
+            _interpreter.Instances.Add(name, new Member { Name = name, Type = type });
+            _interpreter.InstancesAndStaticsDirty = true;
 
-            if (_interpreter._instanceMembers.ContainsKey(type)) return;
+            if (_interpreter.InstanceMembers.ContainsKey(type)) return;
 
             AddType(type, true);
         }
@@ -84,15 +84,15 @@ namespace Varus.Paradox.Console.Interpreters.Python
             if (!LoadTypeInPython(type)) return false;
 
             // Add static.
-            if (!_interpreter._statics.ContainsKey(type.Name))
+            if (!_interpreter.Statics.ContainsKey(type.Name))
             {
-                _interpreter._statics.Add(type.Name, type);
-                _interpreter._instancesAndStaticsDirty = true;
+                _interpreter.Statics.Add(type.Name, new Member { Name = type.Name, Type = type });
+                _interpreter.InstancesAndStaticsDirty = true;
             }
             // Add static members.
-            AddMembers(_interpreter._staticMembers, type, BindingFlags.Static | BindingFlags.Public, includeSubTypes);
+            AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, includeSubTypes);
             // Add instance members.
-            AddMembers(_interpreter._instanceMembers, type, BindingFlags.Instance | BindingFlags.Public, includeSubTypes);
+            AddMembers(_interpreter.InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, includeSubTypes);
 
             return true;
         }
