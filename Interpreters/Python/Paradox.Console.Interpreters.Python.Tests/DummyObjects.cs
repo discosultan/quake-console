@@ -1,5 +1,10 @@
 ﻿namespace Varus.Paradox.Console.Interpreters.Python.Tests
 {
+    public static class Podobranchia
+    {
+        public static int Anemosis;
+    }
+
     public class Kickup
     {
         public static Pauciloquent Eider;

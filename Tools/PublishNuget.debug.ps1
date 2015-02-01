@@ -6,7 +6,7 @@ $customInterpreterId = 'Paradox.Console.CustomInterpreter'
 $nuspecSuffix = '.debug.nuspec'
 $nupkgSuffix = '-alpha.nupkg'
 
-$versionRegex = '(?<=(' + $consoleId + '" version\="|\<version\>))\d.\d.\d'
+$versionRegex = '(?<=(' + $consoleId + '" version\="|\<version\>))\d+.\d+.\d+'
 $newVersion = Read-Host 'What is the new version?'
 
 # Define functions.

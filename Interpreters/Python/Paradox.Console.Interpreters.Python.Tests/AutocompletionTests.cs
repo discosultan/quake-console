@@ -9,7 +9,7 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         private const string FirstInstanceName = "instance_a";
         private const string SecondInstanceName = "instance_b";
         private const string StringInstanceNameAndValue = "instance_c";
-        private const string LastStaticName = "UnicodeCategory";
+        private const string LastStaticName = "YieldAwaitable";
         private const string Accessor = ".";
         private const string Assignment = "=";
         private const string Space = " ";
@@ -31,6 +31,8 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         private const string StaticTypeFirstMemberFirstMemberName = "B";
         private const string StaticTypeMethodName = "Pauciloquent.Horopter";
         private const string StaticTypeMethodParamName = "Behen";
+        private const string StaticClassName = "Podobranchia";
+        private const string StaticClassPrefix = "Podo";
 
         private IInputBuffer _inputBuffer;
         private ICaret _caret;
@@ -48,7 +50,8 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             // Should be automatically ordered by names.
             _interpreter.AddVariable(SecondInstanceName, _target);
             _interpreter.AddVariable(FirstInstanceName, _target);
-            _interpreter.AddVariable(StringInstanceNameAndValue, StringInstanceNameAndValue);            
+            _interpreter.AddVariable(StringInstanceNameAndValue, StringInstanceNameAndValue);
+            _interpreter.AddType(typeof (Podobranchia));
         }
 
         // Loaded instance_a, instance_z, Behen, Eider, Kickup, Pauciloquent, String, Type
@@ -154,6 +157,17 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.Autocomplete(_inputBuffer, true);
 
             Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
+        }
+
+        [Test]
+        public void StaticClassPrefixInput_CaretAtEnd_Autocomplete_StaticTypeSelected()
+        {
+            _inputBuffer.Value = StaticClassPrefix;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(StaticClassName, _inputBuffer.Value);
         }
 
         #endregion

@@ -132,7 +132,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
             if (type == null || // Not null.
                 type.IsGenericType || // Not a generic type (requires special handling).
                 !type.IsPublic || // Not a public type.
-                type.IsAbstract || // Not an abstract type.
+                //type.IsAbstract && !type.IsSealed || // Not an abstract type. We check for IsSealed because a static class is considered to be abstract AND sealed.
                 type.DeclaringType != null || // IronPython does not support importing nested classes.
                 TypeFilters.Any(x => x.Equals(type.Name, PythonInterpreter.StringComparisonMethod)) || // Not filtered.
                 !_addedTypes.Add(type)) // Not already added.                 
