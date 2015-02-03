@@ -59,7 +59,7 @@ namespace Varus.Paradox.Console.Sample
             _primitive = GeometricPrimitive.Cube.New(GraphicsDevice, 0.8f);            
             _simpleEffect = new SimpleEffect(GraphicsDevice)
             {
-                Texture = Asset.Load<Texture2D>("CubeTexture")
+                Texture = Asset.Load<Texture>("CubeTexture")
             };
 
             // Create the view and projection matrices.

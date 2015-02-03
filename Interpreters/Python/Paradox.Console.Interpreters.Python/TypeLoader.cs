@@ -125,12 +125,15 @@ namespace Varus.Paradox.Console.Interpreters.Python
         
         private bool LoadTypeInPython(Type type)
         {
-            bool isArray = type.IsArray;
-            if (isArray)
-                type = type.GetElementType();
+            if (type == null) return false;
 
-            if (type == null || // Not null.
-                type.IsGenericType || // Not a generic type (requires special handling).
+            bool isArray = type.IsArray;
+            while (type.IsArray)
+            {
+                type = type.GetElementType();
+            }
+
+            if (type.IsGenericType || // Not a generic type (requires special handling).
                 !type.IsPublic || // Not a public type.
                 //type.IsAbstract && !type.IsSealed || // Not an abstract type. We check for IsSealed because a static class is considered to be abstract AND sealed.
                 type.DeclaringType != null || // IronPython does not support importing nested classes.

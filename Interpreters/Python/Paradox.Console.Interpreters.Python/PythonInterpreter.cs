@@ -163,7 +163,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
         /// <param name="script">Script to run.</param>
         /// <returns>Value returned by the IronPython engine.</returns>
         public dynamic RunScript(string script)
-        {
+        {            
             return _scriptEngine.CreateScriptSourceFromString(script).Compile().Execute(ScriptScope);
         }
 

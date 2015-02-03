@@ -21,7 +21,7 @@ namespace Varus.Paradox.Console
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private readonly Timer _transitionTimer = new Timer { AutoReset = false };
         
-        private Texture2D _backgroundTexture;
+        private Texture _backgroundTexture;
         private SpriteFont _font;
         private RectangleF _windowArea;                        
         private float? _initialPadding;
@@ -329,7 +329,7 @@ namespace Varus.Paradox.Console
             SetWindowWidthAndHeight(GraphicsDevice.BackBuffer.Width, GraphicsDevice.BackBuffer.Height);            
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            _backgroundTexture = Texture2D.New(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
+            _backgroundTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
             OutputBuffer = new OutputBuffer(this);
             InputBuffer = new InputBuffer(this);
 
