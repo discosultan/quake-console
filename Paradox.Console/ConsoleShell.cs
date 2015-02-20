@@ -31,10 +31,9 @@ namespace Varus.Paradox.Console
         private bool _initialized;
 
         // Input history.        
-        private readonly Stack<string> _inputHistoryBackward = new Stack<string>();
-        private readonly Stack<string> _inputHistoryForward = new Stack<string>();
-
-        private string _lastHistoryString;
+        private readonly List<string> _inputHistory = new List<string>();
+        private int _inputHistoryIndexer;
+        private bool _inputHistoryDoNotDecrement;
 
         // User input.        
         private readonly Timer _repeatedPressTresholdTimer = new Timer { AutoReset = false };
@@ -404,44 +403,58 @@ namespace Varus.Paradox.Console
                     if (_actionDefinitions.BackwardTryGetValue(ConsoleAction.NextLineModifier, out modifier) &&
                         Input.IsKeyDown(modifier))
                     {                        
-                        OutputBuffer.AddCommandEntry(cmd);
+                        OutputBuffer.AddCommandEntry(cmd);                        
                     } 
                     else
                     {
+                        string executedCmd = cmd;
                         if (OutputBuffer.HasCommandEntry)
                         {
-                            cmd = OutputBuffer.DequeueCommandEntry() + cmd;                            
+                            executedCmd = OutputBuffer.DequeueCommandEntry() + cmd;                            
                         }
-
-                        string[] cmdSplit = cmd.Split(NewLine, StringSplitOptions.None);
-                        foreach (string split in cmdSplit)
-                        {
-                            // Save command to history.
-                            if (_inputHistoryBackward.Count == 0 ||
-                                !_inputHistoryBackward.Peek().Equals(split, StringComparison.Ordinal))
-                            {
-                                _inputHistoryBackward.Push(split);
-                            }
-                        }
+                                                
                         // Execute command.
-                        _commandInterpreter.Execute(OutputBuffer, cmd.Replace(Tab, "\t"));
+                        _commandInterpreter.Execute(OutputBuffer, executedCmd.Replace(Tab, "\t"));                        
                     }
-                    InputBuffer.Clear();
+
+                    // Find the last historical entry if any.
+                    string lastHistoricalEntry = null;
+                    if (_inputHistory.Count > 0)
+                        lastHistoricalEntry = _inputHistory[_inputHistory.Count - 1];
+
+                    // Only add current command to input history if it is not an empty string and
+                    // does not match the last historical entry.
+                    if (cmd != "" && !cmd.Equals(lastHistoricalEntry, StringComparison.Ordinal))
+                        _inputHistory.Add(cmd);
+                    
                     InputBuffer.LastAutocompleteEntry = null;
+                    // If the cmd matches the currently indexed historical entry then set a special flag
+                    // which when moving backward in history, does not actually move backward, but will instead
+                    // return the same entry that was returned before. This is similar to how Powershell and Cmd Prompt work.
+                    if (_inputHistory.Count == 0 || _inputHistoryIndexer == int.MaxValue || !_inputHistory[_inputHistoryIndexer].Equals(cmd))
+                        _inputHistoryIndexer = int.MaxValue;
+                    else
+                        _inputHistoryDoNotDecrement = true;
+
+                    InputBuffer.Clear();                                        
                     InputBuffer.Caret.MoveBy(int.MinValue);                    
                     return ConsoleProcessResult.Break;
-                case ConsoleAction.PreviousCommandInHistory:
-                    ManageHistory(_inputHistoryForward, _inputHistoryBackward);
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.NextCommandInHistory:
-                    ManageHistory(_inputHistoryBackward, _inputHistoryForward);
-                    return ConsoleProcessResult.Break;
+                case ConsoleAction.PreviousCommandInHistory:  
+                    if (!_inputHistoryDoNotDecrement)
+                        _inputHistoryIndexer--;                    
+                    ManageHistory();                    
+                    return ConsoleProcessResult.Break;                
+                case ConsoleAction.NextCommandInHistory:                
+                    _inputHistoryIndexer++;                    
+                    ManageHistory();                    
+                    return ConsoleProcessResult.Break;                
                 case ConsoleAction.Autocomplete:
                     bool hasModifier = _actionDefinitions.BackwardTryGetValue(ConsoleAction.AutocompleteModifier, out modifier);
                     if (hasModifier && !Input.IsKeyDown(modifier)) return ConsoleProcessResult.None;
                     bool canMoveBackwards = _actionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
                     _commandInterpreter.Autocomplete(InputBuffer, !canMoveBackwards || !Input.IsKeyDown(modifier));
                     InputBuffer.Caret.Index = InputBuffer.Length;
+                    _inputHistoryIndexer = int.MaxValue;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveLeft:
                     InputBuffer.Caret.MoveBy(-1);
@@ -458,13 +471,15 @@ namespace Varus.Paradox.Console
                 case ConsoleAction.DeletePreviousChar:
                     if (InputBuffer.Length > 0 && InputBuffer.Caret.Index > 0)
                     {                        
-                        InputBuffer.Remove(Math.Max(0, InputBuffer.Caret.Index - 1), 1);                        
+                        InputBuffer.Remove(Math.Max(0, InputBuffer.Caret.Index - 1), 1);
+                        ResetLastHistoryAndAutocompleteEntries();
                     }
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.DeleteCurrentChar:
                     if (InputBuffer.Length > InputBuffer.Caret.Index)
                     {                        
-                        InputBuffer.Remove(InputBuffer.Caret.Index, 1);                        
+                        InputBuffer.Remove(InputBuffer.Caret.Index, 1);
+                        ResetLastHistoryAndAutocompleteEntries();
                     }
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.Paste:                    
@@ -514,13 +529,7 @@ namespace Varus.Paradox.Console
         private void ResetLastHistoryAndAutocompleteEntries()
         {
             InputBuffer.LastAutocompleteEntry = null;
-            if (_lastHistoryString != null &&
-                (_inputHistoryBackward.Count == 0 ||
-                 !_inputHistoryBackward.Peek().Equals(_lastHistoryString, StringComparison.OrdinalIgnoreCase)))
-            {
-                _inputHistoryBackward.Push(_lastHistoryString);
-                _lastHistoryString = null;
-            }
+            _inputHistoryIndexer = int.MaxValue;
         }
 
         #endregion                
@@ -528,27 +537,23 @@ namespace Varus.Paradox.Console
 
         #region Input History
 
-        private void ManageHistory(Stack<string> to, Stack<string> from)
+        private void ManageHistory()
         {
             // Check if there are any entries in the history.
-            if (from.Count <= 0) return;
+            if (_inputHistory.Count <= 0) return;
 
-            // Add current to reverse history if it is not whitespace.
-            if (!InputBuffer.IsEmptyOrWhitespace())
-            {
-                to.Push(InputBuffer.Value);
-            }
+            _inputHistoryIndexer = MathUtil.Clamp(_inputHistoryIndexer, 0, _inputHistory.Count - 1);
 
-            _lastHistoryString = from.Pop();
+            _inputHistoryDoNotDecrement = false;
             InputBuffer.LastAutocompleteEntry = null;
-            InputBuffer.Value = _lastHistoryString;
+            InputBuffer.Value = _inputHistory[_inputHistoryIndexer];
         }
 
         private void ClearHistory()
         {
-            _lastHistoryString = null;
-            _inputHistoryBackward.Clear();
-            _inputHistoryForward.Clear();
+            _inputHistory.Clear();
+            _inputHistoryIndexer = int.MaxValue;
+            _inputHistoryDoNotDecrement = false;
         }
 
         #endregion

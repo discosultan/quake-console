@@ -3,6 +3,7 @@
     public static class Podobranchia
     {
         public static int Anemosis;
+        public static bool Gymnogen;
     }
 
     public class Kickup

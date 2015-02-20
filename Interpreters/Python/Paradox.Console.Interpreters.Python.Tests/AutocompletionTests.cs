@@ -19,20 +19,21 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
         private const string TargetFirstMemberName = "Cymidine";
         private const string TargetSecondMemberName = "Equals";
         private const string TargetLastMemberName = "ToString";
-        private const string TargetFieldName = "instance_a.Cymidine";
-        private const string TargetRecursiveFieldName = "instance_a.Gusher.Nolt";
+        private const string TargetFieldName = FirstInstanceName + ".Cymidine";
+        private const string TargetRecursiveFieldName = FirstInstanceName + ".Gusher.Nolt";
         private const string TargetRecursiveFieldTypeMemberName = "Apprehender";
-        private const string TargetMethodName = "instance_a.SetBehen";
+        private const string TargetMethodName = FirstInstanceName + ".SetBehen";
         private const string EnumTypeName = "Behen";
         private const string EnumFirstMemberName = "Razor";
         private const string TargetMethodSecondParamTypeName = "Pauciloquent";
         private const string StaticTypeName = "Kickup";
         private const string StaticTypeFirstMemberName = "Eider";
         private const string StaticTypeFirstMemberFirstMemberName = "B";
-        private const string StaticTypeMethodName = "Pauciloquent.Horopter";
+        private const string StaticTypeMethodName = TargetMethodSecondParamTypeName + ".Horopter";
         private const string StaticTypeMethodParamName = "Behen";
         private const string StaticClassName = "Podobranchia";
         private const string StaticClassPrefix = "Podo";
+        private const string TargetBooleanType = StaticClassName + ".Gymnogen";
 
         private IInputBuffer _inputBuffer;
         private ICaret _caret;
@@ -332,6 +333,17 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             _interpreter.Autocomplete(_inputBuffer, true);
 
             Assert.AreEqual(TargetFieldName + Assignment + Space + StringInstanceNameAndValue, _inputBuffer.Value);
+        }
+
+        [Test]
+        public void BoolType_Assignment_CaretAtEnd_Autocomplete_PredefinedTypeSelected()
+        {
+            _inputBuffer.Value = TargetBooleanType + Assignment;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual(TargetBooleanType + Assignment + "False", _inputBuffer.Value);
         }
 
         #endregion

@@ -21,7 +21,11 @@ namespace Varus.Paradox.Console.Interpreters.Python
         private static readonly char[] AutocompleteBoundaryDenoters =
         {
             '(', ')', '[', ']', '{', '}', '/', '=', '.', ','
-        }; 
+        };
+        private static readonly Dictionary<Type, string[]> PredefinedAutocompleteEntries = new Dictionary<Type, string[]>
+        {
+            { typeof(bool), new[] { "False", "True" } }
+        };
 
         private readonly PythonInterpreter _interpreter;
 
@@ -185,11 +189,17 @@ namespace Varus.Paradox.Console.Interpreters.Python
         {
             string[] results;
             if (!_instancesAndStaticsForTypes.TryGetValue(type, out results))
-            {
-                results = _interpreter.Instances.Where(x => x.Value.Type == type)
+            {                                    
+                IEnumerable<string> resultsQuery = _interpreter.Instances.Where(x => x.Value.Type == type)
                     .Union(_interpreter.Statics.Where(x => x.Value.Type == type))
-                    .Select(x => x.Key)
-                    .ToArray();
+                    .Select(x => x.Key);
+
+                string[] predefined;
+                if (PredefinedAutocompleteEntries.TryGetValue(type, out predefined))
+                    resultsQuery = predefined.Union(resultsQuery);
+
+                results = resultsQuery.ToArray();
+
                 _instancesAndStaticsForTypes.Add(type, results);
             }
             return results;
