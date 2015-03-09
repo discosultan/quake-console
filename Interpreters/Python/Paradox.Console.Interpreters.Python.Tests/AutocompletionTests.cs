@@ -346,6 +346,17 @@ namespace Varus.Paradox.Console.Interpreters.Python.Tests
             Assert.AreEqual(TargetBooleanType + Assignment + "False", _inputBuffer.Value);
         }
 
+        [Test]
+        public void NewVariable_Assignment_CaretAtEnd_Autocomplete_FirstInstanceSelected()
+        {
+            _inputBuffer.Value = "x" + Assignment;
+            _caret.Index = _inputBuffer.Length;
+
+            _interpreter.Autocomplete(_inputBuffer, true);
+
+            Assert.AreEqual("x" + Assignment + FirstInstanceName, _inputBuffer.Value);
+        }
+
         #endregion
 
 

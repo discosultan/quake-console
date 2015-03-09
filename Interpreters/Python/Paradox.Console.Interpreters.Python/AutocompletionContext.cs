@@ -10,5 +10,10 @@
     {
         public AutocompletionContext Context;
         public int StartIndex;
+
+        public override string ToString()
+        {
+            return string.Format("{0} StartIndex: {1}", Context, StartIndex);
+        }
     }
 }

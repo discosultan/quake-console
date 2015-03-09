@@ -37,6 +37,22 @@ namespace Varus.Paradox.Console.Interpreters.Python
             _interpreter = interpreter;
         }
 
+        internal List<string> InstancesAndStatics
+        {
+            get
+            {
+                if (_interpreter.InstancesAndStaticsDirty)
+                {
+                    Reset();
+                    _instancesAndStatics.AddRange(_interpreter.Instances.Select(x => x.Key)
+                        .OrderBy(x => x)
+                        .Union(_interpreter.Statics.Select(x => x.Key).OrderBy(x => x)));
+                    _interpreter.InstancesAndStaticsDirty = false;
+                }
+                return _instancesAndStatics;
+            }
+        }
+
         internal void Reset()
         {
             _instancesAndStatics.Clear();
@@ -91,15 +107,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
             {
                 if (typeToPrefer == null || !string.IsNullOrWhiteSpace(command))
                 {
-                    if (_interpreter.InstancesAndStaticsDirty)
-                    {
-                        Reset();
-                        _instancesAndStatics.AddRange(_interpreter.Instances.Select(x => x.Key)
-                            .OrderBy(x => x)
-                            .Union(_interpreter.Statics.Select(x => x.Key).OrderBy(x => x)));
-                        _interpreter.InstancesAndStaticsDirty = false;
-                    }
-                    FindAutocompleteForEntries(inputBuffer, _instancesAndStatics, command, startIndex, isNextValue);
+                    FindAutocompleteForEntries(inputBuffer, InstancesAndStatics, command, startIndex, isNextValue);
                 }
                 else
                 {
@@ -109,11 +117,18 @@ namespace Varus.Paradox.Console.Interpreters.Python
             else // Accessor or assignment or method.
             {
                 // We also need to find the value for whatever was before the type accessor.
-                int chainEndIndex = FindPreviousLinkEndIndex(inputBuffer, startIndex - 1);
-                if (chainEndIndex < 0) return;
+                int chainEndIndex = FindPreviousLinkEndIndex(inputBuffer, startIndex - 1);                
+                if (chainEndIndex < 0) return;                
+
                 Stack<string> accessorChain = FindAccessorChain(inputBuffer, chainEndIndex);
                 Member lastChainLink = FindLastChainLinkMember(accessorChain);
-                if (lastChainLink == null) return;
+                // If no types were found, that means we are assigning a new variable.
+                // Provide all autocomplete entries in that scenario.
+                if (lastChainLink == null)
+                {
+                    FindAutocompleteForEntries(inputBuffer, InstancesAndStatics, command, startIndex, isNextValue);
+                    return;
+                }
 
                 switch (completionType)
                 {
@@ -198,7 +213,7 @@ namespace Varus.Paradox.Console.Interpreters.Python
                 if (PredefinedAutocompleteEntries.TryGetValue(type, out predefined))
                     resultsQuery = predefined.Union(resultsQuery);
 
-                results = resultsQuery.ToArray();
+                results = resultsQuery.ToArray();               
 
                 _instancesAndStaticsForTypes.Add(type, results);
             }

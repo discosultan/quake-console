@@ -133,7 +133,7 @@ namespace Varus.Paradox.Console
         /// <param name="symbol">Symbol to write.</param>
         public void Write(string symbol)
         {
-            if (string.IsNullOrEmpty(symbol)) return;            
+            if (string.IsNullOrEmpty(symbol)) return;
             _inputBuffer.Insert(Caret.Index, symbol);            
             Caret.MoveBy(symbol.Length);            
         }

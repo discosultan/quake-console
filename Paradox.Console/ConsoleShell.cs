@@ -95,6 +95,12 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
+        /// Gets or sets the input command logging delegate. Set this property to log the user inputted 
+        /// commands to the given delegate. For example, to log to VS output, set this property to Trace.WriteLine(String).
+        /// </summary>
+        public Action<string> InputLog { get; set; }
+
+        /// <summary>
         /// Gets or sets the font.
         /// </summary>
         public SpriteFont Font
@@ -117,7 +123,7 @@ namespace Varus.Paradox.Console
         /// <summary>
         /// Gets or sets the font color. Supports transparency.
         /// </summary>
-        public Color FontColor { get; set; }
+        public Color FontColor { get; set; }        
 
         /// <summary>
         /// Gets or sets the time in seconds it takes to fully open or close the <see cref="ConsoleShell"/>.
@@ -410,11 +416,15 @@ namespace Varus.Paradox.Console
                         string executedCmd = cmd;
                         if (OutputBuffer.HasCommandEntry)
                         {
-                            executedCmd = OutputBuffer.DequeueCommandEntry() + cmd;                            
+                            executedCmd = OutputBuffer.DequeueCommandEntry() + cmd;
                         }
                                                 
+                        // Replace our tab symbols with actual tab characters.
+                        executedCmd = executedCmd.Replace(Tab, "\t");
+                        // Log the command to be executed if logger is set.
+                        if (InputLog != null) InputLog(executedCmd);
                         // Execute command.
-                        _commandInterpreter.Execute(OutputBuffer, executedCmd.Replace(Tab, "\t"));                        
+                        _commandInterpreter.Execute(OutputBuffer, executedCmd);
                     }
 
                     // Find the last historical entry if any.
