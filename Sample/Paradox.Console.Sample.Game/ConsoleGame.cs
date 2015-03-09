@@ -18,7 +18,7 @@ namespace Varus.Paradox.Console.Sample
         private readonly ICommandInterpreter _interpreter;
         private readonly Action<ConsoleShell, Cube, SpriteFont, SpriteFont> _postLoad;
         
-        private ConsoleShell _consolePanel;
+        private ConsoleShell _console;
         private readonly Cube _cube = new Cube();
         private SpriteFont _lucidaFont;
         private SpriteFont _wingdingsFont;
@@ -49,11 +49,14 @@ namespace Varus.Paradox.Console.Sample
             _wingdingsFont = Asset.Load<SpriteFont>("Wingdings");            
 
             // Create console and add it to game systems.
-            _consolePanel = new ConsoleShell(Services, _lucidaFont, _interpreter)
+            _console = new ConsoleShell(Services, _lucidaFont, _interpreter)
             {
                 Padding = 2
             };
-            GameSystems.Add(_consolePanel);
+            GameSystems.Add(_console);
+
+            // Log input commands in DEBUG build.
+            _console.InputLog = cmd => Debug.WriteLine(cmd);
 
             // Create cube and load the effect to render it.
             _primitive = GeometricPrimitive.Cube.New(GraphicsDevice, 0.8f);            
@@ -67,7 +70,7 @@ namespace Varus.Paradox.Console.Sample
             _projection = Matrix.PerspectiveFovRH((float)Math.PI / 4.0f, (float)GraphicsDevice.BackBuffer.Width / GraphicsDevice.BackBuffer.Height, 0.1f, 100.0f);
 
             // Call post-load delegate to allow platform specific code to register stuff with the interpreter.
-            _postLoad(_consolePanel, _cube, _lucidaFont, _wingdingsFont);
+            _postLoad(_console, _cube, _lucidaFont, _wingdingsFont);
 
             // Create SpriteBatch for drawing instruction texts.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
@@ -98,7 +101,7 @@ namespace Varus.Paradox.Console.Sample
                 // Check if console state change was toggled.
                 if (Input.IsKeyPressed(ToggleOpenCloseKey))
                 {
-                    _consolePanel.ToggleOpenClose();
+                    _console.ToggleOpenClose();
                 } 
 
                 // Show garbage generation statistics.

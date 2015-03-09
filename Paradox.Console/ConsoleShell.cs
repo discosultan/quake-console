@@ -95,8 +95,8 @@ namespace Varus.Paradox.Console
         }
 
         /// <summary>
-        /// Gets or sets the input command logging delegate. Set this property to log the user inputted 
-        /// commands to the given delegate. For example, to log to VS output, set this property to Trace.WriteLine(String).
+        /// Gets or sets the input command logging delegate. Set this property to log the user input
+        /// commands to the given delegate. For example WriteLine(String).
         /// </summary>
         public Action<string> InputLog { get; set; }
 
