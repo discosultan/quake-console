@@ -1,4 +1,4 @@
-Paradox.Console
+Paradox Console
 ===============
 
 Quake style console for [Paradox Game Engine](http://paradox3d.net/).<br/>
