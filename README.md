@@ -1,6 +1,8 @@
 Paradox Console
 ===============
 
+<span style="color:red; font-weight:bold">Compatible with Paradox 1.0.0 only!</span>
+
 Quake style console for [Paradox Game Engine](http://paradox3d.net/).<br/>
 [Video of the console in action.](https://www.youtube.com/watch?v=oVWqy16W0ak)<br/>
 
