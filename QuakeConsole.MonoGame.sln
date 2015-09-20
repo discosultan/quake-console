@@ -1,0 +1,67 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuakeConsole.MonoGame", "Source\QuakeConsole.MonoGame.csproj", "{66A03276-E5E7-4E05-9790-F5602147426C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{F7379397-76DC-4F58-95A8-2EF2C908BFC7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Samples\Sandbox.MonoGame\Sandbox.csproj", "{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interpreters", "Interpreters", "{008C44E4-2B68-4E46-9700-DE1C8FA36432}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonInterpreter.MonoGame", "Interpreters\PythonInterpreter\PythonInterpreter.MonoGame.csproj", "{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PythonInterpreter.Tests.MonoGame", "Interpreters\PythonInterpreter.Tests\PythonInterpreter.Tests.MonoGame.csproj", "{76B26717-E016-4C24-AA10-7CD8706DAAA6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66A03276-E5E7-4E05-9790-F5602147426C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66A03276-E5E7-4E05-9790-F5602147426C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66A03276-E5E7-4E05-9790-F5602147426C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{66A03276-E5E7-4E05-9790-F5602147426C}.Debug|x86.Build.0 = Debug|Any CPU
+		{66A03276-E5E7-4E05-9790-F5602147426C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66A03276-E5E7-4E05-9790-F5602147426C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66A03276-E5E7-4E05-9790-F5602147426C}.Release|x86.ActiveCfg = Release|Any CPU
+		{66A03276-E5E7-4E05-9790-F5602147426C}.Release|x86.Build.0 = Release|Any CPU
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Debug|Any CPU.Build.0 = Debug|x86
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Debug|x86.ActiveCfg = Debug|x86
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Debug|x86.Build.0 = Debug|x86
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Release|Any CPU.ActiveCfg = Release|x86
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Release|Any CPU.Build.0 = Release|x86
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Release|x86.ActiveCfg = Release|x86
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Release|x86.Build.0 = Release|x86
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Debug|x86.Build.0 = Debug|Any CPU
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Release|x86.ActiveCfg = Release|Any CPU
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Release|x86.Build.0 = Release|Any CPU
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Debug|x86.Build.0 = Debug|Any CPU
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Release|x86.ActiveCfg = Release|Any CPU
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19} = {F7379397-76DC-4F58-95A8-2EF2C908BFC7}
+		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
+		{76B26717-E016-4C24-AA10-7CD8706DAAA6} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
+	EndGlobalSection
+EndGlobal

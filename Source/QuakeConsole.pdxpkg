@@ -1,0 +1,27 @@
+!Package
+Id: 1ee4447a-8287-460d-8524-06c125f93b23
+SerializedVersion: 1
+Tags: []
+Meta:
+    Name: QuakeConsole
+    Version: 1.0.0.0
+    Authors: []
+    Owners: []
+    Dependencies:
+        -   Name: Paradox
+            Version: 1.3.2-beta
+            RootAssets: []
+LocalDependencies: []
+Profiles:
+    -   Name: Shared
+        Platform: Shared
+        InheritProfiles: []
+        AssetFolders:
+            -   Path: Assets/Shared
+        OutputGroupDirectories: {}
+        Properties: {}
+        ProjectReferences: []
+ExplicitFolders: []
+Bundles: []
+TemplateFolders: []
+RootAssets: []
