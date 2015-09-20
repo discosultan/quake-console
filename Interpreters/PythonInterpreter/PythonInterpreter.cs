@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.Scripting.Hosting;
-using QuakeConsole.Interpreters.Utilities;
+using QuakeConsole.Utilities;
 
-namespace QuakeConsole.Interpreters
+namespace QuakeConsole
 {
     /// <summary>
     /// Runs <see cref="Console"/> commands through an IronPython parser. Supports loading .NET types
@@ -20,10 +20,6 @@ namespace QuakeConsole.Interpreters
         private readonly TypeLoader _typeLoader;
 
         // Autocomplete information.
-        private readonly Dictionary<Type, MemberCollection> _staticMembers = new Dictionary<Type, MemberCollection>();
-        private readonly Dictionary<Type, MemberCollection> _instanceMembers = new Dictionary<Type, MemberCollection>();
-        private readonly Dictionary<string, Member> _instances = new Dictionary<string, Member>();
-        private readonly Dictionary<string, Member> _statics = new Dictionary<string, Member>();
 
         private bool _initialized;        
 
@@ -44,10 +40,10 @@ namespace QuakeConsole.Interpreters
         public bool EchoEnabled { get; set; }
 
         internal ScriptScope ScriptScope { get; private set; }
-        internal Dictionary<Type, MemberCollection> StaticMembers => _staticMembers;
-        internal Dictionary<Type, MemberCollection> InstanceMembers => _instanceMembers;
-        internal Dictionary<string, Member> Instances => _instances;
-        internal Dictionary<string, Member> Statics => _statics;
+        internal Dictionary<Type, MemberCollection> StaticMembers { get; } = new Dictionary<Type, MemberCollection>();
+        internal Dictionary<Type, MemberCollection> InstanceMembers { get; } = new Dictionary<Type, MemberCollection>();
+        internal Dictionary<string, Member> Instances { get; } = new Dictionary<string, Member>();
+        internal Dictionary<string, Member> Statics { get; } = new Dictionary<string, Member>();
         internal bool InstancesAndStaticsDirty { get; set; }
 
         /// <summary>
@@ -66,7 +62,8 @@ namespace QuakeConsole.Interpreters
                 _initialized = true;
             }
 
-            if (EchoEnabled) outputBuffer.Append(command);
+            if (EchoEnabled)
+                outputBuffer.Append(command);
 
             string resultStr;            
             try
@@ -175,10 +172,10 @@ namespace QuakeConsole.Interpreters
             ScriptScope = _scriptEngine.CreateScope();
             _typeLoader.Reset();
             _autocompleter.Reset();
-            _instanceMembers.Clear();
-            _staticMembers.Clear();
-            _instances.Clear();
-            _statics.Clear();            
+            InstanceMembers.Clear();
+            StaticMembers.Clear();
+            Instances.Clear();
+            Statics.Clear();            
             InstancesAndStaticsDirty = true;
             RunScript("import clr");
             RunScript("from System import Array");

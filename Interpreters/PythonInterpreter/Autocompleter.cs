@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using QuakeConsole.Interpreters.Utilities;
+using QuakeConsole.Utilities;
 
-namespace QuakeConsole.Interpreters
+namespace QuakeConsole
 {
     internal class Autocompleter
     {

@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Varus.Paradox.Console.Interpreters.Custom.Utilities;
+using QuakeConsole.Utilities;
+using Command = System.Func<string[], string>;
 
-namespace Varus.Paradox.Console.Interpreters.Custom
+namespace QuakeConsole
 {
     /// <summary>
     /// Custom interpreter which executes input commands as user registered types of <see cref="Command"/>.
     /// </summary>
-    public class CustomInterpreter : ICommandInterpreter
+    public class ManualInterpreter : ICommandInterpreter
     {
         private static readonly string[] CommandAndArgumentSeparator = { " " };
         private const StringComparison StringComparisonMethod = StringComparison.OrdinalIgnoreCase;
@@ -18,9 +19,9 @@ namespace Varus.Paradox.Console.Interpreters.Custom
         private string[] _autocompleteEntries;
 
         /// <summary>
-        /// Constructs a new instance of <see cref="CustomInterpreter"/>.
+        /// Constructs a new instance of <see cref="ManualInterpreter"/>.
         /// </summary>
-        public CustomInterpreter()
+        public ManualInterpreter()
         {
             EchoEnabled = true;
         }
@@ -49,20 +50,21 @@ namespace Varus.Paradox.Console.Interpreters.Custom
             {
                 foreach (Command cmd in commandList)
                 {
-                    CommandResult result = cmd.Execute(commandArgs);
-                    if (result.IsFaulted)
+                    try
                     {
-                        outputBuffer.Append(string.Format("Command '{0}' failed. {1}", command, result.Message ?? ""));
+                        string result = cmd(commandArgs);
+                        if (!string.IsNullOrWhiteSpace(result))
+                            outputBuffer.Append(result);
                     }
-                    else if (!string.IsNullOrWhiteSpace(result.Message))
+                    catch (Exception ex)
                     {
-                        outputBuffer.Append(result.Message);
+                        outputBuffer.Append($"Command '{command}' failed. {ex.Message}");
                     }
                 }
             }
             else
             {
-                outputBuffer.Append(string.Format("Command '{0}' not found.", command));
+                outputBuffer.Append($"Command '{command}' not found.");
             }
         }
 
@@ -76,7 +78,7 @@ namespace Varus.Paradox.Console.Interpreters.Custom
         }
 
         /// <summary>
-        /// Tries to autocomplete the current input value in the <see cref="ConsoleShell"/> <see cref="InputBuffer"/>.
+        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="InputBuffer"/>.
         /// </summary>
         /// <param name="inputBuffer">Console input.</param>
         /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
@@ -87,7 +89,7 @@ namespace Varus.Paradox.Console.Interpreters.Custom
 
             string currentInput = inputBuffer.Value;
 
-            int index = _autocompleteEntries.IndexOf(x => x.Equals(currentInput, StringComparisonMethod));
+            int index = _autocompleteEntries.IndexOf(x => x.Equals(currentInput, StringComparisonMethod));            
             if (index == -1 || inputBuffer.LastAutocompleteEntry == null) inputBuffer.LastAutocompleteEntry = currentInput;
             index++;
             if (index >= _autocompleteEntries.Length) index = 0;
@@ -108,13 +110,15 @@ namespace Varus.Paradox.Console.Interpreters.Custom
         /// Registers a new command with the interpreter.
         /// </summary>
         /// <param name="commandName">
-        /// Name of the command. This is the name user must enter into the <see cref="ConsoleShell"/> to execute the command.
+        /// Name of the command. This is the name user must enter into the <see cref="Console"/> to execute the command.
         /// </param>
         /// <param name="command">Command to interpreter.</param>
         public void RegisterCommand(string commandName, Command command)
         {
-            Check.ArgumentNotNull(commandName, "commandName");
-            Check.ArgumentNotNull(command, "command");
+            if (commandName == null)
+                throw new ArgumentNullException(nameof(commandName));
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
 
             List<Command> commandList;
             if (!_commandMap.TryGetValue(commandName, out commandList))
@@ -144,7 +148,8 @@ namespace Varus.Paradox.Console.Interpreters.Custom
         /// <param name="command">Command to remove.</param>
         public void UnregisterCommand(Command command)
         {
-            _commandMap.Values.ForEach(x => x.Remove(command));
+            foreach (var val in _commandMap.Values)
+                val.Remove(command);            
         }
     }
 }

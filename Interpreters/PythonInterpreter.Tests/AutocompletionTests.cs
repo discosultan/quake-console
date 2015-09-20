@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace QuakeConsole.Interpreters.Tests
+namespace QuakeConsole.Tests
 {
     [TestFixture]
     public class AutocompletionTests

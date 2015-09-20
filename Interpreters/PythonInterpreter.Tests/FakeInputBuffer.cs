@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace QuakeConsole.Interpreters.Tests
+namespace QuakeConsole.Tests
 {
     public class FakeInputBuffer : IInputBuffer
     {

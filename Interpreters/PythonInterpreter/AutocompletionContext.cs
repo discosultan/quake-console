@@ -1,4 +1,4 @@
-﻿namespace QuakeConsole.Interpreters
+﻿namespace QuakeConsole
 {
     internal enum AutocompletionContext
     {

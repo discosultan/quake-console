@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace QuakeConsole.Interpreters
+namespace QuakeConsole
 {
     internal class OutputBufferWriter : StreamWriter
     {

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using QuakeConsole.Interpreters.Utilities;
+using QuakeConsole.Utilities;
 
-namespace QuakeConsole.Interpreters
+namespace QuakeConsole
 {
     internal class TypeLoader
     {
@@ -33,8 +33,10 @@ namespace QuakeConsole.Interpreters
 
         internal void AddVariable<T>(string name, T obj, bool fullyRecursive)
         {
-            if (name == null) throw new ArgumentException("name");
-            if (obj == null) throw new ArgumentException("obj");
+            if (name == null)
+                throw new ArgumentNullException(nameof(name));
+            if (obj == null)
+                throw new ArgumentNullException(nameof(obj));
 
             if (_interpreter.Instances.ContainsKey(name))
                 throw new InvalidOperationException("Variable with the name " + name + " already exists.");
@@ -112,10 +114,7 @@ namespace QuakeConsole.Interpreters
                         {
                             memberInfo.ParamInfos[i].ForEach(overload =>
                             {
-                                if (overload != null)
-                                {
-                                    overload.ForEach(parameter => AddTypeImpl(parameter.ParameterType, true));
-                                }
+                                overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, true));
                             });
                         }
                     }

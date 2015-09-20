@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace QuakeConsole.Interpreters
+namespace QuakeConsole
 {
     internal class MemberCollection
     {

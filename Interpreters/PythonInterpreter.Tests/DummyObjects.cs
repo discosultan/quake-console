@@ -1,4 +1,4 @@
-﻿namespace QuakeConsole.Interpreters.Tests
+﻿namespace QuakeConsole.Tests
 {
     public static class Podobranchia
     {

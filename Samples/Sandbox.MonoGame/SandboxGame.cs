@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using QuakeConsole;
-using QuakeConsole.Interpreters;
 
 namespace Sandbox
 {

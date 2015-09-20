@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace QuakeConsole.Interpreters
+namespace QuakeConsole
 {
     // TODO: pool it?
     internal class Member

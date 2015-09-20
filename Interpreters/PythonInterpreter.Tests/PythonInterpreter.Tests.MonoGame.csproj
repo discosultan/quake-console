@@ -7,7 +7,7 @@
     <ProjectGuid>{76B26717-E016-4C24-AA10-7CD8706DAAA6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuakeConsole.Interpreters.Tests</RootNamespace>
+    <RootNamespace>QuakeConsole.Tests</RootNamespace>
     <AssemblyName>PythonInterpreter.Tests.MonoGame</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
