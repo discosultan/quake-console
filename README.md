@@ -1,6 +1,6 @@
 **Compatible with Paradox 1.0.0 only!**
 
-Paradox Console
+![Quake Console](https://jvcontent.blob.core.windows.net/images/quake_console_logo.png)
 ===============
 
 Quake style console for [Paradox Game Engine](http://paradox3d.net/).<br/>
