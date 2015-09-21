@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using QuakeConsole.Utilities;
 #if MONOGAME
 using Microsoft.Xna.Framework;
@@ -143,5 +144,78 @@ namespace QuakeConsole
             CaretSymbol = "_",
             CaretBlinkingIntervalSeconds = 0.4f
         };
+    }
+
+    /// <summary>
+    /// Defines which subparts of the <see cref="Console"/> to clear.
+    /// </summary>
+    [Flags]
+    public enum ConsoleClearFlags
+    {
+        None = 0,
+        OutputBuffer = 1,
+        InputBuffer = 2,
+        InputHistory = 4,
+        All = OutputBuffer | InputBuffer | InputHistory
+    }
+
+    internal enum ConsoleAction : byte
+    {
+        None,
+        DeletePreviousChar,
+        Autocomplete,
+        ExecuteCommand,
+        NextLineModifier,
+        UppercaseModifier,
+        CopyPasteModifier,
+        PreviousEntryModifier,
+        AutocompleteModifier,
+        //UppercaseToggle,
+        Space,
+        MoveToEnd,
+        MoveToBeginning,
+        MoveLeft,
+        PreviousCommandInHistory,
+        MoveRight,
+        NextCommandInHistory,
+        //Insert, // input modifier
+        DeleteCurrentChar,
+        //NumLock,      
+        Clear,
+        Copy,
+        Paste,
+        Tab,
+        TabModifier
+    }
+
+    internal enum ConsoleProcessResult
+    {
+        None,
+        Continue,
+        Break
+    }
+
+    internal enum ConsoleState
+    {
+        Closed,
+        Closing,
+        Open,
+        Opening
+    }
+
+    internal class ConsoleSettings
+    {
+        public Color BackgroundColor { get; set; }
+        public Color FontColor { get; set; }
+        public float OpenCloseTransitionSeconds { get; set; }
+        public float TimeUntilRepeatingInput { get; set; }
+        public float RepeatingInputCooldown { get; set; }
+        public float HeightRatio { get; set; }
+        public string InputPrefix { get; set; }
+        public int NumPositionsToMoveWhenOutOfScreen { get; set; }
+        public Color InputPrefixColor { get; set; }
+        public float Padding { get; set; }
+        public string CaretSymbol { get; set; }
+        public float CaretBlinkingIntervalSeconds { get; set; }
     }
 }

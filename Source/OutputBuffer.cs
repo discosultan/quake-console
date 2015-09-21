@@ -10,43 +10,44 @@ using Microsoft.Xna.Framework;
 namespace QuakeConsole
 {
     /// <summary>
-    /// Output part of the <see cref="ConsolePanel"/>. Command execution info will be appended here.
+    /// Output part of the <see cref="Console"/>. Command execution info will be appended here.
     /// </summary>
     public class OutputBuffer : IOutputBuffer
     {
         private const string MeasureFontSizeSymbol = "x";
-
-        private readonly Console _consolePanel;
+        
         private readonly CircularArray<OutputBufferEntry> _entries = new CircularArray<OutputBufferEntry>();
-        private readonly List<OutputBufferEntry> _commandEntries = new List<OutputBufferEntry>();
-        private readonly Pool<OutputBufferEntry> _entryPool;
+        private readonly List<OutputBufferEntry> _commandEntries = new List<OutputBufferEntry>();        
         private readonly StringBuilder _stringBuilder = new StringBuilder();
+
+        private Console _console;
+        private Pool<OutputBufferEntry> _entryPool;
 
         private Vector2 _fontSize;
         private int _maxNumRows;
         private int _numRows;           
         private bool _removeOverflownEntries;        
 
-        internal OutputBuffer(Console consolePanel)
-        {            
-            _consolePanel = consolePanel;
+        internal void LoadContent(Console console)
+        {
+            _console = console;
             _entryPool = new Pool<OutputBufferEntry>(() => new OutputBufferEntry(this));
 
             // TODO: Set flags only and do any calculation in Update. While this would win in performance
             // TODO: in some cases, I'm not convinced it's worth the hit against readability.
-            consolePanel.PaddingChanged += (s, e) =>
-            {                
+            _console.PaddingChanged += (s, e) =>
+            {
                 CalculateRows();
                 RemoveOverflownBufferEntriesIfAllowed();
             };
-            consolePanel.FontChanged += (s, e) =>
+            _console.FontChanged += (s, e) =>
             {
-                CalculateFontSize();                
+                CalculateFontSize();
                 CalculateRows();
-                RemoveOverflownBufferEntriesIfAllowed();                
+                RemoveOverflownBufferEntriesIfAllowed();
             };
-            consolePanel.WindowAreaChanged += (s, e) =>
-            {                
+            _console.WindowAreaChanged += (s, e) =>
+            {
                 CalculateRows();
                 RemoveOverflownBufferEntriesIfAllowed();
             };
@@ -68,7 +69,7 @@ namespace QuakeConsole
             }
         }
 
-        internal Console ConsolePanel => _consolePanel;
+        internal Console Console => _console;
 
         internal bool HasCommandEntry => _commandEntries.Count > 0;
 
@@ -81,7 +82,7 @@ namespace QuakeConsole
             if (message == null) return;            
 
             var viewBufferEntry = _entryPool.Fetch();
-            _numRows += viewBufferEntry.SetValueAndCalculateLines(message, _consolePanel.WindowArea.Width - _consolePanel.Padding * 2, false);
+            _numRows += viewBufferEntry.SetValueAndCalculateLines(message, _console.WindowArea.Width - _console.Padding * 2, false);
             _entries.Enqueue(viewBufferEntry);
             RemoveOverflownBufferEntriesIfAllowed();
         }
@@ -100,7 +101,7 @@ namespace QuakeConsole
             if (value == null) return;
 
             var entry = _entryPool.Fetch();
-            entry.SetValueAndCalculateLines(value, _consolePanel.WindowArea.Width - _consolePanel.Padding * 2, true);
+            entry.SetValueAndCalculateLines(value, _console.WindowArea.Width - _console.Padding * 2, true);
             _commandEntries.Add(entry);
         }
 
@@ -121,8 +122,8 @@ namespace QuakeConsole
         {
             // Draw from bottom to top.
             var viewPosition = new Vector2(
-                _consolePanel.Padding, 
-                _consolePanel.WindowArea.Y + _consolePanel.WindowArea.Height - _consolePanel.Padding - _consolePanel.InputBuffer.InputPrefixSize.Y - _fontSize.Y);
+                _console.Padding, 
+                _console.WindowArea.Y + _console.WindowArea.Height - _console.Padding - _console.InputBuffer.InputPrefixSize.Y - _fontSize.Y);
 
             int rowCounter = 0;
 
@@ -150,18 +151,18 @@ namespace QuakeConsole
                 Vector2 tempViewPos = viewPosition;
                 if (drawPrefix)
                 {
-                    _consolePanel.SpriteBatch.DrawString(
-                        _consolePanel.Font,
-                        _consolePanel.InputBuffer.InputPrefix,
+                    _console.SpriteBatch.DrawString(
+                        _console.Font,
+                        _console.InputBuffer.InputPrefix,
                         tempViewPos,
-                        _consolePanel.InputBuffer.InputPrefixColor);
-                    tempViewPos.X += _consolePanel.InputBuffer.InputPrefixSize.X;
+                        _console.InputBuffer.InputPrefixColor);
+                    tempViewPos.X += _console.InputBuffer.InputPrefixSize.X;
                 }
-                _consolePanel.SpriteBatch.DrawString(
-                    _consolePanel.Font,
+                _console.SpriteBatch.DrawString(
+                    _console.Font,
                     entry.Lines[j],
                     tempViewPos, 
-                    _consolePanel.FontColor);
+                    _console.FontColor);
                 viewPosition.Y -= _fontSize.Y;
                 rowCounter++;
             }
@@ -195,19 +196,19 @@ namespace QuakeConsole
             //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / _fontSize.Y) - 1, 0);            
 
             // Disregard top padding and allow any row which is only partly visible.
-            _maxNumRows = Math.Max((int)Math.Ceiling(((_consolePanel.WindowArea.Height - _consolePanel.Padding) / _fontSize.Y)) - 1, 0);
+            _maxNumRows = Math.Max((int)Math.Ceiling(((_console.WindowArea.Height - _console.Padding) / _fontSize.Y)) - 1, 0);
             
             _numRows = GetNumRows(_commandEntries) + GetNumRows(_entries);
         }
 
         private int GetNumRows(IEnumerable<OutputBufferEntry> collection)
         {
-            return collection.Sum(entry => entry.CalculateLines(_consolePanel.WindowArea.Width - _consolePanel.Padding * 2, false));
+            return collection.Sum(entry => entry.CalculateLines(_console.WindowArea.Width - _console.Padding * 2, false));
         }
 
         private void CalculateFontSize()
         {
-            _fontSize = _consolePanel.Font.MeasureString(MeasureFontSizeSymbol);
+            _fontSize = _console.Font.MeasureString(MeasureFontSizeSymbol);
         }        
     }
 }

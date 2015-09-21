@@ -8,27 +8,40 @@ using MathUtil = Microsoft.Xna.Framework.MathHelper;
 
 namespace QuakeConsole
 {
+    public interface ICaret
+    {
+        /// <summary>
+        /// Gets or sets the character index the cursor is at in the <see cref="InputBuffer"/>.
+        /// </summary>
+        int Index { get; set; }
+    }
+
     /// <summary>
     /// A blinking caret inside the <see cref="InputBuffer"/> to show the location of the cursor.
     /// </summary>
     public class Caret : ICaret
     {
-        private readonly Console _consolePanel;
+        internal event EventHandler Moved;
+
         private readonly Timer _caretBlinkingTimer = new Timer { AutoReset = true };
-        private readonly StringBuilder _inputBuffer;
+
+        private Console _console;
+        private StringBuilder _inputBuffer;
 
         private bool _drawCaret;
         private string _symbol;
         private int _index;
+        private bool _loaded;
 
-        internal event EventHandler Moved = delegate { };
-
-        internal Caret(Console consolePanel, StringBuilder inputBuffer)
+        internal void LoadContent(Console console, StringBuilder inputBuffer)
         {
-            _consolePanel = consolePanel;
+            _console = console;
             _inputBuffer = inputBuffer;            
 
-            consolePanel.FontChanged += (s, e) => CalculateSymbolWidth();            
+            console.FontChanged += (s, e) => CalculateSymbolWidth();
+            CalculateSymbolWidth();
+
+            _loaded = true;
         }
 
         /// <summary>
@@ -40,7 +53,7 @@ namespace QuakeConsole
             set
             {
                 _index = MathUtil.Clamp(value, 0, _inputBuffer.Length); 
-                Moved(this, EventArgs.Empty);
+                Moved?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -63,7 +76,8 @@ namespace QuakeConsole
             {
                 Check.ArgumentNotNull(value, "value");
                 _symbol = value;
-                CalculateSymbolWidth();
+                if (_loaded)
+                    CalculateSymbolWidth();
             }
         }
 
@@ -91,13 +105,12 @@ namespace QuakeConsole
         internal void Draw(ref Vector2 position, Color color)
         {
             if (_drawCaret)
-                _consolePanel.SpriteBatch.DrawString(_consolePanel.Font, Symbol, position, color);
+                _console.SpriteBatch.DrawString(_console.Font, Symbol, position, color);
         }
 
         private void CalculateSymbolWidth()
-        {
-            if (_consolePanel.Font != null)
-                Width = _consolePanel.Font.MeasureString(Symbol).X;            
+        {            
+            Width = _console.Font.MeasureString(Symbol).X;            
         }
 
         internal void SetDefaults(ConsoleSettings settings)

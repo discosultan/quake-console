@@ -13,6 +13,7 @@ namespace QuakeConsole
     /// </summary>
     public class PythonInterpreter : ICommandInterpreter
     {
+        private const int DefaultRecursionLevel = 3;
         internal const StringComparison StringComparisonMethod = StringComparison.Ordinal;
 
         private readonly ScriptEngine _scriptEngine = IronPython.Hosting.Python.CreateEngine();
@@ -113,9 +114,10 @@ namespace QuakeConsole
         /// <param name="addSubTypes">
         /// Determines if subtypes of passed variable type will also be automatically added to IronPython environment.
         /// </param>
-        public void AddVariable<T>(string name, T obj, bool addSubTypes = true)
+        /// <param name="recursionLevel">Number of levels to load subtypes from.</param>
+        public void AddVariable<T>(string name, T obj, bool addSubTypes = true, int recursionLevel = DefaultRecursionLevel)
         {
-            _typeLoader.AddVariable(name, obj, addSubTypes);
+            _typeLoader.AddVariable(name, obj, addSubTypes, recursionLevel);
         }
 
         /// <summary>
@@ -125,9 +127,10 @@ namespace QuakeConsole
         /// <param name="addSubTypes">
         /// Determines if subtypes of passed type will also be automatically added to IronPython environment.
         /// </param>
-        public void AddType(Type type, bool addSubTypes = true)
+        /// <param name="recursionLevel">Number of levels to load subtypes from.</param>
+        public void AddType(Type type, bool addSubTypes = true, int recursionLevel = DefaultRecursionLevel)
         {
-            _typeLoader.AddType(type, addSubTypes);
+            _typeLoader.AddType(type, addSubTypes, recursionLevel);
         }
 
         /// <summary>
@@ -137,9 +140,10 @@ namespace QuakeConsole
         /// <param name="addSubTypes">
         /// Determines if subtypes of passed types will also be automatically added to IronPython environment.
         /// </param>
-        public void AddTypes(IEnumerable<Type> types, bool addSubTypes = true)
+        /// <param name="recursionLevel">Number of levels to load subtypes from.</param>
+        public void AddTypes(IEnumerable<Type> types, bool addSubTypes = true, int recursionLevel = DefaultRecursionLevel)
         {
-            types.ForEach(type => _typeLoader.AddType(type, addSubTypes));
+            types.ForEach(type => _typeLoader.AddType(type, addSubTypes, recursionLevel));
         }
 
         /// <summary>

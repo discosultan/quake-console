@@ -1,4 +1,4 @@
-![Quake Console](https://jvcontent.blob.core.windows.net/images/quake_console_logo_very_small.png)
+![Quake Console](https://jvcontent.blob.core.windows.net/images/quake_console_logo_h64.png)
 ===============
 
 Quake style console for [Paradox Game Engine](http://paradox3d.net/).<br/>

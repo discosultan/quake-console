@@ -1,7 +1,7 @@
-﻿using System.Collections.Generic;
+﻿#if MONOGAME
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 
-#if MONOGAME
 namespace QuakeConsole.Utilities
 {
     internal struct KeyEvent

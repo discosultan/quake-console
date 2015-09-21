@@ -13,9 +13,15 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin Font.spritefont
+#begin arial.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:TextureFormat=Compressed
-/build:Font.spritefont
+/build:arial.spritefont
+
+#begin lucida_console.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:lucida_console.spritefont
 

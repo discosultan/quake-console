@@ -39,15 +39,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Caret.cs" />
-    <Compile Include="ConsoleAction.cs" />
-    <Compile Include="ConsoleClearFlags.cs" />
     <Compile Include="ConsoleComponent.cs" />
-    <Compile Include="ConsoleProcessResult.cs" />
-    <Compile Include="ConsoleSettings.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="Console.Definitions.cs" />
-    <Compile Include="ConsoleState.cs" />
-    <Compile Include="ICaret.cs" />
     <Compile Include="ICommandInterpreter.cs" />
     <Compile Include="IInputBuffer.cs" />
     <Compile Include="InputBuffer.cs" />

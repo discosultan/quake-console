@@ -5,11 +5,11 @@ namespace QuakeConsole.Tests
     public class FakeInputBuffer : IInputBuffer
     {
         private readonly StringBuilder _stringBuffer = new StringBuilder();
-        private readonly ICaret _caret = new FakeCaret();
 
         public string LastAutocompleteEntry { get; set; }
-        public ICaret Caret { get { return _caret; } }
-        public int Length { get { return _stringBuffer.Length; } }
+        public ICaret Caret { get; } = new FakeCaret();
+
+        public int Length => _stringBuffer.Length;
 
         public void Write(string symbol)
         {
@@ -46,9 +46,6 @@ namespace QuakeConsole.Tests
             _stringBuffer.Clear();
         }
 
-        public char this[int i]
-        {
-            get { return _stringBuffer[i]; }
-        }
+        public char this[int i] => _stringBuffer[i];
     }
 }

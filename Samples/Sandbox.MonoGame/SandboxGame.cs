@@ -10,24 +10,33 @@ namespace Sandbox
     /// </summary>
     public class SandboxGame : Game
     {
-        GraphicsDeviceManager graphics;        
-        private readonly ConsoleComponent console;
-        private readonly PythonInterpreter interpreter = new PythonInterpreter();
+        private const Keys ToggleConsole = Keys.OemTilde;
+        private static readonly Color BackgroundColor = Color.LightSlateGray;
 
-        private Cube cube;
+        private readonly GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+
+        private SpriteFont _font;
+        private readonly ConsoleComponent _console;
+        private readonly PythonInterpreter _interpreter = new PythonInterpreter();
+
+        private Cube _cube;
        
         private KeyboardState _previousKeyState;
         private KeyboardState _currentKeyState;
 
         public SandboxGame()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            console = new ConsoleComponent(this);
-            Components.Add(console);
+            _console = new ConsoleComponent(this) { FontColor = Color.White };
+            Components.Add(_console);
 
-            graphics.PreferredBackBufferWidth = 1240;
-            graphics.PreferredBackBufferHeight = 768;
+            // There's a bug when trying to change resolution during window resize.
+            // https://github.com/mono/MonoGame/issues/3572
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferHeight = 768;
+            Window.AllowUserResizing = false;
         }
 
         /// <summary>
@@ -36,11 +45,14 @@ namespace Sandbox
         /// </summary>
         protected override void LoadContent()
         {
-            console.LoadContent(Content.Load<SpriteFont>("Font"), interpreter);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            cube = new Cube(GraphicsDevice);
-            interpreter.AddVariable("cube", cube);
-            interpreter.AddVariable("console", console);
+            _font = Content.Load<SpriteFont>("arial");
+            _console.LoadContent(_font, _interpreter);
+
+            _cube = new Cube(GraphicsDevice);
+            _interpreter.AddVariable("cube", _cube);
+            _interpreter.AddVariable("console", _console);
         }
 
         /// <summary>
@@ -56,12 +68,12 @@ namespace Sandbox
             _previousKeyState = _currentKeyState;
             _currentKeyState = Keyboard.GetState();
 
-            if (IsKeyPressed(Keys.OemTilde))
-                console.ToggleOpenClose();
+            if (IsKeyPressed(ToggleConsole))
+                _console.ToggleOpenClose();
 
             float deltaSeconds = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
-            cube.Update(deltaSeconds);
+            _cube.Update(deltaSeconds);
 
             base.Update(gameTime);
         }
@@ -72,16 +84,28 @@ namespace Sandbox
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(BackgroundColor);
 
-            cube.Draw();
+            _cube.Draw();
+            _spriteBatch.Begin();
+            DrawInstructions();
+            _spriteBatch.End();
 
             base.Draw(gameTime);
-        }
+        }        
 
         private bool IsKeyPressed(Keys key)
         {
             return _previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key);
+        }
+
+        private void DrawInstructions()
+        {
+            _spriteBatch.DrawString(
+                _font,
+                $"Press {ToggleConsole} to open console. Use {Keys.LeftControl} + {Keys.Space} to autocomplete.",
+                new Vector2(10, GraphicsDevice.Viewport.Height - 25),
+                Color.Yellow);
         }
     }
 }

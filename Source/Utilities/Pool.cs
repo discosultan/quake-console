@@ -23,9 +23,7 @@ namespace QuakeConsole.Utilities
         public T Fetch()
         {
             if (_queue.Count <= 0)
-            {
                 IncreasePool();
-            }
             return _queue.Dequeue();
         }
 

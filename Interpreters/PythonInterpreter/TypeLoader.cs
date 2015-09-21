@@ -31,7 +31,7 @@ namespace QuakeConsole
             _interpreter = interpreter;
         }
 
-        internal void AddVariable<T>(string name, T obj, bool fullyRecursive)
+        internal void AddVariable<T>(string name, T obj, bool fullyRecursive, int recursionLevel)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -55,21 +55,23 @@ namespace QuakeConsole
 
             if (_interpreter.InstanceMembers.ContainsKey(type)) return;
 
-            AddTypeImpl(type, fullyRecursive);
+            AddTypeImpl(type, fullyRecursive, recursionLevel);
         }
 
-        internal void AddType(Type type, bool fullyRecursive)
+        internal void AddType(Type type, bool fullyRecursive, int recursionLevel)
         {
-            if (type == null) throw new ArgumentException("type");
+            if (type == null)
+                throw new ArgumentException("type");
 
-            AddTypeImpl(type, fullyRecursive);            
+            AddTypeImpl(type, fullyRecursive, recursionLevel);            
         }
 
         internal void AddAssembly(Assembly assembly, bool fullyRecursive)
         {
-            if (assembly == null) throw new ArgumentException("assembly");
+            if (assembly == null)
+                throw new ArgumentException("assembly");
 
-            assembly.GetTypes().ForEach(x => AddTypeImpl(x, fullyRecursive));
+            assembly.GetTypes().ForEach(x => AddTypeImpl(x, fullyRecursive, int.MaxValue));
         }
 
         internal void Reset()
@@ -78,12 +80,14 @@ namespace QuakeConsole
             _addedTypes.Clear();            
         }
 
-        private bool AddTypeImpl(Type type, bool fullyRecursive)
+        private bool AddTypeImpl(Type type, bool fullyRecursive, int recursionLevel)
         {
-            if (type == null) return false;
+            if (type == null)
+                return false;
 
             // Load type and stop if it is already loaded.
-            if (!LoadTypeInPython(type)) return false;            
+            if (!LoadTypeInPython(type))
+                return false;            
 
             // Add static.
             if (!_interpreter.Statics.ContainsKey(type.Name))
@@ -91,15 +95,19 @@ namespace QuakeConsole
                 _interpreter.Statics.Add(type.Name, new Member { Name = type.Name, Type = type });
                 _interpreter.InstancesAndStaticsDirty = true;
             }
-            // Add static members.
-            AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, fullyRecursive);
-            // Add instance members.
-            AddMembers(_interpreter.InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, fullyRecursive);
+
+            if (recursionLevel-- > 0)
+            { 
+                // Add static members.
+                AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, fullyRecursive, recursionLevel);
+                // Add instance members.
+                AddMembers(_interpreter.InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, fullyRecursive, recursionLevel);
+            }
 
             return true;
         }
 
-        private void AddMembers(IDictionary<Type, MemberCollection> dict, Type type, BindingFlags flags, bool fullyRecursive)
+        private void AddMembers(IDictionary<Type, MemberCollection> dict, Type type, BindingFlags flags, bool fullyRecursive, int recursionLevel)
         {
             if (!dict.ContainsKey(type))
             {
@@ -109,12 +117,12 @@ namespace QuakeConsole
                 {
                     for (int i = 0; i < memberInfo.Names.Count; i++)
                     {                        
-                        AddTypeImpl(memberInfo.UnderlyingTypes[i], true);
+                        AddTypeImpl(memberInfo.UnderlyingTypes[i], true, recursionLevel);
                         if (memberInfo.ParamInfos[i] != null)
                         {
                             memberInfo.ParamInfos[i].ForEach(overload =>
                             {
-                                overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, true));
+                                overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, true, recursionLevel));
                             });
                         }
                     }

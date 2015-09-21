@@ -17,6 +17,10 @@ namespace QuakeConsole
     /// </summary>
     internal partial class Console
     {
+        internal event EventHandler FontChanged;
+        internal event EventHandler PaddingChanged;
+        internal event EventHandler WindowAreaChanged;
+
         // General.
         private ICommandInterpreter _commandInterpreter;
         private GraphicsDevice _device;
@@ -31,7 +35,7 @@ namespace QuakeConsole
         private float _padding;
         private float _heightRatio;
         private ConsoleState _state = ConsoleState.Closed;
-        private bool _initialized;
+        private bool _loaded;
 
         // Input history.        
         private readonly List<string> _inputHistory = new List<string>();
@@ -44,11 +48,12 @@ namespace QuakeConsole
 
         private bool _startRepeatedProcess;
         private bool _isFastRepeating;
-        private Keys _downKey;
-        
-        internal event EventHandler FontChanged;
-        internal event EventHandler PaddingChanged;
-        internal event EventHandler WindowAreaChanged;        
+        private Keys _downKey;                
+
+        public Console()
+        {            
+            SetDefaults(_defaultSettings);
+        }
 
         /// <summary>
         /// Initializes a new instance of <see cref="Console"/>.
@@ -74,23 +79,19 @@ namespace QuakeConsole
 
             _graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceChanged;
 #if MONOGAME
-            SetWindowWidthAndHeight(_device.Viewport.Width, _device.Viewport.Height);
             _backgroundTexture = new Texture2D(_device, 2, 2, false, SurfaceFormat.Color);
             _backgroundTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White });
-#else
-            SetWindowWidthAndHeight(_device.BackBuffer.Width, _device.BackBuffer.Height);
+#else                   
             _backgroundTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
 #endif
-            OutputBuffer = new OutputBuffer(this);
-            InputBuffer = new InputBuffer(this);
-
-            SetDefaults(_defaultSettings);
-
-            if (_initialized) return;
-
-            _initialized = true;
+            SetWindowWidthAndHeight();
             if (_initialPadding.HasValue)
                 Padding = _initialPadding.Value;
+
+            InputBuffer.LoadContent(this);
+            OutputBuffer.LoadContent(this);
+
+            _loaded = true;
         }
 
         public void UnloadContent()
@@ -104,12 +105,12 @@ namespace QuakeConsole
         /// <summary>
         /// Gets the input part of the <see cref="Console"/>.
         /// </summary>
-        public InputBuffer InputBuffer { get; private set; }
+        public InputBuffer InputBuffer { get; } = new InputBuffer();
 
         /// <summary>
         /// Gets the output part of the <see cref="Console"/>.
         /// </summary>
-        public OutputBuffer OutputBuffer { get; private set; }
+        public OutputBuffer OutputBuffer { get; } = new OutputBuffer();
 
         /// <summary>
         /// Gets if any part of the <see cref="Console"/> is visible.
@@ -125,7 +126,7 @@ namespace QuakeConsole
         /// Gets or sets the input command logging delegate. Set this property to log the user input
         /// commands to the given delegate. For example WriteLine(String).
         /// </summary>
-        public Action<string> InputLog { get; set; }
+        public Action<string> LogInput { get; set; }
 
         /// <summary>
         /// Gets or sets the font.
@@ -171,11 +172,8 @@ namespace QuakeConsole
             set
             {
                 _heightRatio = MathUtil.Clamp(value, 0, 1.0f);
-#if MONOGAME
-                SetWindowWidthAndHeight(_device.Viewport.Width, _device.Viewport.Height);
-#else
-                SetWindowWidthAndHeight(_device.BackBuffer.Width, _device.BackBuffer.Height);
-#endif
+                if (_loaded)
+                    SetWindowWidthAndHeight();
             }
         }
 
@@ -270,17 +268,11 @@ namespace QuakeConsole
         public void Clear(ConsoleClearFlags clearFlags = ConsoleClearFlags.All)
         {
             if ((clearFlags & ConsoleClearFlags.OutputBuffer) != 0)
-            {
                 OutputBuffer.Clear();
-            }
             if ((clearFlags & ConsoleClearFlags.InputBuffer) != 0)
-            {
                 InputBuffer.Clear();
-            }
             if ((clearFlags & ConsoleClearFlags.InputHistory) != 0)
-            {
                 ClearHistory();
-            }
         }
 
         /// <summary>
@@ -431,7 +423,7 @@ namespace QuakeConsole
                         // Replace our tab symbols with actual tab characters.
                         executedCmd = executedCmd.Replace(Tab, "\t");
                         // Log the command to be executed if logger is set.
-                        InputLog?.Invoke(executedCmd);
+                        LogInput?.Invoke(executedCmd);
                         // Execute command.
                         _commandInterpreter.Execute(OutputBuffer, executedCmd);
                     }
@@ -588,16 +580,23 @@ namespace QuakeConsole
         }
 
         private void OnPreparingDeviceChanged(object sender, PreparingDeviceSettingsEventArgs args)
-        {
+        {            
             SetWindowWidthAndHeight(
                 args.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth,
                 args.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight);
         }
 
+        private void SetWindowWidthAndHeight()
+        {
+#if MONOGAME
+            SetWindowWidthAndHeight(_device.Viewport.Width, _device.Viewport.Height);            
+#else
+            SetWindowWidthAndHeight(_device.BackBuffer.Width, _device.BackBuffer.Height);            
+#endif
+        }
+
         private void SetWindowWidthAndHeight(int width, int height)
         {
-            if (_device == null) return;
-
             var newWindowArea = new RectangleF(_windowArea.X, _windowArea.Y, 0, 0)
             {
                 Width = width,

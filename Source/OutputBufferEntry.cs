@@ -10,24 +10,22 @@ namespace QuakeConsole
 
         public OutputBufferEntry(OutputBuffer viewBuffer)
         {
-            _viewBuffer = viewBuffer;
-            Lines = new List<string>();
-            Value = "";
+            _viewBuffer = viewBuffer;                        
         }
 
-        public string Value { get; private set; }
-        public List<string> Lines { get; }
+        public string Value { get; private set; } = "";
+        public List<string> Lines { get; } = new List<string>();
 
         public int SetValueAndCalculateLines(string value, float screenWidth, bool countPrefix)
         {            
-            Value = value.Replace("\t", _viewBuffer.ConsolePanel.Tab);
+            Value = value.Replace("\t", _viewBuffer.Console.Tab);
             return CalculateLines(screenWidth, countPrefix);
         }
 
         public int CalculateLines(float bufferAreaWidth, bool countPrefix)
         {
             Lines.Clear();
-            string[] values = Value.Split(_viewBuffer.ConsolePanel.NewLine, StringSplitOptions.None);                        
+            string[] values = Value.Split(_viewBuffer.Console.NewLine, StringSplitOptions.None);                        
             for (int i = 0; i < values.Length; i++)
                 CalculateLinesPart(values[i], bufferAreaWidth, i == 0 && countPrefix);
 
@@ -79,14 +77,14 @@ namespace QuakeConsole
                 char c = value[i];
 
                 float charWidth;
-                if (!_viewBuffer.ConsolePanel.CharWidthMap.TryGetValue(c, out charWidth))
+                if (!_viewBuffer.Console.CharWidthMap.TryGetValue(c, out charWidth))
                 {
-                    charWidth += _viewBuffer.ConsolePanel.Font.MeasureString(c.ToString()).X;
-                    _viewBuffer.ConsolePanel.CharWidthMap.Add(c, charWidth);
+                    charWidth += _viewBuffer.Console.Font.MeasureString(c.ToString()).X;
+                    _viewBuffer.Console.CharWidthMap.Add(c, charWidth);
                 }
 
                 if (countPrefix)
-                    charWidth += _viewBuffer.ConsolePanel.InputBuffer.InputPrefixSize.X;
+                    charWidth += _viewBuffer.Console.InputBuffer.InputPrefixSize.X;
 
                 if (lineWidthProgress + charWidth > bufferAreaWidth)
                 {

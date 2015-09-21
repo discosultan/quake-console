@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Sandbox
@@ -14,19 +9,21 @@ namespace Sandbox
         public const int NumVertices = 8;
 
         private readonly GraphicsDevice _device;
-        private readonly BasicEffect effect;
+        private readonly BasicEffect _effect;
 
-        private VertexBuffer vertices;
-        private IndexBuffer indices;
-        private Matrix world, view, projection;
+        private VertexBuffer _vertices;
+        private IndexBuffer _indices;
+        private Matrix _world;
+        private readonly Matrix _view;
+        private readonly Matrix _projection;
 
         public Cube(GraphicsDevice device)
         {
             _device = device;
-            effect = new BasicEffect(device) { VertexColorEnabled = true };
-            world = Matrix.Identity;
-            view = Matrix.CreateLookAt(new Vector3(0, 0, 10), Vector3.Zero, Vector3.Up);
-            projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, _device.Viewport.AspectRatio, 1, 1000);
+            _effect = new BasicEffect(device) { VertexColorEnabled = true };
+            _world = Matrix.Identity;
+            _view = Matrix.CreateLookAt(new Vector3(0, 5, 10), Vector3.Zero, Vector3.Up);
+            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, _device.Viewport.AspectRatio, 1, 1000);
             CreateCubeVertexBuffer();
             CreateCubeIndexBuffer();
         }
@@ -44,20 +41,20 @@ namespace Sandbox
                 MathHelper.WrapAngle(Rotation.Y + RotationSpeed.Y*deltaSeconds),
                 MathHelper.WrapAngle(Rotation.Z + RotationSpeed.Z*deltaSeconds));
 
-            world = Matrix.CreateScale(Scale)*
+            _world = Matrix.CreateScale(Scale)*
                     Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z)*
                     Matrix.CreateTranslation(Position);
         }
 
         public void Draw()
         {
-            _device.SetVertexBuffer(vertices);
-            _device.Indices = indices;
+            _device.SetVertexBuffer(_vertices);
+            _device.Indices = _indices;
 
-            effect.View = view;
-            effect.Projection = projection;
-            effect.World = world;
-            effect.CurrentTechnique.Passes[0].Apply();
+            _effect.View = _view;
+            _effect.Projection = _projection;
+            _effect.World = _world;
+            _effect.CurrentTechnique.Passes[0].Apply();
 
             _device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, NumVertices, 0, NumIndices / 3);
         }
@@ -84,8 +81,8 @@ namespace Sandbox
             cubeVertices[6].Color = Color.White;
             cubeVertices[7].Color = Color.Cyan;
 
-            vertices = new VertexBuffer(_device, VertexPositionColor.VertexDeclaration, 8, BufferUsage.WriteOnly);
-            vertices.SetData(cubeVertices);
+            _vertices = new VertexBuffer(_device, VertexPositionColor.VertexDeclaration, 8, BufferUsage.WriteOnly);
+            _vertices.SetData(cubeVertices);
         }
 
         void CreateCubeIndexBuffer()
@@ -140,8 +137,8 @@ namespace Sandbox
             cubeIndices[34] = 6;
             cubeIndices[35] = 7;
 
-            indices = new IndexBuffer(_device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
-            indices.SetData(cubeIndices);
+            _indices = new IndexBuffer(_device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
+            _indices.SetData(cubeIndices);
         }
     }
 }

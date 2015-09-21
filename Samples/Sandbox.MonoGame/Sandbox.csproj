@@ -72,7 +72,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <None Include="Content\Font.spritefont" />
+    <None Include="Content\arial.spritefont" />
+    <None Include="Content\lucida_console.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

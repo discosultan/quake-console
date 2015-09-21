@@ -29,6 +29,18 @@ namespace QuakeConsole
                 _commandInterpreter);
         }
 
+        public Color BackgroundColor
+        {
+            get {  return _console.BackgroundColor; }  
+            set { _console.BackgroundColor = value; }
+        }
+
+        public Color FontColor
+        {
+            get { return _console.FontColor; }
+            set { _console.FontColor = value; }
+        }
+
         public override void Update(GameTime gameTime)
         {
             if (Enabled)
