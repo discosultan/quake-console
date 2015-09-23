@@ -29,6 +29,8 @@ namespace QuakeConsole
                 _commandInterpreter);
         }
 
+        public bool IsAcceptingInput => _console.IsAcceptingInput;
+
         public Color BackgroundColor
         {
             get {  return _console.BackgroundColor; }  

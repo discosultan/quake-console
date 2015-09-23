@@ -427,6 +427,16 @@ namespace QuakeConsole
                         // Execute command.
                         _commandInterpreter.Execute(OutputBuffer, executedCmd);
                     }
+                                        
+                    // If the cmd matches the currently indexed historical entry then set a special flag
+                    // which when moving backward in history, does not actually move backward, but will instead
+                    // return the same entry that was returned before. This is similar to how Powershell and Cmd Prompt work.
+                    if (_inputHistory.Count == 0 || _inputHistoryIndexer == int.MaxValue || !_inputHistory[_inputHistoryIndexer].Equals(cmd))
+                        _inputHistoryIndexer = int.MaxValue;
+                    else
+                        _inputHistoryDoNotDecrement = true;
+
+                    InputBuffer.LastAutocompleteEntry = null;
 
                     // Find the last historical entry if any.
                     string lastHistoricalEntry = null;
@@ -437,15 +447,6 @@ namespace QuakeConsole
                     // does not match the last historical entry.
                     if (cmd != "" && !cmd.Equals(lastHistoricalEntry, StringComparison.Ordinal))
                         _inputHistory.Add(cmd);
-                    
-                    InputBuffer.LastAutocompleteEntry = null;
-                    // If the cmd matches the currently indexed historical entry then set a special flag
-                    // which when moving backward in history, does not actually move backward, but will instead
-                    // return the same entry that was returned before. This is similar to how Powershell and Cmd Prompt work.
-                    if (_inputHistory.Count == 0 || _inputHistoryIndexer == int.MaxValue || !_inputHistory[_inputHistoryIndexer].Equals(cmd))
-                        _inputHistoryIndexer = int.MaxValue;
-                    else
-                        _inputHistoryDoNotDecrement = true;
 
                     InputBuffer.Clear();                                        
                     InputBuffer.Caret.MoveBy(int.MinValue);                    
