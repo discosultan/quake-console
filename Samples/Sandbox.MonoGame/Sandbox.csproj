@@ -55,6 +55,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\console.tga" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

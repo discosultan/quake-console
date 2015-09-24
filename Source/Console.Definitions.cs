@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework.Graphics;
 using QuakeConsole.Utilities;
 #if MONOGAME
 using Microsoft.Xna.Framework;
@@ -204,5 +205,6 @@ namespace QuakeConsole
         public bool BottomBorderEnabled { get; set; }
         public Color BottomBorderColor { get; set; } = Color.Red;
         public float BottomBorderThickness { get; set; } = 5.0f;
+        //public Texture2D BackgroundTexture { get; set; }
     }
 }

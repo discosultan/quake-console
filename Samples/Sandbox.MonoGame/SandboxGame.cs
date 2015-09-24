@@ -57,6 +57,7 @@ namespace Sandbox
 
             _font = Content.Load<SpriteFont>("arial");
             _console.LoadContent(_font, _interpreter);
+            Content.Load<Texture2D>("console01");
 
             _cube = new Cube(GraphicsDevice);
             _interpreter.AddVariable("cube", _cube);
