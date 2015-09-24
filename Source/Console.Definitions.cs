@@ -128,22 +128,6 @@ namespace QuakeConsole
 
         internal readonly string NewLine = "\n";
         internal readonly string Tab = "    ";
-
-        private readonly ConsoleSettings _defaultSettings = new ConsoleSettings
-        {
-            BackgroundColor = new Color(0.2f, 0.2f, 0.2f, 0.5f),
-            FontColor = new Color(1.0f, 1.0f, 0.0f, 1.0f),
-            OpenCloseTransitionSeconds = 0.25f,
-            TimeUntilRepeatingInput = 0.4f,
-            RepeatingInputCooldown = 0.04f,
-            HeightRatio = 0.4f,            
-            InputPrefix = "]",
-            NumPositionsToMoveWhenOutOfScreen = 4,
-            InputPrefixColor = Color.Yellow,
-            Padding = 2,
-            CaretSymbol = "_",
-            CaretBlinkingIntervalSeconds = 0.4f
-        };
     }
 
     /// <summary>
@@ -205,17 +189,20 @@ namespace QuakeConsole
 
     internal class ConsoleSettings
     {
-        public Color BackgroundColor { get; set; }
-        public Color FontColor { get; set; }
-        public float OpenCloseTransitionSeconds { get; set; }
-        public float TimeUntilRepeatingInput { get; set; }
-        public float RepeatingInputCooldown { get; set; }
-        public float HeightRatio { get; set; }
-        public string InputPrefix { get; set; }
-        public int NumPositionsToMoveWhenOutOfScreen { get; set; }
-        public Color InputPrefixColor { get; set; }
-        public float Padding { get; set; }
-        public string CaretSymbol { get; set; }
-        public float CaretBlinkingIntervalSeconds { get; set; }
+        public Color BackgroundColor { get; set; } = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+        public Color FontColor { get; set; } = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+        public float TimeToToggleOpenClose { get; set; } = 0.25f;
+        public float TimeToTriggerRepeatingInput { get; set; } = 0.4f;
+        public float TimeToCooldownRepeatingInput { get; set; } = 0.04f;
+        public float HeightRatio { get; set; } = 0.4f;
+        public string InputPrefix { get; set; } = "]";
+        public int NumPositionsToMoveWhenOutOfScreen { get; set; } = 4;
+        public Color InputPrefixColor { get; set; } = Color.Yellow;
+        public float Padding { get; set; } = 2.0f;
+        public string CaretSymbol { get; set; } = "_";
+        public float CaretBlinkingIntervalSeconds { get; set; } = 0.4f;
+        public bool BottomBorderEnabled { get; set; }
+        public Color BottomBorderColor { get; set; } = Color.Red;
+        public float BottomBorderThickness { get; set; } = 5.0f;
     }
 }

@@ -50,21 +50,21 @@ namespace QuakeConsole
         /// <summary>
         /// Executes a command by running it through the IronPython parser.
         /// </summary>
-        /// <param name="outputBuffer">Console output buffer to append any output messages.</param>
+        /// <param name="output">Console output buffer to append any output messages.</param>
         /// <param name="command">Command to execute.</param>
-        public void Execute(IOutputBuffer outputBuffer, string command)
+        public void Execute(IConsoleOutput output, string command)
         {
             if (!_initialized)
             {
                 var memStream = new MemoryStream();
-                var pythonWriter = new OutputBufferWriter(memStream, outputBuffer);
+                var pythonWriter = new OutputBufferWriter(memStream, output);
                 _scriptEngine.Runtime.IO.SetOutput(memStream, pythonWriter);
                 _scriptEngine.Runtime.IO.SetErrorOutput(memStream, pythonWriter);
                 _initialized = true;
             }
 
             if (EchoEnabled)
-                outputBuffer.Append(command);
+                output.Append(command);
 
             string resultStr;            
             try
@@ -77,17 +77,17 @@ namespace QuakeConsole
                 resultStr = ex.Message;
             }
             
-            outputBuffer.Append(resultStr);
+            output.Append(resultStr);
         }
 
         /// <summary>
-        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="InputBuffer"/>.
+        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="ConsoleInput"/>.
         /// </summary>
-        /// <param name="inputBuffer">Console input.</param>
+        /// <param name="input">Console input.</param>
         /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
-        public void Autocomplete(IInputBuffer inputBuffer, bool forward)
+        public void Autocomplete(IConsoleInput input, bool forward)
         {
-            _autocompleter.Autocomplete(inputBuffer, forward);
+            _autocompleter.Autocomplete(input, forward);
         }
 
         /// <summary>
@@ -98,7 +98,8 @@ namespace QuakeConsole
         {
             string dir = Path.GetDirectoryName(path);
 
-            if (string.IsNullOrWhiteSpace(dir)) return;
+            if (string.IsNullOrWhiteSpace(dir))
+                return;
 
             ICollection<string> paths = _scriptEngine.GetSearchPaths();
             paths.Add(dir);             
@@ -111,51 +112,57 @@ namespace QuakeConsole
         /// <typeparam name="T">Type of variable to add.</typeparam>
         /// <param name="name">Name of the variable.</param>
         /// <param name="obj">Object to add.</param>
-        /// <param name="addSubTypes">
-        /// Determines if subtypes of passed variable type will also be automatically added to IronPython environment.
+        /// <param name="recursionLevel">
+        /// Determines if subtypes of passed type will also be automatically added to IronPython environment
+        /// and if then how many levels deep this applies.
         /// </param>
-        /// <param name="recursionLevel">Number of levels to load subtypes from.</param>
-        public void AddVariable<T>(string name, T obj, bool addSubTypes = true, int recursionLevel = DefaultRecursionLevel)
+        public void AddVariable<T>(string name, T obj, int recursionLevel = DefaultRecursionLevel)
         {
-            _typeLoader.AddVariable(name, obj, addSubTypes, recursionLevel);
+            _typeLoader.AddVariable(name, obj, recursionLevel);
+        }
+
+        public bool RemoveVariable(string name)
+        {
+            return _typeLoader.RemoveVariable(name);
         }
 
         /// <summary>
         /// Loads type to IronPython.
         /// </summary>
         /// <param name="type">Type to load.</param>
-        /// <param name="addSubTypes">
-        /// Determines if subtypes of passed type will also be automatically added to IronPython environment.
-        /// </param>
-        /// <param name="recursionLevel">Number of levels to load subtypes from.</param>
-        public void AddType(Type type, bool addSubTypes = true, int recursionLevel = DefaultRecursionLevel)
+        /// <param name="recursionLevel">
+        /// Determines if subtypes of passed type will also be automatically added to IronPython environment
+        /// and if then how many levels deep this applies.
+        /// </param>        
+        public void AddType(Type type, int recursionLevel = DefaultRecursionLevel)
         {
-            _typeLoader.AddType(type, addSubTypes, recursionLevel);
+            _typeLoader.AddType(type, recursionLevel);
         }
 
         /// <summary>
         /// Loads types to IronPython.
         /// </summary>
         /// <param name="types">Types to load.</param>
-        /// <param name="addSubTypes">
-        /// Determines if subtypes of passed types will also be automatically added to IronPython environment.
+        /// <param name="recursionLevel">
+        /// Determines if subtypes of passed types will also be automatically added to IronPython environment
+        /// and if then how many levels deep this applies.
         /// </param>
-        /// <param name="recursionLevel">Number of levels to load subtypes from.</param>
-        public void AddTypes(IEnumerable<Type> types, bool addSubTypes = true, int recursionLevel = DefaultRecursionLevel)
+        public void AddTypes(IEnumerable<Type> types, int recursionLevel = DefaultRecursionLevel)
         {
-            types.ForEach(type => _typeLoader.AddType(type, addSubTypes, recursionLevel));
+            types.ForEach(type => _typeLoader.AddType(type, recursionLevel));
         }
 
         /// <summary>
         /// Loads all the public non-nested types from the assembly to IronPython.
         /// </summary>
         /// <param name="assembly">Assembly to get types from.</param>
-        /// /// <param name="addSubTypes">
-        /// Determines if subtypes of passed assembly's types will also be automatically added to IronPython environment.
+        /// <param name="recursionLevel">
+        /// Determines if subtypes of types in assembly will also be automatically added to IronPython environment
+        /// and if then how many levels deep this applies.
         /// </param>
-        public void AddAssembly(Assembly assembly, bool addSubTypes = true)
+        public void AddAssembly(Assembly assembly, int recursionLevel = DefaultRecursionLevel)
         {
-            _typeLoader.AddAssembly(assembly, addSubTypes);
+            _typeLoader.AddAssembly(assembly, recursionLevel);
         }
 
         /// <summary>

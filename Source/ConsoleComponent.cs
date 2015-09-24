@@ -27,9 +27,15 @@ namespace QuakeConsole
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
                 _font,
                 _commandInterpreter);
-        }
+        }               
 
         public bool IsAcceptingInput => _console.IsAcceptingInput;
+
+        public float Padding
+        {
+            get { return _console.Padding; }
+            set { _console.Padding = value; }
+        }
 
         public Color BackgroundColor
         {
@@ -43,6 +49,81 @@ namespace QuakeConsole
             set { _console.FontColor = value; }
         }
 
+        public float TimeToToggleOpenClose
+        {
+            get { return _console.OpenCloseTransitionSeconds; }
+            set { _console.OpenCloseTransitionSeconds = value; }
+        }
+
+        //public float TimeToTriggerRepeatingInput
+        //{
+        //    get { return _console.TimeUntilRepeatingInput; }
+        //    set { _console.TimeUntilRepeatingInput = value; }
+        //}
+
+        //public float TimeToCooldownRepeatingInput
+        //{
+        //    get { return _console.TimeUntilRepeatingInput; }
+        //    set { _console.TimeUntilRepeatingInput = value; }
+        //}
+
+        public float HeightRatio
+        {
+            get { return _console.HeightRatio; }
+            set { _console.HeightRatio = value; }
+        }
+
+        public string InputPrefix
+        {
+            get { return _console.ConsoleInput.InputPrefix; }
+            set { _console.ConsoleInput.InputPrefix = value; }
+        }
+
+        public Color InputPrefixColor
+        {
+            get { return _console.ConsoleInput.InputPrefixColor; }
+            set { _console.ConsoleInput.InputPrefixColor = value; }
+        }
+
+        public string CaretSymbol
+        {
+            get { return _console.ConsoleInput.Caret.Symbol; }
+            set { _console.ConsoleInput.Caret.Symbol = value; }
+        }
+
+        public float CaretBlinkingInterval
+        {
+            get { return _console.ConsoleInput.Caret.BlinkIntervalSeconds; }
+            set { _console.ConsoleInput.Caret.BlinkIntervalSeconds = value; }
+        }
+
+        public bool BottomBorderEnabled
+        {
+            get { return _console.BottomBorderEnabled; }
+            set { _console.BottomBorderEnabled = value; }
+        }
+
+        public Color BottomBorderColor
+        {
+            get { return _console.BottomBorderColor; }
+            set { _console.BottomBorderColor = value; }
+        }
+
+        public float BottomBorderThickness
+        {
+            get { return _console.BottomBorderThickness; }
+            set { _console.BottomBorderThickness = value; }
+        }
+
+        public void ToggleOpenClose()
+        {
+            _console.ToggleOpenClose();
+        }
+
+        public void Clear(ConsoleClearFlags clearFlags = ConsoleClearFlags.All) => _console.Clear(clearFlags);
+
+        public void Reset() => _console.Reset();
+
         public override void Update(GameTime gameTime)
         {
             if (Enabled)
@@ -53,11 +134,6 @@ namespace QuakeConsole
         {            
             if (Visible)
                 _console.Draw();
-        }
-
-        public void ToggleOpenClose()
-        {
-            _console.ToggleOpenClose();
         }
     }
 }

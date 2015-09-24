@@ -41,7 +41,6 @@
   <ItemGroup>
     <Compile Include="AutocompletionTests.cs" />
     <Compile Include="DummyObjects.cs" />
-    <Compile Include="FakeCaret.cs" />
     <Compile Include="FakeInputBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -4,9 +4,9 @@ namespace QuakeConsole
 {
     internal class OutputBufferWriter : StreamWriter
     {
-        private readonly IOutputBuffer _output;
+        private readonly IConsoleOutput _output;
 
-        public OutputBufferWriter(Stream s, IOutputBuffer output)
+        public OutputBufferWriter(Stream s, IConsoleOutput output)
             : base(s)
         {
             _output = output;            

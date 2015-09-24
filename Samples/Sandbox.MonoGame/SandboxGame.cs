@@ -29,7 +29,15 @@ namespace Sandbox
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
-            _console = new ConsoleComponent(this) { FontColor = Color.White };
+            _console = new ConsoleComponent(this)
+            {
+                Padding = 10.0f,
+                FontColor = Color.White,
+                InputPrefixColor = Color.White,
+                BottomBorderEnabled = true,
+                BottomBorderThickness = 4.0f,
+                BottomBorderColor = Color.Red
+            };
             Components.Add(_console);
 
             // There's a bug when trying to change resolution during window resize.

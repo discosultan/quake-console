@@ -59,20 +59,20 @@ namespace QuakeConsole
             _instancesAndStaticsForTypes.Clear();
         }
 
-        internal void Autocomplete(IInputBuffer inputBuffer, bool isNextValue)
+        internal void Autocomplete(IConsoleInput consoleInput, bool isNextValue)
         {
             // Which context we in, method or regular.
-            AutocompletionContextResult contextResult = FindAutocompletionContext(inputBuffer, inputBuffer.Caret);
+            AutocompletionContextResult contextResult = FindAutocompletionContext(consoleInput);
             Type typeToPrefer = null;
             if (contextResult.Context == AutocompletionContext.Method)
             {
-                long newCommandLength_whichParamAt_newStartIndex_numParams = FindParamIndexNewStartIndexAndNumParams(inputBuffer, contextResult.StartIndex);
-                int chainEndIndex = FindPreviousLinkEndIndex(inputBuffer, contextResult.StartIndex - 1);
+                long newCommandLength_whichParamAt_newStartIndex_numParams = FindParamIndexNewStartIndexAndNumParams(consoleInput, contextResult.StartIndex);
+                int chainEndIndex = FindPreviousLinkEndIndex(consoleInput, contextResult.StartIndex - 1);
                 if (chainEndIndex >= 0)
                 {
-                    Stack<string> accessorChain = FindAccessorChain(inputBuffer, chainEndIndex);
+                    Stack<string> accessorChain = FindAccessorChain(consoleInput, chainEndIndex);
                     Member lastChainLink = FindLastChainLinkMember(accessorChain);                    
-                    if (lastChainLink != null && lastChainLink.ParameterInfo != null)
+                    if (lastChainLink?.ParameterInfo != null)
                     {
                         var numParams = (int)(newCommandLength_whichParamAt_newStartIndex_numParams & 0xff);
                         ParameterInfo[] overload = null;                        
@@ -97,36 +97,37 @@ namespace QuakeConsole
                 }
             }
 
-            int autocompleteBoundaryIndices = FindBoundaryIndices(inputBuffer, inputBuffer.Caret.Index, removeSpaces: false);
+            int autocompleteBoundaryIndices = FindBoundaryIndices(consoleInput, consoleInput.CaretIndex, removeSpaces: false);
             int startIndex = autocompleteBoundaryIndices & 0xff;
             int length = autocompleteBoundaryIndices >> 16;
-            string command = inputBuffer.Substring(startIndex, length);
-            AutocompletionType completionType = FindAutocompleteType(inputBuffer, startIndex);
+            string command = consoleInput.Substring(startIndex, length);
+            AutocompletionType completionType = FindAutocompleteType(consoleInput, startIndex);
 
             if (completionType == AutocompletionType.Regular)
             {
                 if (typeToPrefer == null || !string.IsNullOrWhiteSpace(command))
                 {
-                    FindAutocompleteForEntries(inputBuffer, InstancesAndStatics, command, startIndex, isNextValue);
+                    FindAutocompleteForEntries(consoleInput, InstancesAndStatics, command, startIndex, isNextValue);
                 }
                 else
                 {
-                    FindAutocompleteForEntries(inputBuffer, GetAvailableNamesForType(typeToPrefer), command, startIndex, isNextValue);
+                    FindAutocompleteForEntries(consoleInput, GetAvailableNamesForType(typeToPrefer), command, startIndex, isNextValue);
                 }
             }
             else // Accessor or assignment or method.
             {
                 // We also need to find the value for whatever was before the type accessor.
-                int chainEndIndex = FindPreviousLinkEndIndex(inputBuffer, startIndex - 1);                
-                if (chainEndIndex < 0) return;                
+                int chainEndIndex = FindPreviousLinkEndIndex(consoleInput, startIndex - 1);                
+                if (chainEndIndex < 0)
+                    return;                
 
-                Stack<string> accessorChain = FindAccessorChain(inputBuffer, chainEndIndex);
+                Stack<string> accessorChain = FindAccessorChain(consoleInput, chainEndIndex);
                 Member lastChainLink = FindLastChainLinkMember(accessorChain);
                 // If no types were found, that means we are assigning a new variable.
                 // Provide all autocomplete entries in that scenario.
                 if (lastChainLink == null)
                 {
-                    FindAutocompleteForEntries(inputBuffer, InstancesAndStatics, command, startIndex, isNextValue);
+                    FindAutocompleteForEntries(consoleInput, InstancesAndStatics, command, startIndex, isNextValue);
                     return;
                 }
 
@@ -139,11 +140,11 @@ namespace QuakeConsole
                         else
                             _interpreter.StaticMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
                         if (autocompleteValues == null) break;
-                        FindAutocompleteForEntries(inputBuffer, autocompleteValues.Names, command, startIndex, isNextValue);
+                        FindAutocompleteForEntries(consoleInput, autocompleteValues.Names, command, startIndex, isNextValue);
                         break;
                     case AutocompletionType.Assignment:
                         FindAutocompleteForEntries(
-                            inputBuffer,
+                            consoleInput,
                             GetAvailableNamesForType(lastChainLink.Type),
                             command,
                             startIndex,
@@ -153,17 +154,17 @@ namespace QuakeConsole
             }
         }
                 
-        private static AutocompletionContextResult FindAutocompletionContext(IInputBuffer inputBuffer, ICaret caret)
+        private static AutocompletionContextResult FindAutocompletionContext(IConsoleInput consoleInput)
         {
             var result = new AutocompletionContextResult { StartIndex = 0 };
-            for (int i = Math.Min(caret.Index, inputBuffer.Length - 1); i >= 0; i--)
+            for (int i = Math.Min(consoleInput.CaretIndex, consoleInput.Length - 1); i >= 0; i--)
             {
-                if (inputBuffer[i] == FunctionEndSymbol)
+                if (consoleInput[i] == FunctionEndSymbol)
                 {
                     result.Context = AutocompletionContext.Regular;
                     break;
                 }
-                if (inputBuffer[i] == FunctionStartSymbol)
+                if (consoleInput[i] == FunctionStartSymbol)
                 {
                     result.Context = AutocompletionContext.Method;
                     result.StartIndex = i + 1;
@@ -175,17 +176,17 @@ namespace QuakeConsole
 
         // returns slices of 16 bit values. [X] are not used and should be removed.
         // [X] new command length | which param we at | [X] new start index  | num params
-        private static long FindParamIndexNewStartIndexAndNumParams(IInputBuffer inputBuffer, int startIndex)
+        private static long FindParamIndexNewStartIndexAndNumParams(IConsoleInput consoleInput, int startIndex)
         {
             int whichParamWeAt = 0;
             int numParams = 1;
             int newStartIndex = startIndex;
             int newCommandLength = 0;
-            for (int i = startIndex; i < inputBuffer.Length; i++)
+            for (int i = startIndex; i < consoleInput.Length; i++)
             {                
-                if (inputBuffer[i] == FunctionEndSymbol)
+                if (consoleInput[i] == FunctionEndSymbol)
                     break;
-                if (inputBuffer[i] == FunctionParamSeparatorSymbol)
+                if (consoleInput[i] == FunctionParamSeparatorSymbol)
                 {
                     newStartIndex = i + 1;
                     newCommandLength = 0;
@@ -195,7 +196,7 @@ namespace QuakeConsole
                 {
                     newCommandLength++;
                 }
-                if (inputBuffer.Caret.Index == i + 1) whichParamWeAt = (numParams - 1);
+                if (consoleInput.CaretIndex == i + 1) whichParamWeAt = (numParams - 1);
             }
             return ((long)newCommandLength << 48) + ((long)whichParamWeAt << 32) + (newStartIndex << 16) + numParams;
         }
@@ -220,25 +221,26 @@ namespace QuakeConsole
             return results;
         }
 
-        private static int FindBoundaryIndices(IInputBuffer inputBuffer, int lookupIndex, bool removeSpaces = false)
+        private static int FindBoundaryIndices(IConsoleInput consoleInput, int lookupIndex, bool removeSpaces = false)
         {
-            if (inputBuffer.Length == 0) return 0;
+            if (consoleInput.Length == 0)
+                return 0;
 
             // Find start index.
             for (int i = lookupIndex; i >= 0; i--)
             {
-                if (i >= inputBuffer.Length) continue;
-                if (!removeSpaces && (AutocompleteBoundaryDenoters.Any(x => x == inputBuffer[i]) || inputBuffer[i] == SpaceSymbol) ||
-                    removeSpaces && AutocompleteBoundaryDenoters.Any(x => x == inputBuffer[i]))
+                if (i >= consoleInput.Length) continue;
+                if (!removeSpaces && (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]) || consoleInput[i] == SpaceSymbol) ||
+                    removeSpaces && AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]))
                     break;
                 lookupIndex = i;
             }
 
             // Find length.
             int length = 0;
-            for (int i = lookupIndex; i < inputBuffer.Length; i++)            
+            for (int i = lookupIndex; i < consoleInput.Length; i++)            
             {                
-                if (AutocompleteBoundaryDenoters.Any(x => x == inputBuffer[i]) || inputBuffer[i] == SpaceSymbol)
+                if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]) || consoleInput[i] == SpaceSymbol)
                     break;
                 length++;
             }
@@ -246,13 +248,13 @@ namespace QuakeConsole
             return lookupIndex + (length << 16);
         }
 
-        private static int FindPreviousLinkEndIndex(IInputBuffer inputBuffer, int startIndex)
+        private static int FindPreviousLinkEndIndex(IConsoleInput consoleInput, int startIndex)
         {
             int chainEndIndex = -1;
             for (int i = startIndex; i >= 0; i--)
-                if (inputBuffer[i] == AccessorSymbol ||
-                    inputBuffer[i] == AssignmentSymbol ||
-                    inputBuffer[i] == FunctionStartSymbol)
+                if (consoleInput[i] == AccessorSymbol ||
+                    consoleInput[i] == AssignmentSymbol ||
+                    consoleInput[i] == FunctionStartSymbol)
                 {
                     chainEndIndex = i - 1;
                     break;
@@ -260,22 +262,23 @@ namespace QuakeConsole
             return chainEndIndex;
         }
 
-        private static AutocompletionType FindAutocompleteType(IInputBuffer inputBuffer, int startIndex)
+        private static AutocompletionType FindAutocompleteType(IConsoleInput consoleInput, int startIndex)
         {
-            if (startIndex == 0) return AutocompletionType.Regular;
+            if (startIndex == 0)
+                return AutocompletionType.Regular;
             startIndex--;
 
             // Does not take into account what was before the accessor or assignment symbol.
             for (int i = startIndex; i >= 0; i--)
             {
-                char c = inputBuffer[i];
+                char c = consoleInput[i];
                 if (c == SpaceSymbol) continue;
                 if (c == AccessorSymbol) return AutocompletionType.Accessor;                
                 if (c == AssignmentSymbol)
                 {
                     if (i <= 0) return AutocompletionType.Assignment;
                     // If we have for example == or += instead of =, use regular autocompletion.
-                    char prev = inputBuffer[i - 1];
+                    char prev = consoleInput[i - 1];
                     return prev == AssignmentSymbol || Operators.Any(x => x == prev)
                         ? AutocompletionType.Regular
                         : AutocompletionType.Assignment;
@@ -286,22 +289,22 @@ namespace QuakeConsole
         }
 
         private readonly Stack<string> _accessorChain = new Stack<string>();
-        private Stack<string> FindAccessorChain(IInputBuffer inputBuffer, int chainEndIndex)
+        private Stack<string> FindAccessorChain(IConsoleInput consoleInput, int chainEndIndex)
         {
             _accessorChain.Clear();
             while (true)
             {
-                int indices = FindBoundaryIndices(inputBuffer, chainEndIndex, removeSpaces: false);
+                int indices = FindBoundaryIndices(consoleInput, chainEndIndex, removeSpaces: false);
                 int startIndex = indices & 0xff;
                 int length = indices >> 16;
 
-                string chainLink = inputBuffer.Substring(startIndex, length).Trim();
+                string chainLink = consoleInput.Substring(startIndex, length).Trim();
                 _accessorChain.Push(chainLink);
 
-                int previousLinkEndIndex = FindPreviousLinkEndIndex(inputBuffer, startIndex - 1);
+                int previousLinkEndIndex = FindPreviousLinkEndIndex(consoleInput, startIndex - 1);
                 if (chainEndIndex < 0) return _accessorChain;
 
-                AutocompletionType chainType = FindAutocompleteType(inputBuffer, startIndex);
+                AutocompletionType chainType = FindAutocompleteType(consoleInput, startIndex);
                 if (chainType == AutocompletionType.Accessor)
                 {
                     chainEndIndex = previousLinkEndIndex;
@@ -315,7 +318,8 @@ namespace QuakeConsole
         private Member FindLastChainLinkMember(Stack<string> accessorChain)
         {
             // This expressions should never be true.
-            if (accessorChain.Count == 0) return null;
+            if (accessorChain.Count == 0)
+                return null;
 
             string link = accessorChain.Pop();
             Member member;            
@@ -360,36 +364,41 @@ namespace QuakeConsole
             }
         }
 
-        private static void FindAutocompleteForEntries(IInputBuffer inputBuffer, IList<string> autocompleteEntries, string command, int startIndex, bool isNextValue)
+        private static void FindAutocompleteForEntries(IConsoleInput consoleInput, IList<string> autocompleteEntries, string command, int startIndex, bool isNextValue)
         {
             int index = autocompleteEntries.IndexOf(x => x.Equals(command, PythonInterpreter.StringComparisonMethod));            
-            if (index == -1 || inputBuffer.LastAutocompleteEntry == null) inputBuffer.LastAutocompleteEntry = command;
+            if (index == -1 || consoleInput.LastAutocompleteEntry == null)
+                consoleInput.LastAutocompleteEntry = command;
 
-            string inputEntry = inputBuffer.LastAutocompleteEntry;
+            string inputEntry = consoleInput.LastAutocompleteEntry;
             Func<string, bool> predicate = x => x.StartsWith(inputEntry, PythonInterpreter.StringComparisonMethod);
             int firstIndex = autocompleteEntries.IndexOf(predicate);
-            if (firstIndex == -1) return;
+            if (firstIndex == -1)
+                return;
             int lastIndex = autocompleteEntries.LastIndexOf(predicate);
-            if (index == -1) index = firstIndex - 1;
+            if (index == -1)
+                index = firstIndex - 1;
 
             if (isNextValue)
             {
                 index++;
-                if (index > lastIndex) index = firstIndex;
-                SetAutocompleteValue(inputBuffer, startIndex, autocompleteEntries[index]);
+                if (index > lastIndex)
+                    index = firstIndex;
+                SetAutocompleteValue(consoleInput, startIndex, autocompleteEntries[index]);
             }
             else
             {
                 index--;
-                if (index < firstIndex) index = lastIndex;
-                SetAutocompleteValue(inputBuffer, startIndex, autocompleteEntries[index]);
+                if (index < firstIndex)
+                    index = lastIndex;
+                SetAutocompleteValue(consoleInput, startIndex, autocompleteEntries[index]);
             }
         }
 
-        private static void SetAutocompleteValue(IInputBuffer inputBuffer, int startIndex, string autocompleteEntry)
+        private static void SetAutocompleteValue(IConsoleInput consoleInput, int startIndex, string autocompleteEntry)
         {
-            inputBuffer.Remove(startIndex, inputBuffer.Length - startIndex);
-            inputBuffer.Write(autocompleteEntry);
+            consoleInput.Remove(startIndex, consoleInput.Length - startIndex);
+            consoleInput.Write(autocompleteEntry);
         }       
     }
 }

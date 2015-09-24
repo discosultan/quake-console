@@ -2,12 +2,12 @@
 
 namespace QuakeConsole.Tests
 {
-    public class FakeInputBuffer : IInputBuffer
+    public class FakeConsoleInput : IConsoleInput
     {
         private readonly StringBuilder _stringBuffer = new StringBuilder();
 
         public string LastAutocompleteEntry { get; set; }
-        public ICaret Caret { get; } = new FakeCaret();
+        public int CaretIndex { get; set; }
 
         public int Length => _stringBuffer.Length;
 

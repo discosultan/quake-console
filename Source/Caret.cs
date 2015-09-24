@@ -8,18 +8,10 @@ using MathUtil = Microsoft.Xna.Framework.MathHelper;
 
 namespace QuakeConsole
 {
-    public interface ICaret
-    {
-        /// <summary>
-        /// Gets or sets the character index the cursor is at in the <see cref="InputBuffer"/>.
-        /// </summary>
-        int Index { get; set; }
-    }
-
     /// <summary>
-    /// A blinking caret inside the <see cref="InputBuffer"/> to show the location of the cursor.
+    /// A blinking caret inside the <see cref="ConsoleInput"/> to show the location of the cursor.
     /// </summary>
-    public class Caret : ICaret
+    public class Caret
     {
         internal event EventHandler Moved;
 
@@ -45,7 +37,7 @@ namespace QuakeConsole
         }
 
         /// <summary>
-        /// Gets or sets the character index the cursor is at in the <see cref="InputBuffer"/>.
+        /// Gets or sets the character index the cursor is at in the <see cref="ConsoleInput"/>.
         /// </summary>
         public int Index
         {

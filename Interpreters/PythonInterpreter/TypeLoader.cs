@@ -31,7 +31,7 @@ namespace QuakeConsole
             _interpreter = interpreter;
         }
 
-        internal void AddVariable<T>(string name, T obj, bool fullyRecursive, int recursionLevel)
+        internal void AddVariable<T>(string name, T obj, int recursionLevel)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
@@ -47,31 +47,39 @@ namespace QuakeConsole
             if (type.DeclaringType != null)
                 throw new InvalidOperationException("Nested types are not supported.");
 
-            _interpreter.ScriptScope.SetVariable(name, obj);
+            _interpreter.ScriptScope.SetVariable(name, obj);            
 
             // Add instance.
             _interpreter.Instances.Add(name, new Member { Name = name, Type = type });
             _interpreter.InstancesAndStaticsDirty = true;
 
-            if (_interpreter.InstanceMembers.ContainsKey(type)) return;
+            if (_interpreter.InstanceMembers.ContainsKey(type))
+                return;
 
-            AddTypeImpl(type, fullyRecursive, recursionLevel);
+            AddTypeImpl(type, recursionLevel);
         }
 
-        internal void AddType(Type type, bool fullyRecursive, int recursionLevel)
+        internal bool RemoveVariable(string name)
+        {
+            _interpreter.Instances.Remove(name);
+            _interpreter.InstancesAndStaticsDirty = true;
+            return _interpreter.ScriptScope.RemoveVariable(name);
+        }
+
+        internal void AddType(Type type, int recursionLevel)
         {
             if (type == null)
                 throw new ArgumentException("type");
 
-            AddTypeImpl(type, fullyRecursive, recursionLevel);            
+            AddTypeImpl(type, recursionLevel);            
         }
 
-        internal void AddAssembly(Assembly assembly, bool fullyRecursive)
+        internal void AddAssembly(Assembly assembly, int recursionLevel)
         {
             if (assembly == null)
                 throw new ArgumentException("assembly");
 
-            assembly.GetTypes().ForEach(x => AddTypeImpl(x, fullyRecursive, int.MaxValue));
+            assembly.GetTypes().ForEach(x => AddTypeImpl(x, recursionLevel));
         }
 
         internal void Reset()
@@ -80,7 +88,7 @@ namespace QuakeConsole
             _addedTypes.Clear();            
         }
 
-        private bool AddTypeImpl(Type type, bool fullyRecursive, int recursionLevel)
+        private bool AddTypeImpl(Type type, int recursionLevel)
         {
             if (type == null)
                 return false;
@@ -99,34 +107,31 @@ namespace QuakeConsole
             if (recursionLevel-- > 0)
             { 
                 // Add static members.
-                AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, fullyRecursive, recursionLevel);
+                AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, recursionLevel);
                 // Add instance members.
-                AddMembers(_interpreter.InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, fullyRecursive, recursionLevel);
+                AddMembers(_interpreter.InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, recursionLevel);
             }
 
             return true;
         }
 
-        private void AddMembers(IDictionary<Type, MemberCollection> dict, Type type, BindingFlags flags, bool fullyRecursive, int recursionLevel)
+        private void AddMembers(IDictionary<Type, MemberCollection> dict, Type type, BindingFlags flags, int recursionLevel)
         {
             if (!dict.ContainsKey(type))
             {
                 MemberCollection memberInfo = AutocompleteMembersQuery(type.GetMembers(flags));
                 dict.Add(type, memberInfo);
-                if (fullyRecursive)
-                {
-                    for (int i = 0; i < memberInfo.Names.Count; i++)
-                    {                        
-                        AddTypeImpl(memberInfo.UnderlyingTypes[i], true, recursionLevel);
-                        if (memberInfo.ParamInfos[i] != null)
+                for (int i = 0; i < memberInfo.Names.Count; i++)
+                {                        
+                    AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);
+                    if (memberInfo.ParamInfos[i] != null)
+                    {
+                        memberInfo.ParamInfos[i].ForEach(overload =>
                         {
-                            memberInfo.ParamInfos[i].ForEach(overload =>
-                            {
-                                overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, true, recursionLevel));
-                            });
-                        }
+                            overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel));
+                        });
                     }
-                }
+                }               
             }
         }
         

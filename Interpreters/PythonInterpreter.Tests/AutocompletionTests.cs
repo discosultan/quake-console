@@ -35,8 +35,7 @@ namespace QuakeConsole.Tests
         private const string StaticClassPrefix = "Podo";
         private const string TargetBooleanType = StaticClassName + ".Gymnogen";
 
-        private IInputBuffer _inputBuffer;
-        private ICaret _caret;
+        private IConsoleInput _consoleInput;        
         private PythonInterpreter _interpreter;
 
         private Kickup _target;        
@@ -44,15 +43,14 @@ namespace QuakeConsole.Tests
         [SetUp]
         public void Setup()
         {
-            _inputBuffer = new FakeInputBuffer();
-            _caret = _inputBuffer.Caret;
+            _consoleInput = new FakeConsoleInput();            
             _interpreter = new PythonInterpreter();
             _target = new Kickup();
             // Should be automatically ordered by names.
-            _interpreter.AddVariable(SecondInstanceName, _target);
-            _interpreter.AddVariable(FirstInstanceName, _target);
-            _interpreter.AddVariable(StringInstanceNameAndValue, StringInstanceNameAndValue);
-            _interpreter.AddType(typeof (Podobranchia));
+            _interpreter.AddVariable(SecondInstanceName, _target, int.MaxValue);
+            _interpreter.AddVariable(FirstInstanceName, _target, int.MaxValue);
+            _interpreter.AddVariable(StringInstanceNameAndValue, StringInstanceNameAndValue, int.MaxValue);
+            _interpreter.AddType(typeof (Podobranchia), int.MaxValue);
         }
 
         // Loaded instance_a, instance_z, Behen, Eider, Kickup, Pauciloquent, String, Type
@@ -63,112 +61,112 @@ namespace QuakeConsole.Tests
         [Test]
         public void NoInput_AutocompleteOnce_FirstInstanceSelected()
         {
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void NoInput_AutocompleteTwice_SecondInstanceSelected()
         {
-            _interpreter.Autocomplete(_inputBuffer, true);
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(SecondInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(SecondInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void NoInput_AutocompleteTwiceForwardOnceBackward_FirstInstanceSelected()
         {
-            _interpreter.Autocomplete(_inputBuffer, true);
-            _interpreter.Autocomplete(_inputBuffer, true);
-            _interpreter.Autocomplete(_inputBuffer, false);
+            _interpreter.Autocomplete(_consoleInput, true);
+            _interpreter.Autocomplete(_consoleInput, true);
+            _interpreter.Autocomplete(_consoleInput, false);
 
-            Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void NoInput_AutocomplateBackward_WrappedToEnd()
         {
-            _interpreter.Autocomplete(_inputBuffer, false);
+            _interpreter.Autocomplete(_consoleInput, false);
 
-            Assert.AreEqual(LastStaticName, _inputBuffer.Value);
+            Assert.AreEqual(LastStaticName, _consoleInput.Value);
         }
 
         [Test]
         public void NoInput_AutocompleteBackwardOnceForwardOnce_WrappedToBeginning()
         {
-            _interpreter.Autocomplete(_inputBuffer, false);
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, false);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void FirstInstanceInput_CaretAtZero_Autocomplete_DidNothing()
         {
-            _inputBuffer.Value = FirstInstanceName;
-            _caret.Index = 0;
+            _consoleInput.Value = FirstInstanceName;
+            _consoleInput.CaretIndex = 0;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName, _consoleInput.Value);
         }        
 
         [Test]
         public void InstancePrefix_CaretAtZero_Autocomplete_FirstInstanceSelected()
         {
-            _inputBuffer.Value = InstancePrefix;
-            _caret.Index = 0;
+            _consoleInput.Value = InstancePrefix;
+            _consoleInput.CaretIndex = 0;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void InstancePrefix_CaretAtZero_AutocompleteTwice_SecondInstanceSelected()
         {
-            _inputBuffer.Value = InstancePrefix;
-            _caret.Index = 0;
+            _consoleInput.Value = InstancePrefix;
+            _consoleInput.CaretIndex = 0;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(SecondInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(SecondInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void InstancePrefix_CaretAtEnd_Autocomplete_FirstInstanceSelected()
         {
-            _inputBuffer.Value = InstancePrefix;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = InstancePrefix;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void FirstInstanceInput_CaretAtEnd_Autocomplete_DidNothing()
         {
-            _inputBuffer.Value = FirstInstanceName;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = FirstInstanceName;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void StaticClassPrefixInput_CaretAtEnd_Autocomplete_StaticTypeSelected()
         {
-            _inputBuffer.Value = StaticClassPrefix;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = StaticClassPrefix;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(StaticClassName, _inputBuffer.Value);
+            Assert.AreEqual(StaticClassName, _consoleInput.Value);
         }
 
         #endregion
@@ -179,121 +177,121 @@ namespace QuakeConsole.Tests
         [Test]
         public void FirstInstanceInput_Accessor_CaretAtEnd_Autocomplete_FirstMemberSelected()
         {
-            _inputBuffer.Value = FirstInstanceName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = FirstInstanceName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName + Accessor + TargetFirstMemberName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName + Accessor + TargetFirstMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void FirstInstanceInput_Accessor_CaretAtEnd_AutocompleteTwice_SecondMemberSelected()
         {
-            _inputBuffer.Value = FirstInstanceName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = FirstInstanceName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName + Accessor + TargetSecondMemberName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName + Accessor + TargetSecondMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void FirstInstanceInput_Accessor_CaretAtEnd_AutocompleteBackward_WrappedToEnd()
         {
-            _inputBuffer.Value = FirstInstanceName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = FirstInstanceName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, false);            
+            _interpreter.Autocomplete(_consoleInput, false);            
 
-            Assert.AreEqual(FirstInstanceName + Accessor + TargetLastMemberName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName + Accessor + TargetLastMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void FirstInstanceInput_Accessor_CaretAtEnd_AutocompleteOnceBackwardOnceForward_WrappedToBeginning()
         {
-            _inputBuffer.Value = FirstInstanceName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = FirstInstanceName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, false);
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, false);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName + Accessor + TargetFirstMemberName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName + Accessor + TargetFirstMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void Space_FirstInstanceInput_Accessor_CaretAtEnd_Autocomplete_FirstMemberSelected()
         {
-            _inputBuffer.Value = Space + FirstInstanceName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = Space + FirstInstanceName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
 
-            Assert.AreEqual(Space + FirstInstanceName + Accessor + TargetFirstMemberName, _inputBuffer.Value);
+            Assert.AreEqual(Space + FirstInstanceName + Accessor + TargetFirstMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void FirstInstanceInput_Accessor_Space_CaretAtEnd_Autocomplete_FirstMemberSelected()
         {
-            _inputBuffer.Value = FirstInstanceName + Accessor + Space;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = FirstInstanceName + Accessor + Space;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(FirstInstanceName + Accessor + Space + TargetFirstMemberName, _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName + Accessor + Space + TargetFirstMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void FirstInstanceInput_Accessor_AutocompleteToOverloadedMember_CaretAtEnd_Autocomplete_OverloadSkipped()
         {
-            _inputBuffer.Value = FirstInstanceName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = FirstInstanceName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true); // Cymidine
-            _interpreter.Autocomplete(_inputBuffer, true); // Equals            
-            _interpreter.Autocomplete(_inputBuffer, true); // GetHashcode
-            _interpreter.Autocomplete(_inputBuffer, true); // GetType
-            _interpreter.Autocomplete(_inputBuffer, true); // Gusher
-            _interpreter.Autocomplete(_inputBuffer, true); // Pauciloquent
-            _interpreter.Autocomplete(_inputBuffer, true); // SetBehen            
-            _interpreter.Autocomplete(_inputBuffer, true); // ToString
+            _interpreter.Autocomplete(_consoleInput, true); // Cymidine
+            _interpreter.Autocomplete(_consoleInput, true); // Equals            
+            _interpreter.Autocomplete(_consoleInput, true); // GetHashcode
+            _interpreter.Autocomplete(_consoleInput, true); // GetType
+            _interpreter.Autocomplete(_consoleInput, true); // Gusher
+            _interpreter.Autocomplete(_consoleInput, true); // Pauciloquent
+            _interpreter.Autocomplete(_consoleInput, true); // SetBehen            
+            _interpreter.Autocomplete(_consoleInput, true); // ToString
 
-            Assert.AreEqual(FirstInstanceName + Accessor + "ToString", _inputBuffer.Value);
+            Assert.AreEqual(FirstInstanceName + Accessor + "ToString", _consoleInput.Value);
         }
 
         [Test]
         public void StaticTypeInput_Accessor_CaretAtEnd_Autocomplete_FirstMemberSelected()
         {
-            _inputBuffer.Value = StaticTypeName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = StaticTypeName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMemberName, _inputBuffer.Value);
+            Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void StaticTypeMember_Accessor_CaretAtEnd_Autocomplete_MemberMemberSelected()
         {
-            _inputBuffer.Value = StaticTypeName + Accessor + StaticTypeFirstMemberName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = StaticTypeName + Accessor + StaticTypeFirstMemberName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMemberName + Accessor + StaticTypeFirstMemberFirstMemberName, _inputBuffer.Value);
+            Assert.AreEqual(StaticTypeName + Accessor + StaticTypeFirstMemberName + Accessor + StaticTypeFirstMemberFirstMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceTypeMembersMember_Accessor_CaretAtEnd_Autocomplete_TypeLoaderWasRecursive()
         {
-            _inputBuffer.Value = TargetRecursiveFieldName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetRecursiveFieldName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetRecursiveFieldName + Accessor + TargetRecursiveFieldTypeMemberName, _inputBuffer.Value);
+            Assert.AreEqual(TargetRecursiveFieldName + Accessor + TargetRecursiveFieldTypeMemberName, _consoleInput.Value);
         }
 
         #endregion
@@ -304,57 +302,57 @@ namespace QuakeConsole.Tests
         [Test]
         public void InstanceStringFieldInput_Assignment_CaretAtEnd_Autocomplete_StringInstanceSelected()
         {
-            _inputBuffer.Value = TargetFieldName + Assignment;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetFieldName + Assignment;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetFieldName + Assignment + StringInstanceNameAndValue, _inputBuffer.Value);
+            Assert.AreEqual(TargetFieldName + Assignment + StringInstanceNameAndValue, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceStringFieldInput_Assignment_CaretAtEnd_AutocompleteTwice_StringTypeSelected()
         {
-            _inputBuffer.Value = TargetFieldName + Assignment;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetFieldName + Assignment;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetFieldName + Assignment + "String", _inputBuffer.Value);
+            Assert.AreEqual(TargetFieldName + Assignment + "String", _consoleInput.Value);
         }
 
         [Test]
         public void InstanceStringFieldInput_Assignment_Space_CaretAtEnd_Autocomplete_StringInstanceSelected()
         {
-            _inputBuffer.Value = TargetFieldName + Assignment + Space;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetFieldName + Assignment + Space;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetFieldName + Assignment + Space + StringInstanceNameAndValue, _inputBuffer.Value);
+            Assert.AreEqual(TargetFieldName + Assignment + Space + StringInstanceNameAndValue, _consoleInput.Value);
         }
 
         [Test]
         public void BoolType_Assignment_CaretAtEnd_Autocomplete_PredefinedTypeSelected()
         {
-            _inputBuffer.Value = TargetBooleanType + Assignment;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetBooleanType + Assignment;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetBooleanType + Assignment + "False", _inputBuffer.Value);
+            Assert.AreEqual(TargetBooleanType + Assignment + "False", _consoleInput.Value);
         }
 
         [Test]
         public void NewVariable_Assignment_CaretAtEnd_Autocomplete_FirstInstanceSelected()
         {
-            _inputBuffer.Value = "x" + Assignment;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = "x" + Assignment;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual("x" + Assignment + FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual("x" + Assignment + FirstInstanceName, _consoleInput.Value);
         }
 
         #endregion
@@ -365,89 +363,89 @@ namespace QuakeConsole.Tests
         [Test]
         public void InstanceEnumMethodInput_MethodStart_CaretAtEnd_Autocomplete_FirstParamSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceEnumMethodInput_MethodStart_Space_CaretAtEnd_Autocomplete_FirstParamSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart + Space;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart + Space;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + Space + EnumTypeName, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + Space + EnumTypeName, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceEnumMethodInput_MethodStart_Enum_Assignment_CaretAtEnd_Autocomplete_EnumMemberSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart + EnumTypeName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart + EnumTypeName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceMethodInput_MethodStart_FirstParam_ParamSeparator_CaretAtEnd_Autocomplete_SecondParamSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName + MethodParamSeparator;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName + MethodParamSeparator;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName + MethodParamSeparator + TargetMethodSecondParamTypeName, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName + MethodParamSeparator + TargetMethodSecondParamTypeName, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceMethodInput_MethodStart_ParamSeparator_MethodEnd_CaretAtEnd_Autocomplete_FirstInstanceSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart + MethodParamSeparator + MethodEnd;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart + MethodParamSeparator + MethodEnd;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + MethodParamSeparator + MethodEnd + FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + MethodParamSeparator + MethodEnd + FirstInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceMethodInput_MethodStart_InstancePrefix_CaretAtEnd_Autocomplete_FirstInstanceSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart + InstancePrefix;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart + InstancePrefix;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + FirstInstanceName, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + FirstInstanceName, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceMethodInput_MethodStart_FirstParamType_Accessor_CaretAtEnd_Autocomplete_FirstParamValueSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart + EnumTypeName + Accessor;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart + EnumTypeName + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + Accessor + EnumFirstMemberName, _consoleInput.Value);
         }
 
         [Test]
         public void InstanceMethodInput_MethodStart_MethodParamSeparator_CaretAtSeparator_Autocomplete_FirstParamTypeSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart + Accessor;
-            _caret.Index = _inputBuffer.Length - Accessor.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length - Accessor.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName, _consoleInput.Value);
         }
 
         [Test]
@@ -455,23 +453,23 @@ namespace QuakeConsole.Tests
         (Command Prompt Style). We might want to change that (to Powershell style for example).")]
         public void InstanceMethodInput_MethodStart_Space_MethodParamSeparator_CaretAtSpace_Autocomplete_FirstParamTypeSelected()
         {
-            _inputBuffer.Value = TargetMethodName + MethodStart + Space + Accessor;
-            _caret.Index = _inputBuffer.Length - Accessor.Length - Space.Length;
+            _consoleInput.Value = TargetMethodName + MethodStart + Space + Accessor;
+            _consoleInput.CaretIndex = _consoleInput.Length - Accessor.Length - Space.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + MethodParamSeparator, _inputBuffer.Value);
+            Assert.AreEqual(TargetMethodName + MethodStart + EnumTypeName + MethodParamSeparator, _consoleInput.Value);
         }
 
         [Test]
         public void TwoParamMethod_MethodStart_CaretAtEnd_Autocomplete_FirstParamSelected()
         {
-            _inputBuffer.Value = StaticTypeMethodName + MethodStart;
-            _caret.Index = _inputBuffer.Length;
+            _consoleInput.Value = StaticTypeMethodName + MethodStart;
+            _consoleInput.CaretIndex = _consoleInput.Length;
 
-            _interpreter.Autocomplete(_inputBuffer, true);
+            _interpreter.Autocomplete(_consoleInput, true);
 
-            Assert.AreEqual(StaticTypeMethodName + MethodStart + StaticTypeMethodParamName, _inputBuffer.Value);
+            Assert.AreEqual(StaticTypeMethodName + MethodStart + StaticTypeMethodParamName, _consoleInput.Value);
         }
 
         #endregion

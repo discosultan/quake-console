@@ -1,4 +1,8 @@
-﻿using System;
+﻿// TODO: Indexer autocompletion for python interpreter
+// TODO: Move cursor by word when holding ctrl
+// TODO: Code cleanup
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using QuakeConsole.Utilities;
@@ -21,7 +25,7 @@ namespace QuakeConsole
         internal event EventHandler PaddingChanged;
         internal event EventHandler WindowAreaChanged;
 
-        // General.
+        // General.        
         private ICommandInterpreter _commandInterpreter;
         private GraphicsDevice _device;
         private GraphicsDeviceManager _graphicsDeviceManager;
@@ -30,8 +34,7 @@ namespace QuakeConsole
 
         private Texture _backgroundTexture;
         private SpriteFont _font;
-        private RectangleF _windowArea;                        
-        private float? _initialPadding;
+        private RectangleF _windowArea;        
         private float _padding;
         private float _heightRatio;
         private ConsoleState _state = ConsoleState.Closed;
@@ -52,7 +55,7 @@ namespace QuakeConsole
 
         public Console()
         {            
-            SetDefaults(_defaultSettings);
+            SetDefaults(new ConsoleSettings());
         }
 
         /// <summary>
@@ -84,14 +87,12 @@ namespace QuakeConsole
 #else                   
             _backgroundTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
 #endif
-            SetWindowWidthAndHeight();
-            if (_initialPadding.HasValue)
-                Padding = _initialPadding.Value;
-
-            InputBuffer.LoadContent(this);
-            OutputBuffer.LoadContent(this);
-
             _loaded = true;
+
+            SetWindowWidthAndHeight();            
+
+            ConsoleInput.LoadContent(this);
+            ConsoleOutput.LoadContent(this);            
         }
 
         public void UnloadContent()
@@ -105,12 +106,12 @@ namespace QuakeConsole
         /// <summary>
         /// Gets the input part of the <see cref="Console"/>.
         /// </summary>
-        public InputBuffer InputBuffer { get; } = new InputBuffer();
+        public ConsoleInput ConsoleInput { get; } = new ConsoleInput();
 
         /// <summary>
         /// Gets the output part of the <see cref="Console"/>.
         /// </summary>
-        public OutputBuffer OutputBuffer { get; } = new OutputBuffer();
+        public ConsoleOutput ConsoleOutput { get; } = new ConsoleOutput();
 
         /// <summary>
         /// Gets if any part of the <see cref="Console"/> is visible.
@@ -188,14 +189,24 @@ namespace QuakeConsole
             {
                 // Store the padding anyway. The console might not be fully loaded before the user
                 // can already set the padding. We can set it after loading once _initialPadding has been set.
-                _initialPadding = value;
-                _padding = MathUtil.Clamp(
-                    value,
-                    0,
-                    GetMaxAllowedPadding());
-                PaddingChanged?.Invoke(this, EventArgs.Empty);
+                if (_loaded)
+                {
+                    _padding = MathUtil.Clamp(
+                        value,
+                        0,
+                        GetMaxAllowedPadding());
+                    PaddingChanged?.Invoke(this, EventArgs.Empty);
+                }
+                else
+                {
+                    _padding = value;
+                }
             }
         }
+
+        public bool BottomBorderEnabled { get; set; }        
+        public Color BottomBorderColor { get; set; }
+        public float BottomBorderThickness { get; set; }
 
         /// <summary>
         /// Gets or sets the dictionary that is used to map keyboard keys to corresponding symbols
@@ -268,9 +279,9 @@ namespace QuakeConsole
         public void Clear(ConsoleClearFlags clearFlags = ConsoleClearFlags.All)
         {
             if ((clearFlags & ConsoleClearFlags.OutputBuffer) != 0)
-                OutputBuffer.Clear();
+                ConsoleOutput.Clear();
             if ((clearFlags & ConsoleClearFlags.InputBuffer) != 0)
-                InputBuffer.Clear();
+                ConsoleInput.Clear();
             if ((clearFlags & ConsoleClearFlags.InputHistory) != 0)
                 ClearHistory();
         }
@@ -282,7 +293,7 @@ namespace QuakeConsole
         public void Reset()
         {
             Clear();
-            SetDefaults(_defaultSettings);
+            SetDefaults(new ConsoleSettings());
         }
 
         /// <inheritdoc/>        
@@ -300,7 +311,7 @@ namespace QuakeConsole
                         -WindowArea.Height * _transitionTimer.Progress,
                         WindowArea.Width,
                         WindowArea.Height);
-                    InputBuffer.Update(deltaSeconds);
+                    ConsoleInput.Update(deltaSeconds);
                     break;
                 case ConsoleState.Opening:
                     UpdateTimer(deltaSeconds, ConsoleState.Open);
@@ -329,7 +340,7 @@ namespace QuakeConsole
                             HandleKey(_downKey);
                         }
                     }
-                    InputBuffer.Update(deltaSeconds);
+                    ConsoleInput.Update(deltaSeconds);
                     break;
             }
         }
@@ -348,10 +359,16 @@ namespace QuakeConsole
                         _backgroundTexture,
                         WindowArea,
                         BackgroundColor);
+                    if (BottomBorderEnabled)
+                    {
+                        SpriteBatch.Draw(_backgroundTexture,
+                            new RectangleF(0, WindowArea.Bottom, WindowArea.Width, BottomBorderThickness),
+                            BottomBorderColor);
+                    }
                     // Draw output buffer.                    
-                    OutputBuffer.Draw();
+                    ConsoleOutput.Draw();
                     // Draw input buffer.
-                    InputBuffer.Draw();
+                    ConsoleInput.Draw();
                     SpriteBatch.End();
                     break;
             }
@@ -405,19 +422,19 @@ namespace QuakeConsole
             switch (action)
             {                                    
                 case ConsoleAction.ExecuteCommand:
-                    string cmd = InputBuffer.Value;                    
+                    string cmd = ConsoleInput.Value;                    
                     // Determine if this is a line break or we should execute command straight away.
                     if (_actionDefinitions.BackwardTryGetValue(ConsoleAction.NextLineModifier, out modifier) &&
                         Input.IsKeyDown(modifier))
                     {                        
-                        OutputBuffer.AddCommandEntry(cmd);                        
+                        ConsoleOutput.AddCommandEntry(cmd);                        
                     } 
                     else
                     {
                         string executedCmd = cmd;
-                        if (OutputBuffer.HasCommandEntry)
+                        if (ConsoleOutput.HasCommandEntry)
                         {
-                            executedCmd = OutputBuffer.DequeueCommandEntry() + cmd;
+                            executedCmd = ConsoleOutput.DequeueCommandEntry() + cmd;
                         }
                                                 
                         // Replace our tab symbols with actual tab characters.
@@ -425,7 +442,7 @@ namespace QuakeConsole
                         // Log the command to be executed if logger is set.
                         LogInput?.Invoke(executedCmd);
                         // Execute command.
-                        _commandInterpreter.Execute(OutputBuffer, executedCmd);
+                        _commandInterpreter.Execute(ConsoleOutput, executedCmd);
                     }
                                         
                     // If the cmd matches the currently indexed historical entry then set a special flag
@@ -436,7 +453,7 @@ namespace QuakeConsole
                     else
                         _inputHistoryDoNotDecrement = true;
 
-                    InputBuffer.LastAutocompleteEntry = null;
+                    ConsoleInput.LastAutocompleteEntry = null;
 
                     // Find the last historical entry if any.
                     string lastHistoricalEntry = null;
@@ -448,8 +465,8 @@ namespace QuakeConsole
                     if (cmd != "" && !cmd.Equals(lastHistoricalEntry, StringComparison.Ordinal))
                         _inputHistory.Add(cmd);
 
-                    InputBuffer.Clear();                                        
-                    InputBuffer.Caret.MoveBy(int.MinValue);                    
+                    ConsoleInput.Clear();                                        
+                    ConsoleInput.Caret.MoveBy(int.MinValue);                    
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.PreviousCommandInHistory:  
                     if (!_inputHistoryDoNotDecrement)
@@ -464,33 +481,33 @@ namespace QuakeConsole
                     bool hasModifier = _actionDefinitions.BackwardTryGetValue(ConsoleAction.AutocompleteModifier, out modifier);
                     if (hasModifier && !Input.IsKeyDown(modifier)) return ConsoleProcessResult.None;
                     bool canMoveBackwards = _actionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
-                    _commandInterpreter.Autocomplete(InputBuffer, !canMoveBackwards || !Input.IsKeyDown(modifier));
-                    InputBuffer.Caret.Index = InputBuffer.Length;
+                    _commandInterpreter.Autocomplete(ConsoleInput, !canMoveBackwards || !Input.IsKeyDown(modifier));
+                    ConsoleInput.Caret.Index = ConsoleInput.Length;
                     _inputHistoryIndexer = int.MaxValue;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveLeft:
-                    InputBuffer.Caret.MoveBy(-1);
+                    ConsoleInput.Caret.MoveBy(-1);
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveRight:
-                    InputBuffer.Caret.MoveBy(1);
+                    ConsoleInput.Caret.MoveBy(1);
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveToBeginning:
-                    InputBuffer.Caret.Index = 0;
+                    ConsoleInput.Caret.Index = 0;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveToEnd:
-                    InputBuffer.Caret.Index = InputBuffer.Length;
+                    ConsoleInput.Caret.Index = ConsoleInput.Length;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.DeletePreviousChar:
-                    if (InputBuffer.Length > 0 && InputBuffer.Caret.Index > 0)
+                    if (ConsoleInput.Length > 0 && ConsoleInput.Caret.Index > 0)
                     {                        
-                        InputBuffer.Remove(Math.Max(0, InputBuffer.Caret.Index - 1), 1);
+                        ConsoleInput.Remove(Math.Max(0, ConsoleInput.Caret.Index - 1), 1);
                         ResetLastHistoryAndAutocompleteEntries();
                     }
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.DeleteCurrentChar:
-                    if (InputBuffer.Length > InputBuffer.Caret.Index)
+                    if (ConsoleInput.Length > ConsoleInput.Caret.Index)
                     {                        
-                        InputBuffer.Remove(InputBuffer.Caret.Index, 1);
+                        ConsoleInput.Remove(ConsoleInput.Caret.Index, 1);
                         ResetLastHistoryAndAutocompleteEntries();
                     }
                     return ConsoleProcessResult.Break;
@@ -506,11 +523,11 @@ namespace QuakeConsole
                     _actionDefinitions.BackwardTryGetValue(ConsoleAction.TabModifier, out modifier);
                     if (Input.IsKeyDown(modifier))
                     {
-                        InputBuffer.RemoveTab();
+                        ConsoleInput.RemoveTab();
                     }
                     else
                     {
-                        InputBuffer.Write(Tab);
+                        ConsoleInput.Write(Tab);
                     }                                        
                     ResetLastHistoryAndAutocompleteEntries(); 
                     return ConsoleProcessResult.Break;
@@ -530,7 +547,7 @@ namespace QuakeConsole
 
             bool toUpper = uppercaseModifiers != null && uppercaseModifiers.Any(x => Input.IsKeyDown(x));
 
-            InputBuffer.Write(toUpper
+            ConsoleInput.Write(toUpper
                 ? symbolPair.UppercaseSymbol
                 : symbolPair.LowercaseSymbol);
             
@@ -540,7 +557,7 @@ namespace QuakeConsole
 
         private void ResetLastHistoryAndAutocompleteEntries()
         {
-            InputBuffer.LastAutocompleteEntry = null;
+            ConsoleInput.LastAutocompleteEntry = null;
             _inputHistoryIndexer = int.MaxValue;
         }
 
@@ -557,8 +574,8 @@ namespace QuakeConsole
             _inputHistoryIndexer = MathUtil.Clamp(_inputHistoryIndexer, 0, _inputHistory.Count - 1);
 
             _inputHistoryDoNotDecrement = false;
-            InputBuffer.LastAutocompleteEntry = null;
-            InputBuffer.Value = _inputHistory[_inputHistoryIndexer];
+            ConsoleInput.LastAutocompleteEntry = null;
+            ConsoleInput.Value = _inputHistory[_inputHistoryIndexer];
         }
 
         private void ClearHistory()
@@ -610,8 +627,7 @@ namespace QuakeConsole
                     break;
             }
             WindowArea = newWindowArea;
-            if (_padding > GetMaxAllowedPadding()) 
-                Padding = _padding; // Invoke padding setter.
+            Padding = _padding; // Invoke padding setter.                      
         }
 
         private float GetMaxAllowedPadding()
@@ -630,16 +646,19 @@ namespace QuakeConsole
 
         private void SetDefaults(ConsoleSettings settings)
         {
-            BackgroundColor = _defaultSettings.BackgroundColor;            
-            FontColor = _defaultSettings.FontColor;
-            HeightRatio = _defaultSettings.HeightRatio;
-            OpenCloseTransitionSeconds = _defaultSettings.OpenCloseTransitionSeconds;
-            RepeatingInputCooldown = _defaultSettings.RepeatingInputCooldown;
-            TimeUntilRepeatingInput = _defaultSettings.TimeUntilRepeatingInput;                        
+            BackgroundColor = settings.BackgroundColor;            
+            FontColor = settings.FontColor;
+            HeightRatio = settings.HeightRatio;
+            OpenCloseTransitionSeconds = settings.TimeToToggleOpenClose;
+            RepeatingInputCooldown = settings.TimeToCooldownRepeatingInput;
+            TimeUntilRepeatingInput = settings.TimeToTriggerRepeatingInput;                        
             Padding = settings.Padding;
+            BottomBorderEnabled = settings.BottomBorderEnabled;
+            BottomBorderColor = settings.BottomBorderColor;
+            BottomBorderThickness = settings.BottomBorderThickness;
 
-            InputBuffer.SetDefaults(settings);
-            OutputBuffer.SetDefaults(settings);
+            ConsoleInput.SetDefaults(settings);
+            ConsoleOutput.SetDefaults(settings);
         }           
     }
 }

@@ -35,11 +35,11 @@ namespace QuakeConsole
         /// Executes a command by looking if any <see cref="Command"/> is registered with that name and
         /// runs it if it is.
         /// </summary>
-        /// <param name="outputBuffer">Console output buffer to append any output messages.</param>
+        /// <param name="output">Console output buffer to append any output messages.</param>
         /// <param name="input">Command to execute.</param>
-        public void Execute(IOutputBuffer outputBuffer, string input)
+        public void Execute(IConsoleOutput output, string input)
         {
-            if (EchoEnabled) outputBuffer.Append(input);
+            if (EchoEnabled) output.Append(input);
 
             string[] inputSplit = input.Split(CommandAndArgumentSeparator, StringSplitOptions.RemoveEmptyEntries);
             string command = inputSplit[0];
@@ -54,17 +54,17 @@ namespace QuakeConsole
                     {
                         string result = cmd(commandArgs);
                         if (!string.IsNullOrWhiteSpace(result))
-                            outputBuffer.Append(result);
+                            output.Append(result);
                     }
                     catch (Exception ex)
                     {
-                        outputBuffer.Append($"Command '{command}' failed. {ex.Message}");
+                        output.Append($"Command '{command}' failed. {ex.Message}");
                     }
                 }
             }
             else
             {
-                outputBuffer.Append($"Command '{command}' not found.");
+                output.Append($"Command '{command}' not found.");
             }
         }
 
@@ -78,29 +78,29 @@ namespace QuakeConsole
         }
 
         /// <summary>
-        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="InputBuffer"/>.
+        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="ConsoleInput"/>.
         /// </summary>
-        /// <param name="inputBuffer">Console input.</param>
+        /// <param name="input">Console input.</param>
         /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
-        public void Autocomplete(IInputBuffer inputBuffer, bool forward)
+        public void Autocomplete(IConsoleInput input, bool forward)
         {
             if (_autocompleteEntries == null)                            
                 _autocompleteEntries = _commandMap.Keys.OrderBy(x => x).ToArray();
 
-            string currentInput = inputBuffer.Value;
+            string currentInput = input.Value;
 
             int index = _autocompleteEntries.IndexOf(x => x.Equals(currentInput, StringComparisonMethod));            
-            if (index == -1 || inputBuffer.LastAutocompleteEntry == null) inputBuffer.LastAutocompleteEntry = currentInput;
+            if (index == -1 || input.LastAutocompleteEntry == null) input.LastAutocompleteEntry = currentInput;
             index++;
             if (index >= _autocompleteEntries.Length) index = 0;
 
             for (int i = index; i < _autocompleteEntries.Length; ++i)
             {
                 string commandString = _autocompleteEntries[i];
-                if (commandString.StartsWith(inputBuffer.LastAutocompleteEntry, StringComparisonMethod))
+                if (commandString.StartsWith(input.LastAutocompleteEntry, StringComparisonMethod))
                 {
-                    inputBuffer.Clear();
-                    inputBuffer.Write(commandString);                    
+                    input.Clear();
+                    input.Write(commandString);                    
                     return;
                 }
             }
