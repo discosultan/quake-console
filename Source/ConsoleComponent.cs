@@ -25,11 +25,18 @@ namespace QuakeConsole
             _console.LoadContent(
                 GraphicsDevice,
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
+                Game.Content,
                 _font,
                 _commandInterpreter);
         }               
 
         public bool IsAcceptingInput => _console.IsAcceptingInput;
+
+        public ICommandInterpreter Interpreter
+        {
+            get { return _console.Interpreter; }
+            set { _console.Interpreter = value; }
+        }
 
         public float Padding
         {
@@ -113,6 +120,24 @@ namespace QuakeConsole
         {
             get { return _console.BottomBorderThickness; }
             set { _console.BottomBorderThickness = value; }
+        }
+
+        public Texture2D BackgroundTexture
+        {
+            get { return _console.BgRenderer.Texture; }
+            set { _console.BgRenderer.Texture = value; }
+        }
+
+        public Vector2 BackgroundTextureScale
+        {
+            get { return _console.BgRenderer.TextureScale; }
+            set { _console.BgRenderer.TextureScale = value; }
+        }
+
+        public Matrix BackgroundTextureTransform
+        {
+            get { return _console.BgRenderer.TextureTransform; }
+            set { _console.BgRenderer.TextureTransform = value; }
         }
 
         public void ToggleOpenClose()

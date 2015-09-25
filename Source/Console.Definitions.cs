@@ -205,6 +205,8 @@ namespace QuakeConsole
         public bool BottomBorderEnabled { get; set; }
         public Color BottomBorderColor { get; set; } = Color.Red;
         public float BottomBorderThickness { get; set; } = 5.0f;
-        //public Texture2D BackgroundTexture { get; set; }
+        public Texture2D BackgroundTexture { get; set; }
+        public Vector2 BackgroundTextureScale { get; set; } = Vector2.One;
+        public Matrix BackgroundTextureTransform { get; set; } = Matrix.Identity;
     }
 }

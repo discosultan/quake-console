@@ -9,14 +9,17 @@ namespace Sandbox
     /// This is the main type for your game.
     /// </summary>
     public class SandboxGame : Game
-    {
+    {        
         private const Keys ToggleConsole = Keys.OemTilde;
+        private const float ConsoleBackgroundSpeedFactor = 1/24f;        
         private static readonly Color BackgroundColor = Color.LightSlateGray;
+        private static readonly Vector2 ConsoleBackgroundTiling = new Vector2(2, 2);
 
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
         private SpriteFont _font;
+        private Matrix _consoleBgTransform = Matrix.Identity;
         private readonly ConsoleComponent _console;
         private readonly PythonInterpreter _interpreter = new PythonInterpreter();
 
@@ -57,7 +60,9 @@ namespace Sandbox
 
             _font = Content.Load<SpriteFont>("arial");
             _console.LoadContent(_font, _interpreter);
-            Content.Load<Texture2D>("console01");
+            _console.BackgroundTexture = Content.Load<Texture2D>("console");
+            _console.BackgroundTextureScale = new Vector2(2.0f);
+            _console.BackgroundColor = Color.White;
 
             _cube = new Cube(GraphicsDevice);
             _interpreter.AddVariable("cube", _cube);
@@ -83,6 +88,10 @@ namespace Sandbox
             float deltaSeconds = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
             _cube.Update(deltaSeconds);
+
+            _consoleBgTransform = Matrix.CreateScale(new Vector3(ConsoleBackgroundTiling, 0)) *
+                                  Matrix.CreateTranslation((float)gameTime.TotalGameTime.TotalSeconds * ConsoleBackgroundSpeedFactor, 0, 0);
+            _console.BackgroundTextureTransform = _consoleBgTransform;
 
             base.Update(gameTime);
         }

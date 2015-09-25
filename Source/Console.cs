@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework.Content;
 using QuakeConsole.Utilities;
 #if MONOGAME
 using Texture = Microsoft.Xna.Framework.Graphics.Texture2D;
@@ -27,12 +28,11 @@ namespace QuakeConsole
 
         // General.        
         private ICommandInterpreter _commandInterpreter;
-        private GraphicsDevice _device;
         private GraphicsDeviceManager _graphicsDeviceManager;
 
-        private readonly Timer _transitionTimer = new Timer { AutoReset = false };        
-
-        private Texture _backgroundTexture;
+        private readonly Timer _transitionTimer = new Timer { AutoReset = false };
+        
+        private Texture _whiteTexture;
         private SpriteFont _font;
         private RectangleF _windowArea;        
         private float _padding;
@@ -62,28 +62,32 @@ namespace QuakeConsole
         /// Initializes a new instance of <see cref="Console"/>.
         /// </summary>
         /// <param name="device">Graphcis device.</param>
-        /// <param name="deviceManager">Graphics device manager.</param>        
+        /// <param name="deviceManager">Graphics device manager.</param>
+        /// <param name="content">Content loader.</param>
         /// <param name="font">Font used in the <see cref="Console"/> window.</param>
         /// <param name="commandInterpreter">
         /// User input interpreter. Manages autocompletion and the logic behind command execution.
         /// Pass NULL to use a stub command interpreter (useful for testing out shell itself).
         /// </param>
-        public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager, SpriteFont font, ICommandInterpreter commandInterpreter)
+        public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager, ContentManager content, 
+            SpriteFont font, ICommandInterpreter commandInterpreter)
         {
             Check.ArgumentNotNull(deviceManager, nameof(deviceManager), "Cannot instantiate the console without graphics device manager.");
             Check.ArgumentNotNull(font, nameof(font), "Cannot instantiate the console without a font.");
+            Check.ArgumentNotNull(content, nameof(content));
 
             _commandInterpreter = commandInterpreter ?? new StubCommandInterpreter();
-            _device = device;
+            GraphicsDevice = device;
+            Content = content;
             _graphicsDeviceManager = deviceManager;
-            Font = font;
+            Font = font;            
 
-            SpriteBatch = new SpriteBatch(_device);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             _graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceChanged;
 #if MONOGAME
-            _backgroundTexture = new Texture2D(_device, 2, 2, false, SurfaceFormat.Color);
-            _backgroundTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White });
+            _whiteTexture = new Texture2D(GraphicsDevice, 2, 2, false, SurfaceFormat.Color);
+            _whiteTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White });
 #else                   
             _backgroundTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
 #endif
@@ -92,7 +96,8 @@ namespace QuakeConsole
             SetWindowWidthAndHeight();            
 
             ConsoleInput.LoadContent(this);
-            ConsoleOutput.LoadContent(this);            
+            ConsoleOutput.LoadContent(this);
+            BgRenderer.LoadContent(this);
         }
 
         public void UnloadContent()
@@ -100,7 +105,14 @@ namespace QuakeConsole
             _graphicsDeviceManager.PreparingDeviceSettings -= OnPreparingDeviceChanged;
 
             SpriteBatch.Dispose();
-            _backgroundTexture.Dispose();
+            _whiteTexture.Dispose();            
+            BgRenderer.UnloadContent();
+        }
+
+        public ICommandInterpreter Interpreter
+        {
+            get { return _commandInterpreter; }
+            set { _commandInterpreter = value ?? new StubCommandInterpreter(); }
         }
 
         /// <summary>
@@ -111,7 +123,7 @@ namespace QuakeConsole
         /// <summary>
         /// Gets the output part of the <see cref="Console"/>.
         /// </summary>
-        public ConsoleOutput ConsoleOutput { get; } = new ConsoleOutput();
+        public ConsoleOutput ConsoleOutput { get; } = new ConsoleOutput();        
 
         /// <summary>
         /// Gets if any part of the <see cref="Console"/> is visible.
@@ -206,7 +218,7 @@ namespace QuakeConsole
 
         public bool BottomBorderEnabled { get; set; }        
         public Color BottomBorderColor { get; set; }
-        public float BottomBorderThickness { get; set; }
+        public float BottomBorderThickness { get; set; }        
 
         /// <summary>
         /// Gets or sets the dictionary that is used to map keyboard keys to corresponding symbols
@@ -228,7 +240,10 @@ namespace QuakeConsole
 
         internal Dictionary<char, float> CharWidthMap { get; } = new Dictionary<char, float>();
 
+        internal BackgroundRenderer BgRenderer { get; } = new BackgroundRenderer();
         internal SpriteBatch SpriteBatch { get; private set; }
+        internal GraphicsDevice GraphicsDevice { get; private set; }
+        internal ContentManager Content { get; private set; }
 
         internal RectangleF WindowArea
         {
@@ -336,9 +351,7 @@ namespace QuakeConsole
                     {
                         _repeatedPressIntervalTimer.Update(deltaSeconds);
                         if (_repeatedPressIntervalTimer.Finished)
-                        {
                             HandleKey(_downKey);
-                        }
                     }
                     ConsoleInput.Update(deltaSeconds);
                     break;
@@ -355,19 +368,29 @@ namespace QuakeConsole
                 case ConsoleState.Open:
                     SpriteBatch.Begin();
                     // Draw background.
-                    SpriteBatch.Draw(
-                        _backgroundTexture,
-                        WindowArea,
-                        BackgroundColor);
-                    if (BottomBorderEnabled)
+                    if (BgRenderer.Texture != null)
                     {
-                        SpriteBatch.Draw(_backgroundTexture,
-                            new RectangleF(0, WindowArea.Bottom, WindowArea.Width, BottomBorderThickness),
-                            BottomBorderColor);
+                        BgRenderer.Draw();
                     }
-                    // Draw output buffer.                    
-                    ConsoleOutput.Draw();
-                    // Draw input buffer.
+                    else
+                    {
+                        SpriteBatch.Draw(
+                            _whiteTexture,
+                            WindowArea,
+                            new RectangleF(
+                                0,
+                                0,
+                                WindowArea.Width,
+                                WindowArea.Height),
+                            BackgroundColor);
+                    }
+                    // Draw bottom border if enabled.
+                    if (BottomBorderEnabled)
+                        SpriteBatch.Draw(_whiteTexture,
+                            new RectangleF(0, WindowArea.Bottom, WindowArea.Width, BottomBorderThickness),
+                            BottomBorderColor);                                        
+                    // Draw output and input strings.
+                    ConsoleOutput.Draw();                    
                     ConsoleInput.Draw();
                     SpriteBatch.End();
                     break;
@@ -607,9 +630,9 @@ namespace QuakeConsole
         private void SetWindowWidthAndHeight()
         {
 #if MONOGAME
-            SetWindowWidthAndHeight(_device.Viewport.Width, _device.Viewport.Height);            
+            SetWindowWidthAndHeight(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 #else
-            SetWindowWidthAndHeight(_device.BackBuffer.Width, _device.BackBuffer.Height);            
+            SetWindowWidthAndHeight(GraphicsDevice.BackBuffer.Width, GraphicsDevice.BackBuffer.Height);            
 #endif
         }
 
@@ -625,7 +648,7 @@ namespace QuakeConsole
                 case ConsoleState.Closed:
                     newWindowArea.Y = -newWindowArea.Height;
                     break;
-            }
+            }            
             WindowArea = newWindowArea;
             Padding = _padding; // Invoke padding setter.                      
         }
@@ -657,6 +680,7 @@ namespace QuakeConsole
             BottomBorderColor = settings.BottomBorderColor;
             BottomBorderThickness = settings.BottomBorderThickness;
 
+            BgRenderer.SetDefault(settings);
             ConsoleInput.SetDefaults(settings);
             ConsoleOutput.SetDefaults(settings);
         }           
