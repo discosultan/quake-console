@@ -98,6 +98,8 @@ namespace QuakeConsole
             { Keys.OemQuotes, new SymbolPair("'", "\"") },
 #if PARADOX
             { Keys.Oem5, new SymbolPair("\\", "|") },            
+#else
+            { Keys.OemPipe, new SymbolPair("\\", "|") },
 #endif
 
             { Keys.OemBackslash, new SymbolPair("\\", "|") },
@@ -112,6 +114,8 @@ namespace QuakeConsole
             { Keys.OemPeriod, new SymbolPair(".", ">") },
 #if PARADOX
             { Keys.Oem2, new SymbolPair("/", "?") },
+#else
+            { Keys.OemQuestion, new SymbolPair("/", "?") },
 #endif
 
             // Special.

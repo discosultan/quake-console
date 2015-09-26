@@ -42,6 +42,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="CameraControllerComponent.cs" />
     <Compile Include="Cube.cs" />
     <Compile Include="SandboxGame.cs" />
     <Compile Include="Program.cs" />

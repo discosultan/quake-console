@@ -13,17 +13,13 @@ namespace Sandbox
 
         private VertexBuffer _vertices;
         private IndexBuffer _indices;
-        private Matrix _world;
-        private readonly Matrix _view;
-        private readonly Matrix _projection;
+        private Matrix _world;        
 
-        public Cube(GraphicsDevice device)
+        public Cube(GraphicsDevice device, BasicEffect effect)
         {
             _device = device;
-            _effect = new BasicEffect(device) { VertexColorEnabled = true };
-            _world = Matrix.Identity;
-            _view = Matrix.CreateLookAt(new Vector3(0, 5, 10), Vector3.Zero, Vector3.Up);
-            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, _device.Viewport.AspectRatio, 1, 1000);
+            _effect = effect;
+            _world = Matrix.Identity;            
             CreateCubeVertexBuffer();
             CreateCubeIndexBuffer();
         }
@@ -50,9 +46,7 @@ namespace Sandbox
         {
             _device.SetVertexBuffer(_vertices);
             _device.Indices = _indices;
-
-            _effect.View = _view;
-            _effect.Projection = _projection;
+            
             _effect.World = _world;
             _effect.CurrentTechnique.Passes[0].Apply();
 
