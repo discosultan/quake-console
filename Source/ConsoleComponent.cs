@@ -104,12 +104,6 @@ namespace QuakeConsole
             set { _console.ConsoleInput.Caret.BlinkIntervalSeconds = value; }
         }
 
-        public bool BottomBorderEnabled
-        {
-            get { return _console.BottomBorderEnabled; }
-            set { _console.BottomBorderEnabled = value; }
-        }
-
         public Color BottomBorderColor
         {
             get { return _console.BottomBorderColor; }

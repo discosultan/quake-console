@@ -3,7 +3,7 @@
 namespace QuakeConsole.Tests
 {
     [TestFixture]
-    public class AutocompletionTests
+    public class GeneralAutocompletionTests
     {
         private const string InstancePrefix = "instance";
         private const string FirstInstanceName = "instance_a";

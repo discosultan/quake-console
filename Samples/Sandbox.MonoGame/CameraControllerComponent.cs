@@ -9,8 +9,9 @@ namespace Sandbox
         private KeyboardState _previousKeyboardState;
         private KeyboardState _currentKeyboardState;
 
-        private Vector3 _position = new Vector3(0, 5, 10);        
-        private Quaternion _rotation = Quaternion.CreateFromAxisAngle(Vector3.Right, MathHelper.PiOver4 * 0.5f);
+        private Vector3 _position = new Vector3(0, 5, 10);
+        //private Quaternion _rotation = Quaternion.Identity;
+        private Matrix _rotation = Matrix.CreateFromAxisAngle(Vector3.Right, -MathHelper.PiOver4 * 0.5f);
 
         private Vector2 _previousMousePos;        
 
@@ -32,6 +33,7 @@ namespace Sandbox
         public Keys MoveBackwardKey { get; set; } = Keys.S;
 
         public float MovementSpeed { get; set; } = 10.0f;
+        public float RotationSpeed = 1.0f;
 
         public Matrix View { get; private set; }
         public Matrix Projection { get; private set; }
@@ -42,6 +44,7 @@ namespace Sandbox
 
             HandleKeyboard(deltaSeconds);
             HandleMouse(deltaSeconds);
+            CalculateView();
         }
 
         private void HandleKeyboard(float deltaSeconds)
@@ -65,8 +68,8 @@ namespace Sandbox
             if (movement != Vector3.Zero)
             {
                 movement.Normalize();
-                _position += movement * MovementSpeed * deltaSeconds;
-                CalculateView();
+                movement = Vector3.TransformNormal(movement, _rotation);
+                _position += movement * MovementSpeed * deltaSeconds;                
             }
 
             _previousKeyboardState = _currentKeyboardState;
@@ -81,10 +84,12 @@ namespace Sandbox
                 Vector2 mousePos = mouseState.Position.ToVector2();
                 if (_previousMousePos != Vector2.Zero)
                 {
-                    Vector2 amount = mousePos - _previousMousePos;
-                    float magnitude = amount.Length();
-                    Vector2 rotAngle = new Vector2(-amount.Y / magnitude, amount.X / magnitude);
-                    _rotation *= Quaternion.CreateFromAxisAngle(new Vector3(rotAngle, 0), magnitude * MathHelper.TwoPi);
+                    Vector2 amount = mousePos - _previousMousePos;                    
+                    if (amount != Vector2.Zero)
+                    {
+                        amount *= RotationSpeed*0.001f;
+                        _rotation = Matrix.CreateFromYawPitchRoll(amount.X, amount.Y, 0) * _rotation;
+                    }
                 }
                 _previousMousePos = mousePos;
             }
@@ -95,10 +100,9 @@ namespace Sandbox
         }
 
         private void CalculateView()
-        {            
-            Vector3 target = _position + Vector3.Forward;
-            Matrix rot = Matrix.CreateFromQuaternion(_rotation);            
-            View = Matrix.CreateLookAt(_position, target, Vector3.Up) * rot;
+        {                                                
+            Vector3 target = _position + _rotation.Forward;
+            View = Matrix.CreateLookAt(_position, target, _rotation.Up);
         }
 
         private void CalculateProjection()

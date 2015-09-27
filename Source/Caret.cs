@@ -110,5 +110,37 @@ namespace QuakeConsole
             Symbol = settings.CaretSymbol;           
             _caretBlinkingTimer.TargetTime = settings.CaretBlinkingIntervalSeconds;
         }
+
+        public void MoveToPreviousWord()
+        {
+            bool prevOnLetter = Index < _inputBuffer.Length && char.IsLetterOrDigit(_inputBuffer[Index]);
+            for (int i = Index - 1; i >= 0; i--)
+            {
+                bool currentOnLetter = char.IsLetterOrDigit(_inputBuffer[i]);                
+                if (prevOnLetter && !currentOnLetter && i != Index - 1)
+                {
+                    Index = i + 1;
+                    return;
+                }
+                prevOnLetter = currentOnLetter;
+            }
+            Index = 0;
+        }
+
+        public void MoveToNextWord()
+        {
+            bool prevOnLetter = Index < _inputBuffer.Length && char.IsLetterOrDigit(_inputBuffer[Index]);
+            for (int i = Index + 1; i < _inputBuffer.Length; i++)
+            {
+                bool currentOnLetter = char.IsLetterOrDigit(_inputBuffer[i]);
+                if (!prevOnLetter && currentOnLetter)
+                {
+                    Index = i;
+                    return;
+                }
+                prevOnLetter = currentOnLetter;
+            }
+            Index = _inputBuffer.Length;
+        }
     }
 }

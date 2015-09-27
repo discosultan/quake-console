@@ -39,7 +39,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AutocompletionTests.cs" />
+    <Compile Include="ArrayAutocompletionTests.cs" />
+    <Compile Include="GeneralAutocompletionTests.cs" />
     <Compile Include="DummyObjects.cs" />
     <Compile Include="FakeInputBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -26,7 +26,7 @@ namespace Sandbox
         private readonly ConsoleComponent _console;
         private readonly PythonInterpreter _interpreter = new PythonInterpreter();
 
-        private CameraControllerComponent _camera;
+        private readonly CameraControllerComponent _camera;
         private Cube _cube;
        
         private KeyboardState _previousKeyState;
@@ -40,8 +40,7 @@ namespace Sandbox
             {
                 Padding = 10.0f,
                 FontColor = Color.White,
-                InputPrefixColor = Color.White,
-                BottomBorderEnabled = true,
+                InputPrefixColor = Color.White,                
                 BottomBorderThickness = 4.0f,
                 BottomBorderColor = Color.Red
             };
@@ -99,9 +98,10 @@ namespace Sandbox
             if (IsKeyPressed(ToggleConsole))
                 _console.ToggleOpenClose();
 
-            float deltaSeconds = (float) gameTime.ElapsedGameTime.TotalSeconds;
-
-            _cube.Update(deltaSeconds);
+            float deltaSeconds = (float) gameTime.ElapsedGameTime.TotalSeconds;            
+            
+            _camera.Enabled = !_console.IsAcceptingInput;
+            _cube.Update(deltaSeconds);            
 
             _consoleBgTransform = Matrix.CreateScale(new Vector3(ConsoleBackgroundTiling, 0)) *
                                   Matrix.CreateTranslation((float)gameTime.TotalGameTime.TotalSeconds * ConsoleBackgroundSpeedFactor, 0, 0);

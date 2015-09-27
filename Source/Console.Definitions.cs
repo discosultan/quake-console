@@ -24,7 +24,7 @@ namespace QuakeConsole
             { Keys.RightCtrl, ConsoleAction.CopyPasteModifier },
             { Keys.LeftCtrl, ConsoleAction.AutocompleteModifier },
             { Keys.RightCtrl, ConsoleAction.AutocompleteModifier },
-#endif
+#endif            
             { Keys.Enter, ConsoleAction.ExecuteCommand },
             { Keys.Left, ConsoleAction.MoveLeft },
             { Keys.Right, ConsoleAction.MoveRight },
@@ -44,7 +44,9 @@ namespace QuakeConsole
             { Keys.Space, ConsoleAction.Autocomplete },            
             { Keys.Tab, ConsoleAction.Tab },
             { Keys.LeftShift, ConsoleAction.TabModifier },
-            { Keys.RightShift, ConsoleAction.TabModifier }
+            { Keys.RightShift, ConsoleAction.TabModifier },
+            { Keys.LeftControl, ConsoleAction.MoveByWordModifier },
+            { Keys.RightControl, ConsoleAction.MoveByWordModifier }
         };
 
         private Dictionary<Keys, SymbolPair> _symbolDefinitions = new Dictionary<Keys, SymbolPair>
@@ -159,6 +161,7 @@ namespace QuakeConsole
         CopyPasteModifier,
         PreviousEntryModifier,
         AutocompleteModifier,
+        MoveByWordModifier,
         //UppercaseToggle,
         Space,
         MoveToEnd,
@@ -205,10 +208,9 @@ namespace QuakeConsole
         public Color InputPrefixColor { get; set; } = Color.Yellow;
         public float Padding { get; set; } = 2.0f;
         public string CaretSymbol { get; set; } = "_";
-        public float CaretBlinkingIntervalSeconds { get; set; } = 0.4f;
-        public bool BottomBorderEnabled { get; set; }
+        public float CaretBlinkingIntervalSeconds { get; set; } = 0.4f;        
         public Color BottomBorderColor { get; set; } = Color.Red;
-        public float BottomBorderThickness { get; set; } = 5.0f;
+        public float BottomBorderThickness { get; set; } = 0.0f;
         public Texture2D BackgroundTexture { get; set; }
         public Vector2 BackgroundTextureScale { get; set; } = Vector2.One;
         public Matrix BackgroundTextureTransform { get; set; } = Matrix.Identity;

@@ -14,13 +14,15 @@ namespace QuakeConsole
         private const char FunctionStartSymbol = '(';
         private const char FunctionEndSymbol = ')';
         private const char FunctionParamSeparatorSymbol = ',';
+        private const char ArrayStartSymbol = '[';
+        private const char ArrayEndSymbol = ']';
         private static readonly char[] Operators =
         {
             '+', '-', '*', '/', '%'
         };
         private static readonly char[] AutocompleteBoundaryDenoters =
         {
-            '(', ')', '[', ']', '{', '}', '/', '=', '.', ','
+            '(', ')', '{', '}', '/', '=', '.', ','//, '[', ']'
         };
         private static readonly Dictionary<Type, string[]> PredefinedAutocompleteEntries = new Dictionary<Type, string[]>
         {
@@ -302,7 +304,8 @@ namespace QuakeConsole
                 _accessorChain.Push(chainLink);
 
                 int previousLinkEndIndex = FindPreviousLinkEndIndex(consoleInput, startIndex - 1);
-                if (chainEndIndex < 0) return _accessorChain;
+                if (chainEndIndex < 0)
+                    return _accessorChain;
 
                 AutocompletionType chainType = FindAutocompleteType(consoleInput, startIndex);
                 if (chainType == AutocompletionType.Accessor)
@@ -317,12 +320,14 @@ namespace QuakeConsole
         
         private Member FindLastChainLinkMember(Stack<string> accessorChain)
         {
-            // This expressions should never be true.
             if (accessorChain.Count == 0)
                 return null;
 
             string link = accessorChain.Pop();
-            Member member;            
+            
+            bool isArrayIndexer = IsArrayIndexer(link, out link);
+
+            Member member;
             if (_interpreter.Instances.TryGetValue(link, out member))
             {
                 member.IsInstance = true;                
@@ -336,10 +341,15 @@ namespace QuakeConsole
                 return null;
             }
 
+            if (isArrayIndexer)
+            {
+                var type = member.Type.GetElementType();
+                if (_interpreter.Statics.TryGetValue(type.Name, out member))
+                    member.IsInstance = true;                
+            }            
+
             if (accessorChain.Count == 0)
-            {                
                 return member;
-            }
 
             while (true)
             {
@@ -347,21 +357,56 @@ namespace QuakeConsole
                 MemberCollection membersCollection;
                 if (member.IsInstance)
                 {
-                    if (!_interpreter.InstanceMembers.TryGetValue(member.Type, out membersCollection)) return null;
+                    if (!_interpreter.InstanceMembers.TryGetValue(member.Type, out membersCollection))
+                        return null;
                 }
                 else // static type
                 {
-                    if (!_interpreter.StaticMembers.TryGetValue(member.Type, out membersCollection)) return null;
+                    if (!_interpreter.StaticMembers.TryGetValue(member.Type, out membersCollection))
+                        return null;
                 }
+
+                isArrayIndexer = IsArrayIndexer(link, out link);
 
                 member = membersCollection.TryGetMemberByName(link, true);
-                if (member == null) return null;                
+                if (member == null)
+                    return null;
+
+                if (isArrayIndexer)
+                {
+                    var type = member.Type.GetElementType();
+                    if (_interpreter.Statics.TryGetValue(type.Name, out member))
+                        member.IsInstance = true;
+                }
 
                 if (accessorChain.Count == 0)
-                {
                     return member;
+            }
+        }
+
+        private static bool IsArrayIndexer(string link, out string subLink)
+        {
+            bool insideArrayAccessor = false;
+            for (int i = link.Length - 1; i >= 0; i--)
+            {
+                char c = link[i];
+                if (c == ArrayEndSymbol)
+                {
+                    insideArrayAccessor = true;
+                    continue;
+                }
+
+                if (insideArrayAccessor && c == ArrayEndSymbol)
+                    break;
+
+                if (insideArrayAccessor && c == ArrayStartSymbol)
+                {
+                    subLink = link.Substring(0, i);
+                    return true;
                 }
             }
+            subLink = link;
+            return false;
         }
 
         private static void FindAutocompleteForEntries(IConsoleInput consoleInput, IList<string> autocompleteEntries, string command, int startIndex, bool isNextValue)

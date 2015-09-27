@@ -12,7 +12,7 @@
 
         public string Cymidine;
 
-        public Gusher Gusher;        
+        public Gusher Gusher;
 
         public Pauciloquent Pauciloquent { get; set; }                
 

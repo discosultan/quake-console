@@ -6,21 +6,26 @@ namespace QuakeConsole
 {
     internal class OutputEntry
     {
-        private readonly ConsoleOutput _view;        
+        private readonly ConsoleOutput _view;
+        private string _value = "";
 
         public OutputEntry(ConsoleOutput view)
         {
             _view = view;                        
+        }        
+
+        public string Value
+        {
+            get { return _value; }
+            set
+            {
+                _value = value.Replace("\t", _view.Console.Tab);
+                Lines.Clear();
+                Lines.Add(_value);
+            }
         }
 
-        public string Value { get; private set; } = "";
         public List<string> Lines { get; } = new List<string>();
-
-        public int SetValueAndCalculateLines(string value, float screenWidth, bool countPrefix)
-        {            
-            Value = value.Replace("\t", _view.Console.Tab);
-            return CalculateLines(screenWidth, countPrefix);
-        }
 
         public int CalculateLines(float bufferAreaWidth, bool countPrefix)
         {

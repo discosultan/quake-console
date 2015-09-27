@@ -10,9 +10,10 @@ namespace Sandbox
 
         private readonly GraphicsDevice _device;
         private readonly BasicEffect _effect;
-
-        private VertexBuffer _vertices;
-        private IndexBuffer _indices;
+        
+        public VertexPositionColor[] Vertices { get; private set; }
+        private DynamicVertexBuffer _vertexBuffer;
+        private IndexBuffer _indexBuffer;
         private Matrix _world;        
 
         public Cube(GraphicsDevice device, BasicEffect effect)
@@ -24,11 +25,11 @@ namespace Sandbox
             CreateCubeIndexBuffer();
         }
 
-        public Vector3 Position { get; set; }
-        public Vector3 Scale { get; set; } = Vector3.One;
-        public Vector3 Rotation { get; set; }
+        public Vector3 Position;
+        public Vector3 Scale = Vector3.One;
+        public Vector3 Rotation;
 
-        public Vector3 RotationSpeed { get; set; } = new Vector3(0, MathHelper.PiOver2, 0);
+        public Vector3 RotationSpeed = new Vector3(0, MathHelper.PiOver2, 0);
 
         public void Update(float deltaSeconds)
         {
@@ -37,6 +38,8 @@ namespace Sandbox
                 MathHelper.WrapAngle(Rotation.Y + RotationSpeed.Y*deltaSeconds),
                 MathHelper.WrapAngle(Rotation.Z + RotationSpeed.Z*deltaSeconds));
 
+
+
             _world = Matrix.CreateScale(Scale)*
                     Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z)*
                     Matrix.CreateTranslation(Position);
@@ -44,8 +47,9 @@ namespace Sandbox
 
         public void Draw()
         {
-            _device.SetVertexBuffer(_vertices);
-            _device.Indices = _indices;
+            _vertexBuffer.SetData(Vertices);
+            _device.SetVertexBuffer(_vertexBuffer);
+            _device.Indices = _indexBuffer;
             
             _effect.World = _world;
             _effect.CurrentTechnique.Passes[0].Apply();
@@ -55,28 +59,28 @@ namespace Sandbox
 
         void CreateCubeVertexBuffer()
         {
-            var cubeVertices = new VertexPositionColor[NumVertices];
+            Vertices = new VertexPositionColor[NumVertices];
 
-            cubeVertices[0].Position = new Vector3(-1, -1, -1);
-            cubeVertices[1].Position = new Vector3(-1, -1, 1);
-            cubeVertices[2].Position = new Vector3(1, -1, 1);
-            cubeVertices[3].Position = new Vector3(1, -1, -1);
-            cubeVertices[4].Position = new Vector3(-1, 1, -1);
-            cubeVertices[5].Position = new Vector3(-1, 1, 1);
-            cubeVertices[6].Position = new Vector3(1, 1, 1);
-            cubeVertices[7].Position = new Vector3(1, 1, -1);
+            Vertices[0].Position = new Vector3(-1, -1, -1);
+            Vertices[1].Position = new Vector3(-1, -1, 1);
+            Vertices[2].Position = new Vector3(1, -1, 1);
+            Vertices[3].Position = new Vector3(1, -1, -1);
+            Vertices[4].Position = new Vector3(-1, 1, -1);
+            Vertices[5].Position = new Vector3(-1, 1, 1);
+            Vertices[6].Position = new Vector3(1, 1, 1);
+            Vertices[7].Position = new Vector3(1, 1, -1);
 
-            cubeVertices[0].Color = Color.Black;
-            cubeVertices[1].Color = Color.Red;
-            cubeVertices[2].Color = Color.Yellow;
-            cubeVertices[3].Color = Color.Green;
-            cubeVertices[4].Color = Color.Blue;
-            cubeVertices[5].Color = Color.Magenta;
-            cubeVertices[6].Color = Color.White;
-            cubeVertices[7].Color = Color.Cyan;
+            Vertices[0].Color = Color.Black;
+            Vertices[1].Color = Color.Red;
+            Vertices[2].Color = Color.Yellow;
+            Vertices[3].Color = Color.Green;
+            Vertices[4].Color = Color.Blue;
+            Vertices[5].Color = Color.Magenta;
+            Vertices[6].Color = Color.White;
+            Vertices[7].Color = Color.Cyan;
 
-            _vertices = new VertexBuffer(_device, VertexPositionColor.VertexDeclaration, 8, BufferUsage.WriteOnly);
-            _vertices.SetData(cubeVertices);
+            _vertexBuffer = new DynamicVertexBuffer(_device, VertexPositionColor.VertexDeclaration, 8, BufferUsage.WriteOnly);
+            _vertexBuffer.SetData(Vertices);
         }
 
         void CreateCubeIndexBuffer()
@@ -131,8 +135,8 @@ namespace Sandbox
             cubeIndices[34] = 6;
             cubeIndices[35] = 7;
 
-            _indices = new IndexBuffer(_device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
-            _indices.SetData(cubeIndices);
+            _indexBuffer = new IndexBuffer(_device, IndexElementSize.SixteenBits, 36, BufferUsage.WriteOnly);
+            _indexBuffer.SetData(cubeIndices);
         }
     }
 }

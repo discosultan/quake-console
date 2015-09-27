@@ -82,7 +82,8 @@ namespace QuakeConsole
             if (message == null) return;            
 
             var viewBufferEntry = _entryPool.Fetch();
-            _numRows += viewBufferEntry.SetValueAndCalculateLines(message, _console.WindowArea.Width - _console.Padding * 2, false);
+            viewBufferEntry.Value = message;            
+            _numRows += viewBufferEntry.CalculateLines(_console.WindowArea.Width - _console.Padding * 2, false);
             _entries.Enqueue(viewBufferEntry);
             RemoveOverflownBufferEntriesIfAllowed();
         }
@@ -101,7 +102,9 @@ namespace QuakeConsole
             if (value == null) return;
 
             var entry = _entryPool.Fetch();
-            entry.SetValueAndCalculateLines(value, _console.WindowArea.Width - _console.Padding * 2, true);
+            entry.Value = value;
+            _numRows++;
+            //entry.CalculateLines(_console.WindowArea.Width - _console.Padding * 2, true);
             _commandEntries.Add(entry);
         }
 
@@ -198,7 +201,7 @@ namespace QuakeConsole
             // Disregard top padding and allow any row which is only partly visible.
             _maxNumRows = Math.Max((int)Math.Ceiling(((_console.WindowArea.Height - _console.Padding) / _fontSize.Y)) - 1, 0);
             
-            _numRows = GetNumRows(_commandEntries) + GetNumRows(_entries);
+            _numRows = _commandEntries.Count + /*GetNumRows(_commandEntries) +*/ GetNumRows(_entries);
         }
 
         private int GetNumRows(IEnumerable<OutputEntry> collection)

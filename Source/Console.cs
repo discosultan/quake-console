@@ -1,8 +1,4 @@
-﻿// TODO: Indexer autocompletion for python interpreter
-// TODO: Move cursor by word when holding ctrl
-// TODO: Code cleanup
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Content;
@@ -216,7 +212,6 @@ namespace QuakeConsole
             }
         }
 
-        public bool BottomBorderEnabled { get; set; }        
         public Color BottomBorderColor { get; set; }
         public float BottomBorderThickness { get; set; }        
 
@@ -384,8 +379,8 @@ namespace QuakeConsole
                                 WindowArea.Height),
                             BackgroundColor);
                     }
-                    // Draw bottom border if enabled.
-                    if (BottomBorderEnabled)
+                    // Draw bottom border if enabled (thickness larger than zero).
+                    if (BottomBorderThickness > 0)
                         SpriteBatch.Draw(_whiteTexture,
                             new RectangleF(0, WindowArea.Bottom, WindowArea.Width, BottomBorderThickness),
                             BottomBorderColor);                                        
@@ -456,9 +451,7 @@ namespace QuakeConsole
                     {
                         string executedCmd = cmd;
                         if (ConsoleOutput.HasCommandEntry)
-                        {
                             executedCmd = ConsoleOutput.DequeueCommandEntry() + cmd;
-                        }
                                                 
                         // Replace our tab symbols with actual tab characters.
                         executedCmd = executedCmd.Replace(Tab, "\t");
@@ -502,17 +495,26 @@ namespace QuakeConsole
                     return ConsoleProcessResult.Break;                
                 case ConsoleAction.Autocomplete:
                     bool hasModifier = _actionDefinitions.BackwardTryGetValue(ConsoleAction.AutocompleteModifier, out modifier);
-                    if (hasModifier && !Input.IsKeyDown(modifier)) return ConsoleProcessResult.None;
+                    if (hasModifier && !Input.IsKeyDown(modifier))
+                        return ConsoleProcessResult.None;
                     bool canMoveBackwards = _actionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
                     _commandInterpreter.Autocomplete(ConsoleInput, !canMoveBackwards || !Input.IsKeyDown(modifier));
                     ConsoleInput.Caret.Index = ConsoleInput.Length;
                     _inputHistoryIndexer = int.MaxValue;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveLeft:
-                    ConsoleInput.Caret.MoveBy(-1);
+                    _actionDefinitions.BackwardTryGetValue(ConsoleAction.MoveByWordModifier, out modifier);
+                    if (Input.IsKeyDown(modifier))
+                        ConsoleInput.Caret.MoveToPreviousWord();
+                    else
+                        ConsoleInput.Caret.MoveBy(-1);
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveRight:
-                    ConsoleInput.Caret.MoveBy(1);
+                    _actionDefinitions.BackwardTryGetValue(ConsoleAction.MoveByWordModifier, out modifier);
+                    if (Input.IsKeyDown(modifier))
+                        ConsoleInput.Caret.MoveToNextWord();
+                    else
+                        ConsoleInput.Caret.MoveBy(1);
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveToBeginning:
                     ConsoleInput.Caret.Index = 0;
@@ -536,7 +538,8 @@ namespace QuakeConsole
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.Paste:                    
                     _actionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
-                    if (!Input.IsKeyDown(modifier)) break;
+                    if (!Input.IsKeyDown(modifier))
+                        break;
                     // TODO: Enable clipboard pasting. How to approach this in a cross-platform manner?
                     //string clipboardVal = Clipboard.GetText(TextDataFormat.Text);                        
                     //_currentInput.Append(clipboardVal);
@@ -545,13 +548,9 @@ namespace QuakeConsole
                 case ConsoleAction.Tab:
                     _actionDefinitions.BackwardTryGetValue(ConsoleAction.TabModifier, out modifier);
                     if (Input.IsKeyDown(modifier))
-                    {
                         ConsoleInput.RemoveTab();
-                    }
                     else
-                    {
                         ConsoleInput.Write(Tab);
-                    }                                        
                     ResetLastHistoryAndAutocompleteEntries(); 
                     return ConsoleProcessResult.Break;
             }
@@ -676,7 +675,6 @@ namespace QuakeConsole
             RepeatingInputCooldown = settings.TimeToCooldownRepeatingInput;
             TimeUntilRepeatingInput = settings.TimeToTriggerRepeatingInput;                        
             Padding = settings.Padding;
-            BottomBorderEnabled = settings.BottomBorderEnabled;
             BottomBorderColor = settings.BottomBorderColor;
             BottomBorderThickness = settings.BottomBorderThickness;
 

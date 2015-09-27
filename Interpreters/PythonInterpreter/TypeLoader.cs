@@ -92,6 +92,12 @@ namespace QuakeConsole
         {
             if (type == null)
                 return false;
+            
+            if (type.IsArray)
+            {
+                AddTypeImpl(type.GetElementType(), recursionLevel);
+                return false;
+            }
 
             // Load type and stop if it is already loaded.
             if (!LoadTypeInPython(type))
@@ -137,14 +143,6 @@ namespace QuakeConsole
         
         private bool LoadTypeInPython(Type type)
         {
-            if (type == null) return false;
-
-            bool isArray = type.IsArray;
-            while (type.IsArray)
-            {
-                type = type.GetElementType();
-            }
-
             if (type.IsGenericType || // Not a generic type (requires special handling).
                 !type.IsPublic || // Not a public type.
                 //type.IsAbstract && !type.IsSealed || // Not an abstract type. We check for IsSealed because a static class is considered to be abstract AND sealed.
@@ -162,7 +160,7 @@ namespace QuakeConsole
             string script = "from " + type.Namespace + " import " + type.Name;            
             _interpreter.RunScript(script);
 
-            return !isArray;
+            return true;
         }
 
         private static MemberCollection AutocompleteMembersQuery(IEnumerable<MemberInfo> members)
