@@ -22,7 +22,7 @@ namespace QuakeConsole
         };
         private static readonly char[] AutocompleteBoundaryDenoters =
         {
-            '(', ')', '{', '}', '/', '=', '.', ','//, '[', ']'
+            '(', ')', '{', '}', '/', '=', '.', ',', '+', '-', '*', '%' //, '[', ']'
         };
         private static readonly Dictionary<Type, string[]> PredefinedAutocompleteEntries = new Dictionary<Type, string[]>
         {

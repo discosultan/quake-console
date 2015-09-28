@@ -57,10 +57,8 @@ namespace QuakeConsole.Utilities
         {
             // Faster search for lists.
             for (int i = source.Count - 1; i >= 0; --i)
-            {
                 if (predicate(source[i]))
                     return i;
-            }
             return -1;
         }
 
@@ -97,12 +95,8 @@ namespace QuakeConsole.Utilities
         {
             var knownKeys = new HashSet<TKey>();
             foreach (var element in source)
-            {
                 if (knownKeys.Add(keySelector(element)))
-                {
                     yield return element;
-                }
-            }
         }
     }
 }
