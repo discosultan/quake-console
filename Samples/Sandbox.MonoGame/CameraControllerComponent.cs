@@ -6,18 +6,15 @@ namespace Sandbox
 {
     class CameraControllerComponent : GameComponent
     {
-        private KeyboardState _previousKeyboardState;
-        private KeyboardState _currentKeyboardState;
+        private const float RotationScaleFactor = 1 / 1000f;
 
         private Vector3 _position = new Vector3(0, 5, 10);
-        //private Quaternion _rotation = Quaternion.Identity;
         private Matrix _rotation = Matrix.CreateFromAxisAngle(Vector3.Right, -MathHelper.PiOver4 * 0.5f);
 
         private Vector2 _previousMousePos;        
 
         public CameraControllerComponent(Game game) : base(game)
-        {            
-        }
+        { }
 
         public void LoadContent()
         {
@@ -43,26 +40,26 @@ namespace Sandbox
             float deltaSeconds = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
             HandleKeyboard(deltaSeconds);
-            HandleMouse(deltaSeconds);
+            HandleMouse();
             CalculateView();
         }
 
         private void HandleKeyboard(float deltaSeconds)
         {
-            _currentKeyboardState = Keyboard.GetState();
+            KeyboardState keyboardState = Keyboard.GetState();
 
             Vector3 movement = Vector3.Zero;
-            if (IsKeyDown(MoveLeftKey))
+            if (keyboardState.IsKeyDown(MoveLeftKey))
                 movement.X -= 1;
-            if (IsKeyDown(MoveRightKey))
+            if (keyboardState.IsKeyDown(MoveRightKey))
                 movement.X += 1;
-            if (IsKeyDown(MoveUpKey))
+            if (keyboardState.IsKeyDown(MoveUpKey))
                 movement.Y += 1;
-            if (IsKeyDown(MoveDownKey))
+            if (keyboardState.IsKeyDown(MoveDownKey))
                 movement.Y -= 1;
-            if (IsKeyDown(MoveForwardKey))
+            if (keyboardState.IsKeyDown(MoveForwardKey))
                 movement.Z -= 1;
-            if (IsKeyDown(MoveBackwardKey))
+            if (keyboardState.IsKeyDown(MoveBackwardKey))
                 movement.Z += 1;
 
             if (movement != Vector3.Zero)
@@ -71,11 +68,9 @@ namespace Sandbox
                 movement = Vector3.TransformNormal(movement, _rotation);
                 _position += movement * MovementSpeed * deltaSeconds;                
             }
-
-            _previousKeyboardState = _currentKeyboardState;
         }
 
-        private void HandleMouse(float deltaSeconds)
+        private void HandleMouse()
         {
             MouseState mouseState = Mouse.GetState();
 
@@ -87,7 +82,7 @@ namespace Sandbox
                     Vector2 amount = mousePos - _previousMousePos;                    
                     if (amount != Vector2.Zero)
                     {
-                        amount *= RotationSpeed*0.001f;
+                        amount *= RotationSpeed * RotationScaleFactor;
                         _rotation = Matrix.CreateFromYawPitchRoll(amount.X, amount.Y, 0) * _rotation;
                     }
                 }
@@ -110,11 +105,6 @@ namespace Sandbox
             Viewport viewport = Game.GraphicsDevice.Viewport;
             float aspectRatio = viewport.Width / (float)viewport.Height;
             Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 0.1f, 1000);
-        }
-
-        private bool IsKeyDown(Keys key)
-        {
-            return _currentKeyboardState.IsKeyDown(key); //&& _previousKeyboardState.IsKeyUp(key);
         }
     }
 }

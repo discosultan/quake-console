@@ -329,24 +329,14 @@ namespace QuakeConsole
 
             Member member;
             if (_interpreter.Instances.TryGetValue(link, out member))
-            {
                 member.IsInstance = true;                
-            }
             else if (_interpreter.Statics.TryGetValue(link, out member))
-            {
                 member.IsInstance = false;                
-            }
             else
-            {
                 return null;
-            }
 
             if (isArrayIndexer)
-            {
-                var type = member.Type.GetElementType();
-                if (_interpreter.Statics.TryGetValue(type.Name, out member))
-                    member.IsInstance = true;                
-            }            
+                member = ResolveIndexerType(member);
 
             if (accessorChain.Count == 0)
                 return member;
@@ -373,11 +363,7 @@ namespace QuakeConsole
                     return null;
 
                 if (isArrayIndexer)
-                {
-                    var type = member.Type.GetElementType();
-                    if (_interpreter.Statics.TryGetValue(type.Name, out member))
-                        member.IsInstance = true;
-                }
+                    member = ResolveIndexerType(member);                
 
                 if (accessorChain.Count == 0)
                     return member;
@@ -407,6 +393,14 @@ namespace QuakeConsole
             }
             subLink = link;
             return false;
+        }
+
+        private Member ResolveIndexerType(Member member)
+        {
+            var type = member.Type.GetElementType();
+            if (type != null && _interpreter.Statics.TryGetValue(type.Name, out member))
+                member.IsInstance = true;
+            return member;
         }
 
         private static void FindAutocompleteForEntries(IConsoleInput consoleInput, IList<string> autocompleteEntries, string command, int startIndex, bool isNextValue)

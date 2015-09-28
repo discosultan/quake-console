@@ -20,7 +20,7 @@ namespace Sandbox
         {
             _device = device;
             _effect = effect;
-            _world = Matrix.Identity;            
+            _world = Matrix.Identity;
             CreateCubeVertexBuffer();
             CreateCubeIndexBuffer();
         }
@@ -29,7 +29,8 @@ namespace Sandbox
         public Vector3 Scale = Vector3.One;
         public Vector3 Rotation;
 
-        public Vector3 RotationSpeed = new Vector3(0, MathHelper.PiOver2, 0);
+        public Vector3 RotationSpeed;
+        //public Vector3 RotationSpeed = new Vector3(0, MathHelper.PiOver2, 0);
 
         public void Update(float deltaSeconds)
         {
@@ -37,8 +38,6 @@ namespace Sandbox
                 MathHelper.WrapAngle(Rotation.X + RotationSpeed.X*deltaSeconds),
                 MathHelper.WrapAngle(Rotation.Y + RotationSpeed.Y*deltaSeconds),
                 MathHelper.WrapAngle(Rotation.Z + RotationSpeed.Z*deltaSeconds));
-
-
 
             _world = Matrix.CreateScale(Scale)*
                     Matrix.CreateFromYawPitchRoll(Rotation.Y, Rotation.X, Rotation.Z)*
@@ -60,7 +59,7 @@ namespace Sandbox
         void CreateCubeVertexBuffer()
         {
             Vertices = new VertexPositionColor[NumVertices];
-
+            
             Vertices[0].Position = new Vector3(-1, -1, -1);
             Vertices[1].Position = new Vector3(-1, -1, 1);
             Vertices[2].Position = new Vector3(1, -1, 1);

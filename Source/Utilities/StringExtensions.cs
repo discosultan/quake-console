@@ -7,12 +7,12 @@ namespace QuakeConsole.Utilities
     {
         public static bool IsEmptyOrWhitespace(this StringBuilder value)
         {
-            if (value.Length == 0) return true;
+            if (value.Length == 0)
+                return true;
 
             for (int i = 0; i < value.Length; i++)
-            {
-                if (value[i] != ' ') return false;
-            }
+                if (value[i] != ' ')
+                    return false;
 
             return true;
         }
@@ -21,9 +21,7 @@ namespace QuakeConsole.Utilities
         {
             to.Clear();
             for (int i = 0; i < sourceLength; i++)
-            {
-                to.Append(from[sourceIndex + i]);
-            }
+               to.Append(from[sourceIndex + i]);
         }
 
         // Not thread safe!

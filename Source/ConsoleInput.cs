@@ -306,7 +306,7 @@ namespace QuakeConsole
             if (Caret.Index > _inputBuffer.Length - 1)
                 windowWidth -= Caret.Width;
 
-            while (Caret.Index < _startIndex)
+            while (Caret.Index <= _startIndex && _startIndex > 0)
                 _startIndex = Math.Max(_startIndex - NumPositionsToMoveWhenOutOfScreen, 0);
                                     
             _endIndex = MathUtil.Clamp(_endIndex, Caret.Index, _inputBuffer.Length - 1);

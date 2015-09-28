@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using QuakeConsole;
@@ -12,7 +15,7 @@ namespace Sandbox
     {        
         private const Keys ToggleConsole = Keys.OemTilde;
         private const float ConsoleBackgroundSpeedFactor = 1/24f;        
-        private static readonly Color BackgroundColor = Color.LightSlateGray;
+        private static readonly Color BackgroundColor = Color.LightSlateGray;        
         private static readonly Vector2 ConsoleBackgroundTiling = new Vector2(2.5f, 1.5f);
 
         private readonly GraphicsDeviceManager _graphics;
@@ -42,12 +45,21 @@ namespace Sandbox
                 FontColor = Color.White,
                 InputPrefixColor = Color.White,                
                 BottomBorderThickness = 4.0f,
-                BottomBorderColor = Color.Red
+                BottomBorderColor = Color.Red,
+                LogInput = x => Debug.WriteLine(x)
             };
             Components.Add(_console);
 
             _camera = new CameraControllerComponent(this);
             Components.Add(_camera);
+
+            // Add search path for IronPython standard library.
+            _interpreter.AddSearchPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Lib\\"));
+
+            // Import threading module and Timer function.
+            _interpreter.RunScript("import threading");
+            _interpreter.RunScript("import random");
+            _interpreter.RunScript("from threading import Timer");
 
             // There's a bug when trying to change resolution during window resize.
             // https://github.com/mono/MonoGame/issues/3572
@@ -74,12 +86,12 @@ namespace Sandbox
 
             _console.LoadContent(_arial, _interpreter);
             _console.BackgroundTexture = Content.Load<Texture2D>("console");
-            _console.BackgroundTextureScale = new Vector2(2.0f);
             _console.BackgroundColor = Color.White;
 
             _cube = new Cube(GraphicsDevice, _effect);
             _interpreter.AddVariable("cube", _cube);
             _interpreter.AddVariable("console", _console);
+            _interpreter.AddType(typeof (Utilities));
         }
 
         /// <summary>

@@ -42,7 +42,6 @@ namespace QuakeConsole
         }
 
         public Texture2D Texture { get; set; }
-        public Vector2 TextureScale { get; set; }        
         public Matrix TextureTransform { get; set; }
 
         public void UnloadContent()
@@ -65,7 +64,6 @@ namespace QuakeConsole
         public void SetDefault(ConsoleSettings settings)
         {
             Texture = settings.BackgroundTexture;
-            TextureScale = settings.BackgroundTextureScale;
             TextureTransform = settings.BackgroundTextureTransform;
         }
 

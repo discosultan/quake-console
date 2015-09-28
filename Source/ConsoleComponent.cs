@@ -1,4 +1,5 @@
 ﻿#if MONOGAME
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -122,16 +123,16 @@ namespace QuakeConsole
             set { _console.BgRenderer.Texture = value; }
         }
 
-        public Vector2 BackgroundTextureScale
-        {
-            get { return _console.BgRenderer.TextureScale; }
-            set { _console.BgRenderer.TextureScale = value; }
-        }
-
         public Matrix BackgroundTextureTransform
         {
             get { return _console.BgRenderer.TextureTransform; }
             set { _console.BgRenderer.TextureTransform = value; }
+        }
+
+        public Action<string> LogInput
+        {
+            get { return _console.LogInput; }
+            set { _console.LogInput = value; }
         }
 
         public void ToggleOpenClose()
