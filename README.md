@@ -3,15 +3,20 @@
 
 ## What is it?
 
-Quake-style console is an in-game command-line interface with swappable command interpreters. For example, using a Python interpreter allows for easy game object manipulation at runtime using Python syntax.
+Quake-style console is an in-game command-line interface with swappable command interpreters. For example, using Python interpreter allows for easy game object manipulation at runtime using Python syntax.
+
+![Screenshot](http://az695587.vo.msecnd.net/images/console_merged.png)
+
+- https://www.youtube.com/watch?v=Is2m2oQ68Gc
+- https://www.youtube.com/watch?v=oVWqy16W0ak
 
 ## Getting Started
 
+### Installation
+
 > Currently available only for MonoGame WindowsDX platform!
 
--------
-
-Install the Python interpreter through Nuget (this will also bring in the console):
+Install the Python interpreter through NuGet (this will also bring in the console):
 
 `Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre`
 
@@ -19,7 +24,7 @@ Or to only install the console shell:
 
 `Install-Package QuakeConsole.MonoGame.WindowsDX -Pre`
 
------
+### Basic setup
 
 In the game constructor, create the console and add to components:
 
@@ -34,9 +39,9 @@ In the update method, open the console (on key press, for example) by using Togg
 
 `console.ToggleOpenClose();`
 
+### Advanced setup
+
 ## Assemblies
-
-
 
 - **QuakeConsole**: The core project for the console. Includes all the behavior associated with handling user input and the look of the console's window.
 
