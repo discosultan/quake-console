@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System.IO;
+using System.Reflection;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace QuakeConsole
@@ -18,27 +20,13 @@ namespace QuakeConsole
         {
             _console = console;
             _console.WindowAreaChanged += (s, e) => CreateWvp();
-            CreateWvp();
-            _bgEffect = console.Content.Load<Effect>("background");
+            CreateWvp();            
+            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.background.dx11.mgfxo");
             _bgEffectTexture = _bgEffect.Parameters["Texture"];
             _bgEffectWvpTransform = _bgEffect.Parameters["WvpTransform"];
             _bgEffectTexTransform = _bgEffect.Parameters["TextureTransform"];
 
             BuildVertexBuffer();
-        }
-
-        private void CreateWvp()
-        {
-            var projection = Matrix.CreateOrthographicOffCenter(0, _console.GraphicsDevice.Viewport.Width,
-                _console.GraphicsDevice.Viewport.Height, 0, 0, 1);
-            _wvp =                 
-                Matrix.CreateScale(new Vector3(
-                _console.WindowArea.Width,
-                _console.WindowArea.Height, 
-                0))
-                * Matrix.CreateTranslation(new Vector3(0, _console.WindowArea.Y, 0))
-                * projection;
-                
         }
 
         public Texture2D Texture { get; set; }
@@ -67,6 +55,21 @@ namespace QuakeConsole
             TextureTransform = settings.BackgroundTextureTransform;
         }
 
+        private Effect LoadEffectFromEmbeddedResource(string name)
+        {
+#if WINRT
+            Assembly assembly = GetType().GetTypeInfo().Assembly;
+#else
+            Assembly assembly = GetType().Assembly;
+#endif            
+            var stream = assembly.GetManifestResourceStream(name);
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);                
+                return new Effect(_console.GraphicsDevice, ms.ToArray());
+            }
+        }
+
         private void BuildVertexBuffer()
         {
             VertexPositionTexture[] quadVertices =
@@ -78,6 +81,20 @@ namespace QuakeConsole
             };
             _vertices = new VertexBuffer(_console.GraphicsDevice, VertexPositionTexture.VertexDeclaration, 4, BufferUsage.None);
             _vertices.SetData(quadVertices);
+        }
+
+        private void CreateWvp()
+        {
+            var projection = Matrix.CreateOrthographicOffCenter(0, _console.GraphicsDevice.Viewport.Width,
+                _console.GraphicsDevice.Viewport.Height, 0, 0, 1);
+            _wvp =
+                Matrix.CreateScale(new Vector3(
+                _console.WindowArea.Width,
+                _console.WindowArea.Height,
+                0))
+                * Matrix.CreateTranslation(new Vector3(0, _console.WindowArea.Y, 0))
+                * projection;
+
         }
     }
 }

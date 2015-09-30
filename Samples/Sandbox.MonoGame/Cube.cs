@@ -45,7 +45,7 @@ namespace Sandbox
         }
 
         public void Draw()
-        {
+        {            
             _vertexBuffer.SetData(Vertices);
             _device.SetVertexBuffer(_vertexBuffer);
             _device.Indices = _indexBuffer;

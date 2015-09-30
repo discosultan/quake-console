@@ -15,7 +15,7 @@ namespace Sandbox
     {        
         private const Keys ToggleConsole = Keys.OemTilde;
         private const float ConsoleBackgroundSpeedFactor = 1/24f;        
-        private static readonly Color BackgroundColor = Color.LightSlateGray;        
+        private static readonly Color BackgroundColor = new Color(0x1d, 0x1d, 0x1d, 0xff);
         private static readonly Vector2 ConsoleBackgroundTiling = new Vector2(2.5f, 1.5f);
 
         private readonly GraphicsDeviceManager _graphics;
@@ -27,7 +27,8 @@ namespace Sandbox
 
         private Matrix _consoleBgTransform = Matrix.Identity;
         private readonly ConsoleComponent _console;
-        private readonly PythonInterpreter _interpreter = new PythonInterpreter();
+        private readonly PythonInterpreter _pythonInterpreter = new PythonInterpreter();
+        private readonly ManualInterpreter _manualInterpreter = new ManualInterpreter();
 
         private readonly CameraControllerComponent _camera;
         private Cube _cube;
@@ -54,18 +55,18 @@ namespace Sandbox
             Components.Add(_camera);
 
             // Add search path for IronPython standard library.
-            _interpreter.AddSearchPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Lib\\"));
+            _pythonInterpreter.AddSearchPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Lib\\"));
 
             // Import threading module and Timer function.
-            _interpreter.RunScript("import threading");
-            _interpreter.RunScript("import random");
-            _interpreter.RunScript("from threading import Timer");
+            _pythonInterpreter.RunScript("import threading");
+            _pythonInterpreter.RunScript("import random");
+            _pythonInterpreter.RunScript("from threading import Timer");
 
             // There's a bug when trying to change resolution during window resize.
             // https://github.com/mono/MonoGame/issues/3572
             _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 768;
-            Window.AllowUserResizing = false;
+            _graphics.PreferredBackBufferHeight = 768;            
+            Window.AllowUserResizing = false;            
 
             IsMouseVisible = true;
         }
@@ -82,16 +83,32 @@ namespace Sandbox
             _arial = Content.Load<SpriteFont>("arial");
             _lucidaConsole = Content.Load<SpriteFont>("lucida_console");
 
-            _camera.LoadContent();
-
-            _console.LoadContent(_arial, _interpreter);
-            _console.BackgroundTexture = Content.Load<Texture2D>("console");
-            _console.BackgroundColor = Color.White;
+            _camera.LoadContent();            
 
             _cube = new Cube(GraphicsDevice, _effect);
-            _interpreter.AddVariable("cube", _cube);
-            _interpreter.AddVariable("console", _console);
-            _interpreter.AddType(typeof (Utilities));
+
+            // Load content for console.
+            _console.LoadContent(_arial, _pythonInterpreter);
+            _console.BackgroundTexture = Content.Load<Texture2D>("console");            
+
+            // Register variables and types of interest with the Python interpreter.
+            _pythonInterpreter.AddVariable("cube", _cube);
+            _pythonInterpreter.AddVariable("console", _console);
+            _pythonInterpreter.AddVariable("pythonInterpreter", _pythonInterpreter);
+            _pythonInterpreter.AddVariable("manualInterpreter", _manualInterpreter);
+            _pythonInterpreter.AddType(typeof (Utilities));
+
+            // Register commands with the manual interpreter.
+            _manualInterpreter.RegisterCommand("Set-Console-Interpreter", args =>
+            {
+                if (string.Equals(args[0], "python", StringComparison.OrdinalIgnoreCase))
+                    _console.Interpreter = _pythonInterpreter;
+                return "Console interpreter switched to Python";
+            });
+            _manualInterpreter.RegisterCommand("Set-Cube-Position", args => _cube.Position = args.ToVector3());
+            _manualInterpreter.RegisterCommand("Set-Cube-Scale", args => _cube.Scale = args.ToVector3());
+            _manualInterpreter.RegisterCommand("Set-Cube-Rotation", args => _cube.Rotation = args.ToVector3());
+            _manualInterpreter.RegisterCommand("Set-Cube-RotationSpeed", args => _cube.RotationSpeed = args.ToVector3());
         }
 
         /// <summary>
@@ -151,6 +168,11 @@ namespace Sandbox
             _spriteBatch.DrawString(
                 _lucidaConsole,
                 $"Press {ToggleConsole} to open console. Use {Keys.LeftControl} + {Keys.Space} to autocomplete.",
+                new Vector2(10, GraphicsDevice.Viewport.Height - 50),
+                Color.Yellow);
+            _spriteBatch.DrawString(
+                _lucidaConsole,
+                $"Use {_camera.MoveForwardKey} {_camera.MoveLeftKey} {_camera.MoveBackwardKey} {_camera.MoveRightKey} {_camera.MoveUpKey} {_camera.MoveDownKey} to move the camera.",
                 new Vector2(10, GraphicsDevice.Viewport.Height - 25),
                 Color.Yellow);
         }

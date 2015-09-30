@@ -1621,6 +1621,10 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Interpreters\ManualInterpreter\ManualInterpreter.MonoGame.csproj">
+      <Project>{a21cf025-af25-4ec1-ade2-13f4aec58f7b}</Project>
+      <Name>ManualInterpreter.MonoGame</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Interpreters\PythonInterpreter\PythonInterpreter.MonoGame.csproj">
       <Project>{009c278a-a225-47c2-aaf2-d6f7f8d1e70f}</Project>
       <Name>PythonInterpreter.MonoGame</Name>

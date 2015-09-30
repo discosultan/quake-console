@@ -1,32 +1,51 @@
 ![Quake Console](https://jvcontent.blob.core.windows.net/images/quake_console_logo_h64.png)
 ===============
 
-Quake style console for [Paradox Game Engine](http://paradox3d.net/).<br/>
-[Video of the console in action.](https://www.youtube.com/watch?v=oVWqy16W0ak)<br/>
+## What is it?
 
-![Quake style console](http://az695587.vo.msecnd.net/images/console_1.png)
+Quake-style console is an in-game command-line interface with swappable command interpreters. For example, using a Python interpreter allows for easy game object manipulation at runtime using Python syntax.
 
 ## Getting Started
 
-- [Console with IronPython interpreter nuget.](http://www.nuget.org/packages/Paradox.Console.PythonInterpreter)
-- [Console with custom interpreter nuget.](http://www.nuget.org/packages/Paradox.Console.CustomInterpreter)
-- [Console without interpreter nuget.](http://www.nuget.org/packages/Paradox.Console)
-- [Small blog post describing how to setup the console.](http://jaanusvarus.com/quake-style-console-for-paradox-game-engine)
+> Currently available only for MonoGame WindowsDX platform!
+
+-------
+
+Install the Python interpreter through Nuget (this will also bring in the console):
+
+`Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre`
+
+Or to only install the console shell:
+
+`Install-Package QuakeConsole.MonoGame.WindowsDX -Pre`
+
+-----
+
+In the game constructor, create the console and add to components:
+
+    console = new ConsoleComponent(this);
+    Components.Add(console);
+
+Make sure to load the content for the console in the LoadContent method:
+
+`console.LoadContent(font);`
+
+In the update method, open the console (on key press, for example) by using ToggleOpenClose:
+
+`console.ToggleOpenClose();`
 
 ## Assemblies
 
-### Core
 
-- **Paradox.Console**: The core project for the console. Includes console shell and all the behavior associated with the shell's window.
+
+- **QuakeConsole**: The core project for the console. Includes all the behavior associated with handling user input and the look of the console's window.
 
 ### Interpreters
 
-- **Paradox.Console.Interpreters.Python**: IronPython interpreter for the console shell. Allows manipulating game objects using Python scripting language. Provides autocompletion for loaded .NET types. Windows platform only.
-- **Paradox.Console.Interpreters.Python.Tests**: Unit tests covering the expected execution and autocompletion behavior for PythonInterpreter.
-- **Paradox.Console.Interpreters.Custom**: Custom interpreter for the console shell. Allows to register user defined commands and provides autocompletion for them. Cross platform.
+- **QuakeConsole.PythonInterpreter**: IronPython interpreter for the console shell. Allows manipulating game objects using Python scripting language. Provides autocompletion for loaded .NET types.
+- **QuakeConsole.PythonInterpreter.Tests**: Unit tests covering the expected execution and autocompletion behavior for Python interpreter.
+- **QuakeConsole.ManualInterpreter**: Interpreter for manually defined commands. Provides autocompletion.
 
-### Sample
+### Samples
 
-- **Paradox.Console.Sample.Game**: Sample game to try out the console and its command interpreters.
-- **Paradox.Console.Sample.Windows**: Windows entry point to the sample game. Uses PythonInterpreter.
-- **Paradox.Console.Sample.WindowsStore**: WindowsStore entry point to the sample game. Uses CustomInterpreter.
+- **Sandbox**: Simple game which sets up the console and allows to manipulate a cube object using either Python or manual interpreter.

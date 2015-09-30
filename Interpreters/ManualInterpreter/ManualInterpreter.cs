@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using QuakeConsole.Utilities;
-using Command = System.Func<string[], string>;
 
 namespace QuakeConsole
 {
     /// <summary>
-    /// Custom interpreter which executes input commands as user registered types of <see cref="Command"/>.
+    /// Custom interpreter which executes input commands as user registered types of <see cref="Func<string[], string>"/>.
     /// </summary>
     public class ManualInterpreter : ICommandInterpreter
     {
@@ -15,7 +14,7 @@ namespace QuakeConsole
         private const StringComparison StringComparisonMethod = StringComparison.OrdinalIgnoreCase;
 
         // Command map supports executing multiple commands from a single input.
-        private readonly Dictionary<string, List<Command>> _commandMap = new Dictionary<string, List<Command>>();
+        private readonly Dictionary<string, List<Func<string[], string>>> _commandMap = new Dictionary<string, List<Func<string[], string>>>();
         private string[] _autocompleteEntries;
 
         /// <summary>
@@ -32,7 +31,7 @@ namespace QuakeConsole
         public bool EchoEnabled { get; set; }
 
         /// <summary>
-        /// Executes a command by looking if any <see cref="Command"/> is registered with that name and
+        /// Executes a command by looking if any <see cref="Func<string[], string>"/> is registered with that name and
         /// runs it if it is.
         /// </summary>
         /// <param name="output">Console output buffer to append any output messages.</param>
@@ -45,10 +44,10 @@ namespace QuakeConsole
             string command = inputSplit[0];
             string[] commandArgs = inputSplit.Skip(1).ToArray();
 
-            List<Command> commandList;
+            List<Func<string[], string>> commandList;
             if (_commandMap.TryGetValue(command, out commandList))
             {
-                foreach (Command cmd in commandList)
+                foreach (Func<string[], string> cmd in commandList)
                 {
                     try
                     {
@@ -113,17 +112,34 @@ namespace QuakeConsole
         /// Name of the command. This is the name user must enter into the <see cref="Console"/> to execute the command.
         /// </param>
         /// <param name="command">Command to interpreter.</param>
-        public void RegisterCommand(string commandName, Command command)
+        public void RegisterCommand(string commandName, Action<string[]> command)
+        {
+            Func<string[], string> commandWithReturnVal = args =>
+            {
+                command(args);
+                return "";
+            };
+            RegisterCommand(commandName, commandWithReturnVal);
+        }
+
+        /// <summary>
+        /// Registers a new command with the interpreter.
+        /// </summary>
+        /// <param name="commandName">
+        /// Name of the command. This is the name user must enter into the <see cref="Console"/> to execute the command.
+        /// </param>
+        /// <param name="command">Command to interpreter.</param>
+        public void RegisterCommand(string commandName, Func<string[], string> command)
         {
             if (commandName == null)
                 throw new ArgumentNullException(nameof(commandName));
             if (command == null)
                 throw new ArgumentNullException(nameof(command));
 
-            List<Command> commandList;
+            List<Func<string[], string>> commandList;
             if (!_commandMap.TryGetValue(commandName, out commandList))
             {
-                commandList = new List<Command>();
+                commandList = new List<Func<string[], string>>();
                 _commandMap.Add(commandName, commandList);
             }
             commandList.Add(command);
@@ -140,16 +156,6 @@ namespace QuakeConsole
         public void UnregisterCommand(string commandName)
         {
             _commandMap.Remove(commandName);
-        }
-
-        /// <summary>
-        /// Unregisters the provided command if found.
-        /// </summary>
-        /// <param name="command">Command to remove.</param>
-        public void UnregisterCommand(Command command)
-        {
-            foreach (var val in _commandMap.Values)
-                val.Remove(command);            
         }
     }
 }
