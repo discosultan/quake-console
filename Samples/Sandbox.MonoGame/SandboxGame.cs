@@ -88,7 +88,7 @@ namespace Sandbox
             _cube = new Cube(GraphicsDevice, _effect);
 
             // Load content for console.
-            _console.LoadContent(_arial, _pythonInterpreter);
+            _console.LoadContent(_arial, _manualInterpreter);
             _console.BackgroundTexture = Content.Load<Texture2D>("console");            
 
             // Register variables and types of interest with the Python interpreter.

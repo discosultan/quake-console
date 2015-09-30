@@ -6,7 +6,7 @@ using QuakeConsole.Utilities;
 namespace QuakeConsole
 {
     /// <summary>
-    /// Custom interpreter which executes input commands as user registered types of <see cref="Func<string[], string>"/>.
+    /// Interpreter which executes input as user defined commands.
     /// </summary>
     public class ManualInterpreter : ICommandInterpreter
     {
@@ -31,16 +31,17 @@ namespace QuakeConsole
         public bool EchoEnabled { get; set; }
 
         /// <summary>
-        /// Executes a command by looking if any <see cref="Func<string[], string>"/> is registered with that name and
-        /// runs it if it is.
+        /// Executes a command that is matched by the first input word.
         /// </summary>
-        /// <param name="output">Console output buffer to append any output messages.</param>
+        /// <param name="output">Console output to append any output messages.</param>
         /// <param name="input">Command to execute.</param>
         public void Execute(IConsoleOutput output, string input)
         {
             if (EchoEnabled) output.Append(input);
 
             string[] inputSplit = input.Split(CommandAndArgumentSeparator, StringSplitOptions.RemoveEmptyEntries);
+            if (inputSplit.Length == 0) return;
+
             string command = inputSplit[0];
             string[] commandArgs = inputSplit.Skip(1).ToArray();
 
@@ -89,19 +90,24 @@ namespace QuakeConsole
             string currentInput = input.Value;
 
             int index = _autocompleteEntries.IndexOf(x => x.Equals(currentInput, StringComparisonMethod));            
-            if (index == -1 || input.LastAutocompleteEntry == null) input.LastAutocompleteEntry = currentInput;
-            index++;
-            if (index >= _autocompleteEntries.Length) index = 0;
+            if (index == -1 || input.LastAutocompleteEntry == null)
+                input.LastAutocompleteEntry = currentInput;
 
-            for (int i = index; i < _autocompleteEntries.Length; ++i)
+            if (forward)
             {
-                string commandString = _autocompleteEntries[i];
-                if (commandString.StartsWith(input.LastAutocompleteEntry, StringComparisonMethod))
-                {
-                    input.Clear();
-                    input.Write(commandString);                    
-                    return;
-                }
+                index = (index + 1)%_autocompleteEntries.Length;
+                for (int i = index; i < _autocompleteEntries.Length; ++i)
+                    if (TryAutocomplete(input, _autocompleteEntries[i]))
+                        return;
+            }
+            else
+            {
+                index--;
+                if (index == -1)
+                    index = _autocompleteEntries.Length - 1;
+                for (int i = index; i >= 0; --i)
+                    if (TryAutocomplete(input, _autocompleteEntries[i]))
+                        return;
             }
         }
 
@@ -156,6 +162,17 @@ namespace QuakeConsole
         public void UnregisterCommand(string commandName)
         {
             _commandMap.Remove(commandName);
+        }
+
+        private static bool TryAutocomplete(IConsoleInput input, string commandString)
+        {
+            if (commandString.StartsWith(input.LastAutocompleteEntry, StringComparisonMethod))
+            {
+                input.Clear();
+                input.Write(commandString);
+                return true;
+            }
+            return false;
         }
     }
 }
