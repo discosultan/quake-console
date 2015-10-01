@@ -87,6 +87,9 @@ namespace QuakeConsole
             if (_autocompleteEntries == null)                            
                 _autocompleteEntries = _commandMap.Keys.OrderBy(x => x).ToArray();
 
+            if (_autocompleteEntries.Length == 0)
+                return;
+
             string currentInput = input.Value;
 
             int index = _autocompleteEntries.IndexOf(x => x.Equals(currentInput, StringComparisonMethod));            

@@ -91,9 +91,7 @@ namespace QuakeConsole
                         {
                             var paramIndex = newCommandLength_whichParamAt_newStartIndex_numParams >> 32 & 0xff;
                             if (overload.Length > paramIndex)
-                            {
                                 typeToPrefer = overload[paramIndex].ParameterType;
-                            }                            
                         }
                     }
                 }
@@ -108,13 +106,9 @@ namespace QuakeConsole
             if (completionType == AutocompletionType.Regular)
             {
                 if (typeToPrefer == null || !string.IsNullOrWhiteSpace(command))
-                {
                     FindAutocompleteForEntries(consoleInput, InstancesAndStatics, command, startIndex, isNextValue);
-                }
                 else
-                {
                     FindAutocompleteForEntries(consoleInput, GetAvailableNamesForType(typeToPrefer), command, startIndex, isNextValue);
-                }
             }
             else // Accessor or assignment or method.
             {
@@ -204,12 +198,12 @@ namespace QuakeConsole
         }
 
         private string[] GetAvailableNamesForType(Type type)
-        {
+        {            
             string[] results;
             if (!_instancesAndStaticsForTypes.TryGetValue(type, out results))
             {                                    
-                IEnumerable<string> resultsQuery = _interpreter.Instances.Where(x => x.Value.Type == type)
-                    .Union(_interpreter.Statics.Where(x => x.Value.Type == type))
+                IEnumerable<string> resultsQuery = _interpreter.Instances.Where(x => type.IsAssignableFrom(x.Value.Type))
+                    .Union(_interpreter.Statics.Where(x => type.IsAssignableFrom(x.Value.Type)))
                     .Select(x => x.Key);
 
                 string[] predefined;

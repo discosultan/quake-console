@@ -12,7 +12,7 @@ namespace QuakeConsole
     /// <summary>
     /// Output part of the <see cref="Console"/>. Command execution info will be appended here.
     /// </summary>
-    public class ConsoleOutput : IConsoleOutput
+    internal class ConsoleOutput : IConsoleOutput
     {
         private const string MeasureFontSizeSymbol = "x";
         
@@ -55,10 +55,7 @@ namespace QuakeConsole
             CalculateFontSize();
             CalculateRows();
         }
-
-        /// <summary>
-        /// Gets or sets if rows which run out of the visible area of the console should be removed.
-        /// </summary>
+        
         public bool RemoveOverflownEntries 
         {
             get { return _removeOverflownEntries; }

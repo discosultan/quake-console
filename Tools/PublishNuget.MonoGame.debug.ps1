@@ -1,7 +1,7 @@
 # Define variables.
 $consoleId = 'QuakeConsole.MonoGame.WindowsDX'
 $pythonInterpreterId = 'QuakeConsole.PythonInterpreter.MonoGame.WindowsDX'
-#$customInterpreterId = 'Paradox.Console.CustomInterpreter'
+$manualInterpreterId = 'QuakeConsole.ManualInterpreter.MonoGame.WindowsDX'
 
 $nuspecSuffix = '.debug.nuspec'
 $nupkgSuffix = '-alpha.nupkg'
@@ -29,16 +29,16 @@ Function GetNupkgFilename($id)
 Write-Host Replacing version numbers
 UpdateVersionInFile (GetNuspecFilename $consoleId) $versionRegex $newVersion
 UpdateVersionInFile (GetNuspecFilename $pythonInterpreterId) $versionRegex $newVersion
-#UpdateVersionInFile (GetNuspecFilename $customInterpreterId) $versionRegex $newVersion
+UpdateVersionInFile (GetNuspecFilename $manualInterpreterId) $versionRegex $newVersion
 
 # Create nuget packages with symbol packages.
 Write-Host Creating packages
 nuget pack (GetNuspecFilename $consoleId) -symbols
 nuget pack (GetNuspecFilename $pythonInterpreterId) -symbols
-#nuget pack (GetNuspecFilename $customInterpreterId) -symbols
+nuget pack (GetNuspecFilename $manualInterpreterId) -symbols
 
 # Publish nuget packages to nuget.org and symbol packages to symbolsource.org
 Write-Host Publishing packages
 nuget push (GetNupkgFilename $consoleId)
 nuget push (GetNupkgFilename $pythonInterpreterId)
-#nuget push (GetNupkgFilename $customInterpreterId)
+nuget push (GetNupkgFilename $manualInterpreterId)

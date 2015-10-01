@@ -19,20 +19,22 @@ namespace Sandbox
         private static readonly Vector2 ConsoleBackgroundTiling = new Vector2(2.5f, 1.5f);
 
         private readonly GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
-        private BasicEffect _effect;
 
-        private SpriteFont _lucidaConsole;
-        private SpriteFont _arial;
-
-        private Matrix _consoleBgTransform = Matrix.Identity;
         private readonly ConsoleComponent _console;
         private readonly PythonInterpreter _pythonInterpreter = new PythonInterpreter();
         private readonly ManualInterpreter _manualInterpreter = new ManualInterpreter();
-
         private readonly CameraControllerComponent _camera;
+
+        private SpriteBatch _spriteBatch;
+        private BasicEffect _effect;
+
         private Cube _cube;
-       
+
+        private SpriteFont _lucidaConsole;
+        private SpriteFont _arial;                
+        
+        private Matrix _consoleBgTransform = Matrix.Identity;
+
         private KeyboardState _previousKeyState;
         private KeyboardState _currentKeyState;
 
@@ -40,21 +42,23 @@ namespace Sandbox
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
             _console = new ConsoleComponent(this)
             {
                 Padding = 10.0f,
                 FontColor = Color.White,
-                InputPrefixColor = Color.White,                
+                InputPrefixColor = Color.White,
+                BackgroundColor = Color.White,
                 BottomBorderThickness = 4.0f,
                 BottomBorderColor = Color.Red,
-                LogInput = x => Debug.WriteLine(x)
-            };
+                LogInput = cmd => Debug.WriteLine(cmd) // Logs input commands to VS output window.
+            };            
             Components.Add(_console);
 
             _camera = new CameraControllerComponent(this);
             Components.Add(_camera);
 
-            // Add search path for IronPython standard library.
+            // Add search path for IronPython standard library. This is so that Python engine knows where to load modules from.
             _pythonInterpreter.AddSearchPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Lib\\"));
 
             // Import threading module and Timer function.
@@ -87,8 +91,8 @@ namespace Sandbox
 
             _cube = new Cube(GraphicsDevice, _effect);
 
-            // Load content for console.
-            _console.LoadContent(_arial, _manualInterpreter);
+            // Set console's font and interpreter.
+            _console.LoadContent(_arial, _pythonInterpreter);            
             _console.BackgroundTexture = Content.Load<Texture2D>("console");            
 
             // Register variables and types of interest with the Python interpreter.
@@ -99,10 +103,9 @@ namespace Sandbox
             _pythonInterpreter.AddType(typeof (Utilities));
 
             // Register commands with the manual interpreter.
-            _manualInterpreter.RegisterCommand("Set-Console-Interpreter", args =>
+            _manualInterpreter.RegisterCommand("Set-Console-Interpreter-Python", _ =>
             {
-                if (string.Equals(args[0], "python", StringComparison.OrdinalIgnoreCase))
-                    _console.Interpreter = _pythonInterpreter;
+                _console.Interpreter = _pythonInterpreter;
                 return "Console interpreter switched to Python";
             });
             _manualInterpreter.RegisterCommand("Set-Cube-Position", args => _cube.Position = args.ToVector3());
@@ -172,7 +175,7 @@ namespace Sandbox
                 Color.Yellow);
             _spriteBatch.DrawString(
                 _lucidaConsole,
-                $"Use {_camera.MoveForwardKey} {_camera.MoveLeftKey} {_camera.MoveBackwardKey} {_camera.MoveRightKey} {_camera.MoveUpKey} {_camera.MoveDownKey} to move the camera.",
+                $"Use {_camera.MoveForwardKey} {_camera.MoveLeftKey} {_camera.MoveBackwardKey} {_camera.MoveRightKey} {_camera.MoveUpKey} {_camera.MoveDownKey} and hold mouse right button to navigate the camera.",
                 new Vector2(10, GraphicsDevice.Viewport.Height - 25),
                 Color.Yellow);
         }

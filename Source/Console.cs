@@ -12,10 +12,7 @@ using Microsoft.Xna.Framework.Input;
 #endif
 
 namespace QuakeConsole
-{
-    /// <summary>
-    /// A game system which enables an in-game window for typing commands.
-    /// </summary>
+{    
     internal partial class Console
     {
         internal event EventHandler FontChanged;
@@ -54,17 +51,6 @@ namespace QuakeConsole
             SetDefaults(new ConsoleSettings());
         }
 
-        /// <summary>
-        /// Initializes a new instance of <see cref="Console"/>.
-        /// </summary>
-        /// <param name="device">Graphcis device.</param>
-        /// <param name="deviceManager">Graphics device manager.</param>
-        /// <param name="content">Content loader.</param>
-        /// <param name="font">Font used in the <see cref="Console"/> window.</param>
-        /// <param name="commandInterpreter">
-        /// User input interpreter. Manages autocompletion and the logic behind command execution.
-        /// Pass NULL to use a stub command interpreter (useful for testing out shell itself).
-        /// </param>
         public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager, ContentManager content, 
             SpriteFont font, ICommandInterpreter commandInterpreter)
         {
@@ -111,35 +97,16 @@ namespace QuakeConsole
             set { _commandInterpreter = value ?? new StubCommandInterpreter(); }
         }
 
-        /// <summary>
-        /// Gets the input part of the <see cref="Console"/>.
-        /// </summary>
         public ConsoleInput ConsoleInput { get; } = new ConsoleInput();
 
-        /// <summary>
-        /// Gets the output part of the <see cref="Console"/>.
-        /// </summary>
         public ConsoleOutput ConsoleOutput { get; } = new ConsoleOutput();        
-
-        /// <summary>
-        /// Gets if any part of the <see cref="Console"/> is visible.
-        /// </summary>
+        
         public bool IsVisible => _state != ConsoleState.Closed;
-
-        /// <summary>
-        /// Gets if the <see cref="Console"/> is currently accepting user input.
-        /// </summary>
+        
         public bool IsAcceptingInput => _state == ConsoleState.Open || _state == ConsoleState.Opening;
-
-        /// <summary>
-        /// Gets or sets the input command logging delegate. Set this property to log the user input
-        /// commands to the given delegate. For example WriteLine(String).
-        /// </summary>
+        
         public Action<string> LogInput { get; set; }
-
-        /// <summary>
-        /// Gets or sets the font.
-        /// </summary>
+        
         public SpriteFont Font
         {
             get { return _font; }
@@ -151,30 +118,17 @@ namespace QuakeConsole
                 FontChanged?.Invoke(this, EventArgs.Empty);               
             }
         }
-
-        /// <summary>
-        /// Gets or sets the background color. Supports transparency.
-        /// </summary>
+        
         public Color BackgroundColor { get; set; }
-
-        /// <summary>
-        /// Gets or sets the font color. Supports transparency.
-        /// </summary>
+        
         public Color FontColor { get; set; }        
-
-        /// <summary>
-        /// Gets or sets the time in seconds it takes to fully open or close the <see cref="Console"/>.
-        /// </summary>
+        
         public float OpenCloseTransitionSeconds
         {
             get { return _transitionTimer.TargetTime; }
             set { _transitionTimer.TargetTime = value; }
         }
-
-        /// <summary>
-        /// Gets or sets the percentage of height the <see cref="Console"/> window takes in relation to
-        /// application window height. Value in between [0...1].
-        /// </summary>
+        
         public float HeightRatio
         {
             get { return _heightRatio; }
@@ -185,18 +139,12 @@ namespace QuakeConsole
                     SetWindowWidthAndHeight();
             }
         }
-
-        /// <summary>
-        /// Gets or sets the padding to apply to the borders of the <see cref="Console"/> window.
-        /// Note that padding will be automatically decreased if the available window area becomes too low.
-        /// </summary>
+        
         public float Padding
         {
             get { return _padding; }
             set
-            {
-                // Store the padding anyway. The console might not be fully loaded before the user
-                // can already set the padding. We can set it after loading once _initialPadding has been set.
+            {                
                 if (_loaded)
                 {
                     _padding = MathUtil.Clamp(
@@ -214,11 +162,7 @@ namespace QuakeConsole
 
         public Color BottomBorderColor { get; set; }
         public float BottomBorderThickness { get; set; }        
-
-        /// <summary>
-        /// Gets or sets the dictionary that is used to map keyboard keys to corresponding symbols
-        /// shown in the <see cref="Console"/>.
-        /// </summary>
+        
         public Dictionary<Keys, SymbolPair> SymbolMappings
         {
             get { return _symbolDefinitions; }
@@ -227,6 +171,18 @@ namespace QuakeConsole
                 Check.ArgumentNotNull(value, "value", "Symbol mappings cannot be null.");
                 _symbolDefinitions = value;
             }
+        }
+
+        public float RepeatingInputCooldown
+        {
+            get { return _repeatedPressIntervalTimer.TargetTime; }
+            set { _repeatedPressIntervalTimer.TargetTime = value; }
+        }
+
+        public float TimeUntilRepeatingInput
+        {
+            get { return _repeatedPressTresholdTimer.TargetTime; }
+            set { _repeatedPressTresholdTimer.TargetTime = value; }
         }
 
 #if MONOGAME
@@ -250,23 +206,8 @@ namespace QuakeConsole
                 _windowArea = value;
                 WindowAreaChanged?.Invoke(this, EventArgs.Empty);
             }
-        }
-
-        internal float RepeatingInputCooldown
-        {
-            get { return _repeatedPressIntervalTimer.TargetTime; }
-            set { _repeatedPressIntervalTimer.TargetTime = value; }
-        }
-
-        internal float TimeUntilRepeatingInput
-        {
-            get { return _repeatedPressTresholdTimer.TargetTime; }
-            set { _repeatedPressTresholdTimer.TargetTime = value; }
-        }
-
-        /// <summary>
-        /// Opens the console windows if it is closed. Closes it if it is opened.
-        /// </summary>
+        }        
+        
         public void ToggleOpenClose()
         {
             switch (_state)
@@ -281,11 +222,7 @@ namespace QuakeConsole
                     break;
             }
         }
-
-        /// <summary>
-        /// Clears the subparts of the <see cref="Console"/>.
-        /// </summary>
-        /// <param name="clearFlags">Specifies which subparts to clear.</param>
+        
         public void Clear(ConsoleClearFlags clearFlags = ConsoleClearFlags.All)
         {
             if ((clearFlags & ConsoleClearFlags.OutputBuffer) != 0)
@@ -295,18 +232,13 @@ namespace QuakeConsole
             if ((clearFlags & ConsoleClearFlags.InputHistory) != 0)
                 ClearHistory();
         }
-
-        /// <summary>
-        /// Clears the <see cref="Console"/> and sets all the settings
-        /// to their default values.
-        /// </summary>
+        
         public void Reset()
         {
             Clear();
             SetDefaults(new ConsoleSettings());
         }
-
-        /// <inheritdoc/>        
+        
         public void Update(float deltaSeconds)
         {
 #if MONOGAME
@@ -353,7 +285,6 @@ namespace QuakeConsole
             }
         }
 
-        /// <inheritdoc/>
         public void Draw()
         {
             switch (_state)

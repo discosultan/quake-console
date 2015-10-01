@@ -11,7 +11,7 @@ namespace QuakeConsole
     /// <summary>
     /// Input part of the <see cref="Console"/>. User input, historical commands and autocompletion values will be appended here.
     /// </summary>
-    public class ConsoleInput : IConsoleInput
+    internal class ConsoleInput : IConsoleInput
     {        
         private readonly StringBuilder _inputBuffer = new StringBuilder();
         private readonly StringBuilder _drawBuffer = new StringBuilder(); // Helper buffer for drawing to avoid unnecessary string allocations.      
@@ -67,10 +67,7 @@ namespace QuakeConsole
             get { return Caret.Index; }
             set { Caret.Index = value; }
         }
-
-        /// <summary>
-        /// Gets or sets the symbol that is shown in the beginning of the <see cref="ConsoleInput"/>.
-        /// </summary>
+        
         public string InputPrefix
         {
             get { return _inputPrefix; }
@@ -83,10 +80,7 @@ namespace QuakeConsole
                 _dirty = true;
             }
         }
-
-        /// <summary>
-        /// Gets or sets the color for the input prefix symbol.
-        /// </summary>
+        
         public Color InputPrefixColor { get; set; }
 
         /// <summary>
@@ -94,10 +88,6 @@ namespace QuakeConsole
         /// </summary>
         public int Length => _inputBuffer.Length;
 
-        /// <summary>
-        /// Gets or sets the time in seconds it takes to append a new symbol in case user is holding down a key
-        /// and repeating input has been activated.
-        /// </summary>
         public float RepeatingInputCooldown
         {
             get { return _console.RepeatingInputCooldown; }
@@ -108,10 +98,6 @@ namespace QuakeConsole
             }
         }
 
-        /// <summary>
-        /// Gets or sets the time in seconds it takes after user started holding down a key to enable repeating input.
-        /// Repeating input means that the keys hold down will be processed repeatedly without having to repress the keys.
-        /// </summary>
         public float TimeUntilRepeatingInput
         {
             get { return _console.TimeUntilRepeatingInput; }
@@ -122,10 +108,6 @@ namespace QuakeConsole
             }
         } 
 
-        /// <summary>
-        /// Gets or sets the number of symbols that will be brought into <see cref="ConsoleInput"/> view once the user moves
-        /// <see cref="Caret"/> out of the visible area.
-        /// </summary>
         public int NumPositionsToMoveWhenOutOfScreen
         {
             get { return _numPosToMoveWhenOutOfScreen; }

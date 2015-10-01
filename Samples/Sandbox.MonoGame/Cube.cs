@@ -28,9 +28,8 @@ namespace Sandbox
         public Vector3 Position;
         public Vector3 Scale = Vector3.One;
         public Vector3 Rotation;
-
-        public Vector3 RotationSpeed;
-        //public Vector3 RotationSpeed = new Vector3(0, MathHelper.PiOver2, 0);
+        
+        public Vector3 RotationSpeed = new Vector3(0, MathHelper.PiOver2, 0);
 
         public void Update(float deltaSeconds)
         {

@@ -11,7 +11,7 @@ namespace QuakeConsole
     /// <summary>
     /// A blinking caret inside the <see cref="ConsoleInput"/> to show the location of the cursor.
     /// </summary>
-    public class Caret
+    internal class Caret
     {
         internal event EventHandler Moved;
 
@@ -48,19 +48,13 @@ namespace QuakeConsole
                 Moved?.Invoke(this, EventArgs.Empty);
             }
         }
-
-        /// <summary>
-        /// Gets or sets the time in seconds to toggle visibility.
-        /// </summary>
+        
         public float BlinkIntervalSeconds
         {
             get { return _caretBlinkingTimer.TargetTime; }
             set { _caretBlinkingTimer.TargetTime = value; }
         }
-
-        /// <summary>
-        /// Gets or sets the symbol which is used as the caret.
-        /// </summary>
+        
         public string Symbol
         {
             get { return _symbol; }
