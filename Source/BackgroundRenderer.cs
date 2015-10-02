@@ -12,6 +12,7 @@ namespace QuakeConsole
         private EffectParameter _bgEffectTexture;
         private EffectParameter _bgEffectWvpTransform;
         private EffectParameter _bgEffectTexTransform;
+        private EffectParameter _bgEffectBgColor;
         private VertexBuffer _vertices;
 
         private Matrix _wvp;
@@ -25,6 +26,7 @@ namespace QuakeConsole
             _bgEffectTexture = _bgEffect.Parameters["Texture"];
             _bgEffectWvpTransform = _bgEffect.Parameters["WvpTransform"];
             _bgEffectTexTransform = _bgEffect.Parameters["TextureTransform"];
+            _bgEffectBgColor = _bgEffect.Parameters["BackgroundColor"];
 
             BuildVertexBuffer();
         }
@@ -35,15 +37,17 @@ namespace QuakeConsole
         public void UnloadContent()
         {
             _bgEffect.Dispose();
+            _vertices.Dispose();
         }
 
         public void Draw()
-        {
-            _bgEffectTexture.SetValue(Texture);
+        {            
+            _bgEffectTexture.SetValue(Texture);               
             _bgEffectTexTransform.SetValue(TextureTransform);
             _bgEffectWvpTransform.SetValue(_wvp);
+            _bgEffectBgColor.SetValue(_console.BackgroundColor.ToVector4());
             _bgEffect.CurrentTechnique.Passes[0].Apply();
-            _console.GraphicsDevice.BlendState = BlendState.Opaque;
+            _console.GraphicsDevice.BlendState = BlendState.AlphaBlend;
             _console.GraphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
             _console.GraphicsDevice.SetVertexBuffer(_vertices);
             _console.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
@@ -87,11 +91,11 @@ namespace QuakeConsole
         {
             var projection = Matrix.CreateOrthographicOffCenter(0, _console.GraphicsDevice.Viewport.Width,
                 _console.GraphicsDevice.Viewport.Height, 0, 0, 1);
-            _wvp =
+            _wvp = 
                 Matrix.CreateScale(new Vector3(
-                _console.WindowArea.Width,
-                _console.WindowArea.Height,
-                0))
+                    _console.WindowArea.Width,
+                    _console.WindowArea.Height,
+                    0))
                 * Matrix.CreateTranslation(new Vector3(0, _console.WindowArea.Y, 0))
                 * projection;
 

@@ -15,7 +15,7 @@ namespace Sandbox
     {        
         private const Keys ToggleConsole = Keys.OemTilde;
         private const float ConsoleBackgroundSpeedFactor = 1/24f;        
-        private static readonly Color BackgroundColor = new Color(0x1d, 0x1d, 0x1d, 0xff);
+        private static readonly Color BackgroundColor = new Color(0x1d, 0x1d, 0x1d, 0xff);        
         private static readonly Vector2 ConsoleBackgroundTiling = new Vector2(2.5f, 1.5f);
 
         private readonly GraphicsDeviceManager _graphics;
@@ -48,7 +48,7 @@ namespace Sandbox
                 Padding = 10.0f,
                 FontColor = Color.White,
                 InputPrefixColor = Color.White,
-                BackgroundColor = Color.White,
+                BackgroundColor = Color.White,                
                 BottomBorderThickness = 4.0f,
                 BottomBorderColor = Color.Red,
                 LogInput = cmd => Debug.WriteLine(cmd) // Logs input commands to VS output window.
@@ -149,7 +149,7 @@ namespace Sandbox
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(BackgroundColor);
-
+            
             _effect.View = _camera.View;
             _effect.Projection = _camera.Projection;
 

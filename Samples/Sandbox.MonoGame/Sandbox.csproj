@@ -89,7 +89,7 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\console.tga" />
+    <Content Include="Content\console.png" />
     <Content Include="Icon.ico" />
     <Content Include="Lib\abc.py">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

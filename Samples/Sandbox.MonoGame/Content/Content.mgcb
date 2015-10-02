@@ -8,6 +8,9 @@
 /profile:Reach
 /compress:False
 
+#-------------------------------- References --------------------------------#
+
+
 #---------------------------------- Content ---------------------------------#
 
 #begin arial.spritefont
@@ -22,7 +25,7 @@
 /processorParam:TextureFormat=Compressed
 /build:lucida_console.spritefont
 
-#begin console.tga
+#begin console.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -31,5 +34,5 @@
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:TextureFormat=Color
-/build:console.tga
+/build:console.png
 

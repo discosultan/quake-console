@@ -1,4 +1,4 @@
-## What is it?
+## What is this?
 
 Quake-style console is an in-game command-line interface with swappable command interpreters. For example, using Python interpreter allows for easy game object manipulation *at runtime* using Python syntax.
 

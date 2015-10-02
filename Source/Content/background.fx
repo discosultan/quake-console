@@ -5,6 +5,7 @@ cbuffer cbPerFrame
 {
 	float4x4 WvpTransform;
 	float4x4 TextureTransform;
+	float4 BackgroundColor;
 };
 
 struct VertexIn
@@ -31,7 +32,7 @@ VertexOut VS(VertexIn vin)
 
 float4 PS(VertexOut pin) : SV_TARGET
 {
-	return Texture.Sample(TextureSampler, pin.TexCoord);
+	return BackgroundColor * Texture.Sample(TextureSampler, pin.TexCoord);	
 }
 
 technique Main
