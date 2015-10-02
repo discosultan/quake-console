@@ -15,22 +15,28 @@ Quake-style console is an in-game command-line interface with swappable command 
 
 Install the console shell through NuGet:
 
-`Install-Package QuakeConsole.MonoGame.WindowsDX -Pre`
+```powershell
+Install-Package QuakeConsole.MonoGame.WindowsDX -Pre
+```
 
 In the game constructor, create the console and add to components:
-
-    console = new ConsoleComponent(this);
-    Components.Add(console);
-
+```cs
+console = new ConsoleComponent(this);
+Components.Add(console);
+```
 Make sure to load the graphics resources for the console in the LoadContent method (requires a `SpriteFont` to render its output):
 
-`console.LoadContent(font);`
+```cs
+console.LoadContent(font);
+```
 
 In the update method, open the console (on key press, for example) by calling ToggleOpenClose:
 
-`console.ToggleOpenClose();`
+```cs
+console.ToggleOpenClose();
+```
 
-To know when to prevent input handling in other game systems while the console is open, the component exposes a property `IsAcceptingInput`.
+To know when to prevent input handling in other game systems while the console is open, the component exposes a property `console.IsAcceptingInput`.
 
 ### Python interpreter setup
 
@@ -38,16 +44,22 @@ Python interpreter can be used to interpret user input as Python code. It is ext
 
 Install the interpreter through NuGet (this will also bring in the console if it hasn't been installed already):
 
-`Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre`
+```powershell
+Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre
+```
 
 Create the interpreter and set it as the interpreter for the console:
 
-    var interpreter = new PythonInterpreter();
-    console.Interpreter = Interpreter;
+```cs
+var interpreter = new PythonInterpreter();
+console.Interpreter = Interpreter;
+```
 
 To be able to modify game objects through the console, the objects must be added as variables to the IronPython engine (this creates the connection between the CLR and Python objects):
 
-`interpreter.AddVariable("name", object);`
+```cs
+interpreter.AddVariable("name", object);
+```
 
 The object's public members can now be accessed from the console using the passed variable's name (press ctrl + space [default] to autocomplete input to known variables/types/members).
 
@@ -57,24 +69,28 @@ Manual interpreter can be used to define commands and actions for the console ma
 
 Install the interpreter through NuGet (this will also bring in the console if it hasn't been installed already):
 
-`Install-Package QuakeConsole.ManualInterpreter.MonoGame.WindowsDX -Pre`
+```powershell
+Install-Package QuakeConsole.ManualInterpreter.MonoGame.WindowsDX -Pre
+```
 
 Create the interpreter and set it as the interpreter for the console:
 
-    var interpreter = new ManualInterpreter();
-    console.Interpreter = Interpreter;
+```cs
+var interpreter = new ManualInterpreter();
+console.Interpreter = Interpreter;
+```
 
 A command is essentially a delegate that is invoked when user inputs the name of the command. The delegate provides an array of arguments separated by spaces (similar to arguments in a Windows console application) and optionally can return a string value that is output to the console.
 
 To register a command:
 
-`interpreter.RegisterCommand("name", action);`
+```cs
+interpreter.RegisterCommand("name", action);
+```
 
 where action is of type `Action<string[]>` or `Func<string[], string>`.
 
 Provides autocompletion for registered command names (ctrl + space [default]).
-
-> See the sample project for more advanced setup guidelines.
 
 ## Assemblies
 
