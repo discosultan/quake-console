@@ -15,20 +15,12 @@ namespace QuakeConsole
 
         // Command map supports executing multiple commands from a single input.
         private readonly Dictionary<string, List<Func<string[], string>>> _commandMap = new Dictionary<string, List<Func<string[], string>>>();
-        private string[] _autocompleteEntries;
-
-        /// <summary>
-        /// Constructs a new instance of <see cref="ManualInterpreter"/>.
-        /// </summary>
-        public ManualInterpreter()
-        {
-            EchoEnabled = true;
-        }
+        private string[] _autocompleteEntries;        
 
         /// <summary>
         /// Gets or sets if the user entered command should be shown in the output.
         /// </summary>
-        public bool EchoEnabled { get; set; }
+        public bool EchoEnabled { get; set; } = true;
 
         /// <summary>
         /// Executes a command that is matched by the first input word.
