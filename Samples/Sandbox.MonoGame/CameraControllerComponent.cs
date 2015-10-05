@@ -24,13 +24,16 @@ namespace Sandbox
 
         public Keys MoveLeftKey { get; set; } = Keys.A;
         public Keys MoveRightKey { get; set; } = Keys.D;
-        public Keys MoveUpKey { get; set; } = Keys.R;
-        public Keys MoveDownKey { get; set; } = Keys.F;
+        public Keys MoveUpKey { get; set; } = Keys.E;
+        public Keys MoveDownKey { get; set; } = Keys.Q;
         public Keys MoveForwardKey { get; set; } = Keys.W;
         public Keys MoveBackwardKey { get; set; } = Keys.S;
 
         public float MovementSpeed { get; set; } = 10.0f;
-        public float RotationSpeed = 1.0f;
+        public float RotationSpeed = 2.0f;
+
+        public bool InvertMouseX { get; set; }
+        public bool InvertMouseY { get; set; }
 
         public Matrix View { get; private set; }
         public Matrix Projection { get; private set; }
@@ -83,6 +86,8 @@ namespace Sandbox
                     if (amount != Vector2.Zero)
                     {
                         amount *= RotationSpeed * RotationScaleFactor;
+                        if (!InvertMouseX) amount.X *= -1;
+                        if (!InvertMouseY) amount.Y *= -1;
                         _rotation = Matrix.CreateFromYawPitchRoll(amount.X, amount.Y, 0) * _rotation;
                     }
                 }
