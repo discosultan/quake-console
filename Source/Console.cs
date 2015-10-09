@@ -51,16 +51,14 @@ namespace QuakeConsole
             SetDefaults(new ConsoleSettings());
         }
 
-        public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager, ContentManager content, 
+        public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager,
             SpriteFont font, ICommandInterpreter commandInterpreter)
         {
             Check.ArgumentNotNull(deviceManager, nameof(deviceManager), "Cannot instantiate the console without graphics device manager.");
             Check.ArgumentNotNull(font, nameof(font), "Cannot instantiate the console without a font.");
-            Check.ArgumentNotNull(content, nameof(content));
 
             _commandInterpreter = commandInterpreter ?? new StubCommandInterpreter();
             GraphicsDevice = device;
-            Content = content;
             _graphicsDeviceManager = deviceManager;
             Font = font;            
 
@@ -194,7 +192,6 @@ namespace QuakeConsole
         internal BackgroundRenderer BgRenderer { get; } = new BackgroundRenderer();
         internal SpriteBatch SpriteBatch { get; private set; }
         internal GraphicsDevice GraphicsDevice { get; private set; }
-        internal ContentManager Content { get; private set; }
 
         internal RectangleF WindowArea
         {

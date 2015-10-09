@@ -40,7 +40,6 @@ namespace QuakeConsole
             _console.LoadContent(
                 GraphicsDevice,
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
-                Game.Content,
                 _font,
                 _commandInterpreter);
         }               

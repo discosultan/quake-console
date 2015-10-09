@@ -22,7 +22,7 @@ namespace QuakeConsole
             _console = console;
             _console.WindowAreaChanged += (s, e) => CreateWvp();
             CreateWvp();            
-            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.background.dx11.mgfxo");
+            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Background.dx11.mgfxo");
             _bgEffectTexture = _bgEffect.Parameters["Texture"];
             _bgEffectWvpTransform = _bgEffect.Parameters["WvpTransform"];
             _bgEffectTexTransform = _bgEffect.Parameters["TextureTransform"];
