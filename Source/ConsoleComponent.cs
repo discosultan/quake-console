@@ -1,5 +1,4 @@
-﻿#if MONOGAME
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,15 +13,9 @@ namespace QuakeConsole
     {
         private readonly Console _console = new Console();
 
-        private SpriteFont _font;
-        private ICommandInterpreter _commandInterpreter;        
-
         /// <inheritdoc />        
         public ConsoleComponent(Game game) : base(game)
-        {            
-            Enabled = true;
-            Visible = true;
-        }
+        { }
 
         /// <summary>
         /// Loads graphics resources and optionally interpreter for the console.
@@ -34,14 +27,11 @@ namespace QuakeConsole
         /// </param>
         public void LoadContent(SpriteFont font, ICommandInterpreter commandInterpreter = null)
         {
-            _font = font;
-            _commandInterpreter = commandInterpreter;
-
             _console.LoadContent(
                 GraphicsDevice,
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
-                _font,
-                _commandInterpreter);
+                font,
+                commandInterpreter);
         }               
 
         /// <summary>
@@ -293,4 +283,3 @@ namespace QuakeConsole
         }
     }
 }
-#endif
