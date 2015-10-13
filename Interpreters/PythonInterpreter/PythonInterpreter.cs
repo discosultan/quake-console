@@ -121,6 +121,11 @@ namespace QuakeConsole
             _typeLoader.AddVariable(name, obj, recursionLevel);
         }
 
+        /// <summary>
+        /// Removes a variable from the IronPython environment.
+        /// </summary>
+        /// <param name="name">Name of the variable.</param>
+        /// <returns>True if variable was removed; otherwise false.</returns>
         public bool RemoveVariable(string name)
         {
             return _typeLoader.RemoveVariable(name);
