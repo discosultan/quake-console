@@ -22,7 +22,7 @@ namespace QuakeConsole
         };
         private static readonly char[] AutocompleteBoundaryDenoters =
         {
-            '(', ')', '{', '}', '/', '=', '.', ',', '+', '-', '*', '%' //, '[', ']'
+            '(', ')', '{', '}', '/', '=', '.', ',', '+', '-', '*', '%', ' ' //, '[', ']'
         };
         private static readonly Dictionary<Type, string[]> PredefinedAutocompleteEntries = new Dictionary<Type, string[]>
         {
@@ -97,7 +97,7 @@ namespace QuakeConsole
                 }
             }
 
-            int autocompleteBoundaryIndices = FindBoundaryIndices(consoleInput, consoleInput.CaretIndex, removeSpaces: false);
+            int autocompleteBoundaryIndices = FindBoundaryIndices(consoleInput, consoleInput.CaretIndex);
             int startIndex = autocompleteBoundaryIndices & 0xff;
             int length = autocompleteBoundaryIndices >> 16;
             string command = consoleInput.Substring(startIndex, length);
@@ -217,17 +217,15 @@ namespace QuakeConsole
             return results;
         }
 
-        private static int FindBoundaryIndices(IConsoleInput consoleInput, int lookupIndex, bool removeSpaces = false)
+        private static int FindBoundaryIndices(IConsoleInput consoleInput, int lookupIndex)
         {
             if (consoleInput.Length == 0)
                 return 0;
 
             // Find start index.
-            for (int i = lookupIndex; i >= 0; i--)
+            for (int i = lookupIndex - 1; i >= 0; i--)
             {
-                if (i >= consoleInput.Length) continue;
-                if (!removeSpaces && (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]) || consoleInput[i] == SpaceSymbol) ||
-                    removeSpaces && AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]))
+                if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]))                    
                     break;
                 lookupIndex = i;
             }
@@ -290,7 +288,7 @@ namespace QuakeConsole
             _accessorChain.Clear();
             while (true)
             {
-                int indices = FindBoundaryIndices(consoleInput, chainEndIndex, removeSpaces: false);
+                int indices = FindBoundaryIndices(consoleInput, chainEndIndex);
                 int startIndex = indices & 0xff;
                 int length = indices >> 16;
 
