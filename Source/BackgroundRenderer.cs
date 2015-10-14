@@ -23,9 +23,9 @@ namespace QuakeConsole
             _console.WindowAreaChanged += (s, e) => CreateWvp();
             CreateWvp();
 #if DIRECTX
-            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Background.dx11.mgfxo");
+            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Compiled.Background.dx11.mgfxo");
 #else
-            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Background.ogl.mgfxo");
+            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Compiled.Background.ogl.mgfxo");
 #endif
             _bgEffectTexture = _bgEffect.Parameters["Texture"];
             _bgEffectWvpTransform = _bgEffect.Parameters["WvpTransform"];
