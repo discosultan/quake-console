@@ -21,8 +21,12 @@ namespace QuakeConsole
         {
             _console = console;
             _console.WindowAreaChanged += (s, e) => CreateWvp();
-            CreateWvp();            
+            CreateWvp();
+#if DIRECTX
             _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Background.dx11.mgfxo");
+#else
+            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Background.ogl.mgfxo");
+#endif
             _bgEffectTexture = _bgEffect.Parameters["Texture"];
             _bgEffectWvpTransform = _bgEffect.Parameters["WvpTransform"];
             _bgEffectTexTransform = _bgEffect.Parameters["TextureTransform"];
@@ -65,7 +69,7 @@ namespace QuakeConsole
             Assembly assembly = GetType().GetTypeInfo().Assembly;
 #else
             Assembly assembly = GetType().Assembly;
-#endif            
+#endif
             var stream = assembly.GetManifestResourceStream(name);
             using (var ms = new MemoryStream())
             {
