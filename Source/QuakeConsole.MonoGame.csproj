@@ -22,7 +22,7 @@
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\MonoGame\</OutputPath>
     <DocumentationFile>bin\Debug\MonoGame\QuakeConsole.MonoGame.xml</DocumentationFile>
-    <DefineConstants>TRACE;DEBUG;MONOGAME; DIRECTX</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;MONOGAME;DIRECTX</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
