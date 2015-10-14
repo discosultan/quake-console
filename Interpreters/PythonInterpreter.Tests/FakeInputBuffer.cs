@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace QuakeConsole.Tests
 {
@@ -14,6 +15,7 @@ namespace QuakeConsole.Tests
         public void Write(string symbol)
         {
             _stringBuffer.Append(symbol);
+            CaretIndex = Math.Min(CaretIndex + symbol.Length, _stringBuffer.Length);            
         }
 
         public void Remove(int startIndex, int length)

@@ -19,7 +19,7 @@ namespace QuakeConsole.Tests
         public void CaretAtEndOfTargetValue_OverwriteFollowingInputUponAutocomplete()
         {            
             _interpreter.AddVariable("variable", new object());
-            _consoleInput.Value = "va random gibberish";
+            _consoleInput.Value = "va gibberish";
             _consoleInput.CaretIndex = 2;
 
             _interpreter.Autocomplete(_consoleInput, true);
@@ -31,8 +31,20 @@ namespace QuakeConsole.Tests
         public void CaretAtTargetValue_OverwriteFollowingInputUponAutocomplete()
         {
             _interpreter.AddVariable("variable", new object());
-            _consoleInput.Value = "va random gibberish";
+            _consoleInput.Value = "va gibberish";
             _consoleInput.CaretIndex = 1;
+
+            _interpreter.Autocomplete(_consoleInput, true);
+
+            Assert.AreEqual("variable", _consoleInput.Value);
+        }
+
+        [Test]
+        public void CaretAtBeginningOfInput_OverwriteInput()
+        {
+            _interpreter.AddVariable("variable", new object());
+            _consoleInput.Value = "gibberish";
+            _consoleInput.CaretIndex = 0;
 
             _interpreter.Autocomplete(_consoleInput, true);
 

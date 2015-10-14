@@ -222,8 +222,10 @@ namespace QuakeConsole
             if (consoleInput.Length == 0)
                 return 0;
 
+            int previousIndex = lookupIndex - 1;
+
             // Find start index.
-            for (int i = lookupIndex - 1; i >= 0; i--)
+            for (int i = previousIndex; i >= 0; i--)
             {
                 if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]))                    
                     break;
@@ -232,11 +234,14 @@ namespace QuakeConsole
 
             // Find length.
             int length = 0;
-            for (int i = lookupIndex; i < consoleInput.Length; i++)            
-            {                
-                if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]) || consoleInput[i] == SpaceSymbol)
-                    break;
-                length++;
+            if (previousIndex >= 0)
+            {
+                for (int i = lookupIndex; i < consoleInput.Length; i++)
+                {
+                    if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]) || consoleInput[i] == SpaceSymbol)
+                        break;
+                    length++;
+                }
             }
 
             return lookupIndex + (length << 16);

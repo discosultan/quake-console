@@ -85,10 +85,7 @@ namespace QuakeConsole
         /// </summary>
         /// <param name="input">Console input.</param>
         /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
-        public void Autocomplete(IConsoleInput input, bool forward)
-        {
-            _autocompleter.Autocomplete(input, forward);
-        }
+        public void Autocomplete(IConsoleInput input, bool forward) => _autocompleter.Autocomplete(input, forward);
 
         /// <summary>
         /// Adds a search path for the IronPython engine to look for when importing modules.
@@ -116,20 +113,15 @@ namespace QuakeConsole
         /// Determines if subtypes of passed type will also be automatically added to IronPython environment
         /// and if then how many levels deep this applies.
         /// </param>
-        public void AddVariable<T>(string name, T obj, int recursionLevel = DefaultRecursionLevel)
-        {
+        public void AddVariable<T>(string name, T obj, int recursionLevel = DefaultRecursionLevel) =>
             _typeLoader.AddVariable(name, obj, recursionLevel);
-        }
 
         /// <summary>
         /// Removes a variable from the IronPython environment.
         /// </summary>
         /// <param name="name">Name of the variable.</param>
         /// <returns>True if variable was removed; otherwise false.</returns>
-        public bool RemoveVariable(string name)
-        {
-            return _typeLoader.RemoveVariable(name);
-        }
+        public bool RemoveVariable(string name) => _typeLoader.RemoveVariable(name);
 
         /// <summary>
         /// Loads type to IronPython.
@@ -139,10 +131,8 @@ namespace QuakeConsole
         /// Determines if subtypes of passed type will also be automatically added to IronPython environment
         /// and if then how many levels deep this applies.
         /// </param>        
-        public void AddType(Type type, int recursionLevel = DefaultRecursionLevel)
-        {
+        public void AddType(Type type, int recursionLevel = DefaultRecursionLevel) =>
             _typeLoader.AddType(type, recursionLevel);
-        }
 
         /// <summary>
         /// Loads types to IronPython.
@@ -152,10 +142,8 @@ namespace QuakeConsole
         /// Determines if subtypes of passed types will also be automatically added to IronPython environment
         /// and if then how many levels deep this applies.
         /// </param>
-        public void AddTypes(IEnumerable<Type> types, int recursionLevel = DefaultRecursionLevel)
-        {
+        public void AddTypes(IEnumerable<Type> types, int recursionLevel = DefaultRecursionLevel) =>
             types.ForEach(type => _typeLoader.AddType(type, recursionLevel));
-        }
 
         /// <summary>
         /// Loads all the public non-nested types from the assembly to IronPython.
@@ -165,20 +153,16 @@ namespace QuakeConsole
         /// Determines if subtypes of types in assembly will also be automatically added to IronPython environment
         /// and if then how many levels deep this applies.
         /// </param>
-        public void AddAssembly(Assembly assembly, int recursionLevel = DefaultRecursionLevel)
-        {
+        public void AddAssembly(Assembly assembly, int recursionLevel = DefaultRecursionLevel) =>
             _typeLoader.AddAssembly(assembly, recursionLevel);
-        }
 
         /// <summary>
         /// Runs a script straight on IronPython engine.
         /// </summary>
         /// <param name="script">Script to run.</param>
         /// <returns>Value returned by the IronPython engine.</returns>
-        public dynamic RunScript(string script)
-        {            
-            return _scriptEngine.CreateScriptSourceFromString(script).Compile().Execute(ScriptScope);
-        }
+        public dynamic RunScript(string script) =>
+            _scriptEngine.CreateScriptSourceFromString(script).Compile().Execute(ScriptScope);
 
         /// <summary>
         /// Resets the IronPython engine scope, clears any imported modules and .NET types.
