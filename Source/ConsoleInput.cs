@@ -128,7 +128,7 @@ namespace QuakeConsole
         {
             if (string.IsNullOrEmpty(symbol)) return;
             _inputBuffer.Insert(Caret.Index, symbol);            
-            Caret.MoveBy(symbol.Length);            
+            Caret.MoveBy(symbol.Length);
         }
 
         /// <summary>

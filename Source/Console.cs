@@ -426,7 +426,6 @@ namespace QuakeConsole
                         return ConsoleProcessResult.None;
                     bool canMoveBackwards = _actionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
                     _commandInterpreter.Autocomplete(ConsoleInput, !canMoveBackwards || !Input.IsKeyDown(modifier));
-                    ConsoleInput.Caret.Index = ConsoleInput.Length;
                     _inputHistoryIndexer = int.MaxValue;
                     return ConsoleProcessResult.Break;
                 case ConsoleAction.MoveLeft:
