@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace QuakeConsole
 {    
-    internal partial class Console
+    internal partial class Console : IDisposable
     {
         internal event EventHandler FontChanged;
         internal event EventHandler PaddingChanged;
@@ -79,13 +79,13 @@ namespace QuakeConsole
             BgRenderer.LoadContent(this);
         }
 
-        public void UnloadContent()
+        public void Dispose()
         {
             _graphicsDeviceManager.PreparingDeviceSettings -= OnPreparingDeviceChanged;
 
-            SpriteBatch.Dispose();
-            _whiteTexture.Dispose();            
-            BgRenderer.UnloadContent();
+            SpriteBatch?.Dispose();
+            _whiteTexture?.Dispose();
+            BgRenderer.Dispose();
         }
 
         public ICommandInterpreter Interpreter
@@ -462,12 +462,17 @@ namespace QuakeConsole
                         ResetLastHistoryAndAutocompleteEntries();
                     }
                     return ConsoleProcessResult.Break;
+                case ConsoleAction.Copy:
+                    _actionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
+                    if (!Input.IsKeyDown(modifier))
+                        break;
+                    return ConsoleProcessResult.Break;
                 case ConsoleAction.Paste:                    
                     _actionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
                     if (!Input.IsKeyDown(modifier))
                         break;
                     // TODO: Enable clipboard pasting. How to approach this in a cross-platform manner?
-                    //string clipboardVal = Clipboard.GetText(TextDataFormat.Text);                        
+                    //string clipboardVal = Clipboard.GetText(TextDataFormat.Text);
                     //_currentInput.Append(clipboardVal);
                     //MoveCaret(clipboardVal.Length);
                     return ConsoleProcessResult.Break;
@@ -607,6 +612,6 @@ namespace QuakeConsole
             BgRenderer.SetDefault(settings);
             ConsoleInput.SetDefaults(settings);
             ConsoleOutput.SetDefaults(settings);
-        }           
+        }
     }
 }

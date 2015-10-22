@@ -32,7 +32,14 @@ namespace QuakeConsole
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
                 font,
                 commandInterpreter);
-        }               
+        }
+
+        /// <inheritdoc />        
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _console.Dispose();
+        }
 
         /// <summary>
         /// Gets if the console is currently reading keyboard input.
@@ -267,6 +274,12 @@ namespace QuakeConsole
         /// to their default values.
         /// </summary>
         public void Reset() => _console.Reset();
+
+        /// <summary>
+        /// Writes a message to the console's output.
+        /// </summary>
+        /// <param name="message">Message to write.</param>
+        public void WriteToOutput(string message) => _console.ConsoleOutput.Append(message);        
 
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)

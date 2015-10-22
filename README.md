@@ -1,17 +1,33 @@
-## What is this?
+# What is this sorcery?
 
-Quake-style console is an in-game command-line interface with swappable command interpreters. For example, using Python interpreter allows for easy game object manipulation *at runtime* using Python syntax.
+Quake-style console is an in-game command-line interface with swappable command interpreters. It can be used during development to easily manipulate game objects *at runtime* or allow players to enter cheat codes, for example.
 
 ![Screenshot](http://az695587.vo.msecnd.net/images/console_merged.png)
 
 - https://www.youtube.com/watch?v=Is2m2oQ68Gc
 - https://www.youtube.com/watch?v=oVWqy16W0ak
 
-## Getting Started
+# Getting Started
+
+- [Building source and samples](#setup1)
+- [Using QuakeConsole](#setup2)
+- [Setting up console to use PythonInterpreter](#setup3)
+- [Setting up console to use ManualInterpreter](#setup4)
+
+
+<h2 id="setup1">Building source and samples</h3>
+
+
+The following is required to successfully compile the QuakeConsole MonoGame solution:
+
+- Visual studio 2015+ (due to C# 6 syntax)
+- [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109) (to compile effect shaders)
+
+
+<h2 id="setup2">Using QuakeConsole</h3>
+
 
 > Currently available only for MonoGame WindowsDX platform targeting .NET 4.0!
-
-### Basic setup
 
 Install the console shell through NuGet:
 
@@ -19,28 +35,52 @@ Install the console shell through NuGet:
 Install-Package QuakeConsole.MonoGame.WindowsDX -Pre
 ```
 
-In the game constructor, create the console and add to components:
-```cs
-console = new ConsoleComponent(this);
-Components.Add(console);
-```
-Make sure to load the graphics resources for the console in the LoadContent method (requires a `SpriteFont` to render its output):
+The console itself is a typical `DrawableGameComponent`. The following steps will go through setting it up in a game.
+
+1) In the `Game` constructor, create the console and add it to the components collection (console itself should be stored in a variable since it must be initialized and manually opened/closed later):
 
 ```cs
-console.LoadContent(font);
-```
+ConsoleComponent console;
 
-In the update method, open the console (on key press, for example) by calling ToggleOpenClose:
+public Game1()
+{
+  // ...
+  console = new ConsoleComponent(this);
+  Components.Add(console);
+}
+```
+2) A `SpriteFont` is required so that the console can use it to render its output. Make sure to initialize the console in the `LoadContent` method:
 
 ```cs
-console.ToggleOpenClose();
+protected override void LoadContent()
+{
+  // ...  
+  // load font here
+  console.LoadContent(font);
+}
 ```
 
-To know when to prevent input handling in other game systems while the console is open, the component exposes a property `console.IsAcceptingInput`.
+3) The console must be opened for it to accept user input. This is usually done in the update method by checking for a key press (the tilde key, for example):
 
-### Python interpreter setup
+```cs
+protected override void Update(GameTime gameTime)
+{
+  // ...
+  // manage previous and current keyboard states
+  if (previousKeyboardState.IsKeyUp(Keys.OemTilde) && currentKeyboardState.IsKeyDown(Keys.OemTilde))
+    console.ToggleOpenClose();
+}
+```
 
-Python interpreter can be used to interpret user input as Python code. It is extremely useful to, for example, modify game object properties *at runtime*.
+This has setup the console shell. For the console to actually do anything useful on user input, an interpreter must be configured (see below).
+
+Sometimes it is desirable to prevent other game systems from accepting input while the console window is open. To do this, it is required to know if the console is currently open (accepting input) or closed. This can be done by using the  `console.IsAcceptingInput` property.
+
+
+<h2 id="setup4">Setting up console to use PythonInterpreter</h3>
+
+
+Python interpreter can be used to interpret user input as Python code. It is extremely useful to, for example, manipulate game objects *at runtime*.
 
 Install the interpreter through NuGet (this will also bring in the console if it hasn't been installed already):
 
@@ -48,24 +88,26 @@ Install the interpreter through NuGet (this will also bring in the console if it
 Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre
 ```
 
-Create the interpreter and set it as the interpreter for the console:
+1) Create the interpreter and set it as the interpreter for the console:
 
 ```cs
 var interpreter = new PythonInterpreter();
 console.Interpreter = Interpreter;
 ```
 
-To be able to modify game objects through the console, the objects must be added as variables to the IronPython engine (this creates the connection between the CLR and Python objects):
+2) To be able to modify game objects through the console, the objects must be added as variables to the IronPython engine (this creates the connection between the CLR and Python object):
 
 ```cs
 interpreter.AddVariable("name", object);
 ```
 
-The object's public members can now be accessed from the console using the passed variable's name (press ctrl + space [default] to autocomplete input to known variables/types/members).
+The object's public members can now be accessed from the console using the passed variable's name (press ctrl + space [by default] to autocomplete input to known variables/types/members).
 
-### Manual interpreter setup
 
-Manual interpreter can be used to define commands and actions for the console manually.
+<h2 id="setup4">Setting up console to use ManualInterpreter</h3>
+
+
+Manual interpreter can be used to define commands and their corresponding actions for the console manually. Useful to execute some behavior on command or provide players means to input cheat codes, for example.
 
 Install the interpreter through NuGet (this will also bring in the console if it hasn't been installed already):
 
@@ -73,7 +115,7 @@ Install the interpreter through NuGet (this will also bring in the console if it
 Install-Package QuakeConsole.ManualInterpreter.MonoGame.WindowsDX -Pre
 ```
 
-Create the interpreter and set it as the interpreter for the console:
+1) Create the interpreter and set it as the interpreter for the console:
 
 ```cs
 var interpreter = new ManualInterpreter();
@@ -82,7 +124,7 @@ console.Interpreter = Interpreter;
 
 A command is essentially a delegate that is invoked when user inputs the name of the command. The delegate provides an array of arguments separated by spaces (similar to arguments in a Windows console application) and optionally can return a string value that is output to the console.
 
-To register a command:
+2) To register a command:
 
 ```cs
 interpreter.RegisterCommand("name", action);
@@ -90,18 +132,18 @@ interpreter.RegisterCommand("name", action);
 
 where action is of type `Action<string[]>` or `Func<string[], string>`.
 
-Provides autocompletion for registered command names (ctrl + space [default]).
+Provides autocompletion for registered command names (ctrl + space by default).
 
-## Assemblies
+# Assemblies
 
 - **QuakeConsole**: The core project for the console. Contains the behavior associated with handling user input and the visual side of the console's window.
 
-### Interpreters
+## Interpreters
 
 - **QuakeConsole.PythonInterpreter**: IronPython interpreter for the console shell. Allows manipulating game objects using Python scripting language. Provides autocompletion for loaded .NET types.
 - **QuakeConsole.PythonInterpreter.Tests**: Unit tests covering the expected execution and autocompletion behavior for Python interpreter.
 - **QuakeConsole.ManualInterpreter**: Interpreter for manually defined commands. Provides autocompletion for command names.
 
-### Samples
+## Samples
 
 - **Sandbox**: Simple game which sets up the console and allows to manipulate a cube object using either Python or manual interpreter.

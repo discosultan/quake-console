@@ -1,11 +1,12 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace QuakeConsole
 {
-    internal class BackgroundRenderer
+    internal class BackgroundRenderer : IDisposable
     {
         private Console _console;
         private Effect _bgEffect;
@@ -38,10 +39,10 @@ namespace QuakeConsole
         public Texture2D Texture { get; set; }
         public Matrix TextureTransform { get; set; }
 
-        public void UnloadContent()
+        public void Dispose()
         {
-            _bgEffect.Dispose();
-            _vertices.Dispose();
+            _bgEffect?.Dispose();
+            _vertices?.Dispose();
         }
 
         public void Draw()
@@ -103,6 +104,6 @@ namespace QuakeConsole
                 * Matrix.CreateTranslation(new Vector3(0, _console.WindowArea.Y, 0))
                 * projection;
 
-        }
+        }        
     }
 }
