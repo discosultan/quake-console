@@ -15,7 +15,7 @@ Quake-style console is an in-game command-line interface with swappable command 
 - [Setting up console to use ManualInterpreter](#setup4)
 
 
-<h2 id="setup1">Building source and samples</h3>
+<h2 id="setup1">Building source and samples</h2>
 
 
 The following is required to successfully compile the QuakeConsole MonoGame solution:
@@ -24,12 +24,12 @@ The following is required to successfully compile the QuakeConsole MonoGame solu
 - [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109) (to compile effect shaders)
 
 
-<h2 id="setup2">Using QuakeConsole</h3>
+<h2 id="setup2">Using QuakeConsole</h2>
 
 
 > Currently available only for MonoGame WindowsDX platform targeting .NET 4.0!
 
-Install the console shell through NuGet:
+Install the console assembly through NuGet:
 
 ```powershell
 Install-Package QuakeConsole.MonoGame.WindowsDX -Pre
@@ -77,12 +77,12 @@ This has setup the console shell. For the console to actually do anything useful
 Sometimes it is desirable to prevent other game systems from accepting input while the console window is open. To do this, it is required to know if the console is currently open (accepting input) or closed. This can be done by using the  `console.IsAcceptingInput` property.
 
 
-<h2 id="setup4">Setting up console to use PythonInterpreter</h3>
+<h2 id="setup3">Setting up console to use PythonInterpreter</h2>
 
 
 Python interpreter can be used to interpret user input as Python code. It is extremely useful to, for example, manipulate game objects *at runtime*.
 
-Install the interpreter through NuGet (this will also bring in the console if it hasn't been installed already):
+Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
 Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre
@@ -104,12 +104,12 @@ interpreter.AddVariable("name", object);
 The object's public members can now be accessed from the console using the passed variable's name (press ctrl + space [by default] to autocomplete input to known variables/types/members).
 
 
-<h2 id="setup4">Setting up console to use ManualInterpreter</h3>
+<h2 id="setup4">Setting up console to use ManualInterpreter</h2>
 
 
 Manual interpreter can be used to define commands and their corresponding actions for the console manually. Useful to execute some behavior on command or provide players means to input cheat codes, for example.
 
-Install the interpreter through NuGet (this will also bring in the console if it hasn't been installed already):
+Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
 Install-Package QuakeConsole.ManualInterpreter.MonoGame.WindowsDX -Pre
