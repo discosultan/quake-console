@@ -1,5 +1,4 @@
-﻿#if MONOGAME
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 
 namespace QuakeConsole.Utilities
@@ -21,11 +20,9 @@ namespace QuakeConsole.Utilities
         private KeyboardState _previousKeyState;
         private KeyboardState _currentKeyState;
 
-        public bool IsKeyDown(Keys key)
-        {
-            return _currentKeyState.IsKeyDown(key);
-            //return _previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key);
-        }
+        public bool IsKeyDown(Keys key) => _currentKeyState.IsKeyDown(key);
+
+        public bool IsKeyPressed(Keys key) => _previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key);
 
         public void Update()
         {
@@ -33,7 +30,7 @@ namespace QuakeConsole.Utilities
             _currentKeyState = Keyboard.GetState();
 
             KeyEvents.Clear();
-            Keys[] pressedKeys = _currentKeyState.GetPressedKeys();
+            Keys[] pressedKeys = _currentKeyState.GetPressedKeys(); // TODO: per frame heap allocs
             foreach (Keys key in pressedKeys)
             {
                 if (_previousKeyState.IsKeyDown(key) && _currentKeyState.IsKeyUp(key))
@@ -46,4 +43,3 @@ namespace QuakeConsole.Utilities
         public List<KeyEvent> KeyEvents { get; } = new List<KeyEvent>();
     }
 }
-#endif

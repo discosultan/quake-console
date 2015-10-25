@@ -64,6 +64,7 @@
     <Compile Include="ConsoleComponent.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="Console.Definitions.cs" />
+    <Compile Include="Features\RepeatingInput.cs" />
     <Compile Include="ICommandInterpreter.cs" />
     <Compile Include="IConsoleInput.cs" />
     <Compile Include="ConsoleInput.cs" />

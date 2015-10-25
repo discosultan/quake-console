@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using QuakeConsole.Features;
 using QuakeConsole.Utilities;
 #if MONOGAME
 using Microsoft.Xna.Framework;
@@ -44,8 +45,12 @@ namespace QuakeConsole
             Caret.LoadContent(_console, _inputBuffer);
             Caret.Moved += (s, e) => _dirty = true;
 
+            RepeatingInput.LoadContent(console);
+
             _loaded = true;
         }
+
+        public RepeatingInput RepeatingInput { get; } = new RepeatingInput();
 
         /// <summary>
         /// Gets or sets the last autocomplete entry which was added to the buffer. Note that
@@ -88,34 +93,10 @@ namespace QuakeConsole
         /// </summary>
         public int Length => _inputBuffer.Length;
 
-        public float RepeatingInputCooldown
-        {
-            get { return _console.RepeatingInputCooldown; }
-            set
-            {
-                Check.ArgumentNotLessThan(value, 0, "value");
-                _console.RepeatingInputCooldown = value;
-            }
-        }
-
-        public float TimeUntilRepeatingInput
-        {
-            get { return _console.TimeUntilRepeatingInput; }
-            set
-            {
-                Check.ArgumentNotLessThan(value, 0, "value");
-                _console.TimeUntilRepeatingInput = value;
-            }
-        } 
-
         public int NumPositionsToMoveWhenOutOfScreen
         {
             get { return _numPosToMoveWhenOutOfScreen; }
-            set
-            {
-                Check.ArgumentNotLessThan(value, 1, "value");
-                _numPosToMoveWhenOutOfScreen = value;
-            }
+            set { _numPosToMoveWhenOutOfScreen = Math.Max(value, 1); }
         }
 
         internal Vector2 InputPrefixSize { get; set; }
@@ -225,14 +206,12 @@ namespace QuakeConsole
         /// Gets or sets if the buffer is empty or contains only whitespace symbols.
         /// </summary>
         /// <returns>True if empty or contains only whitespace(s).</returns>
-        internal bool IsEmptyOrWhitespace()
-        {
-            return _inputBuffer.IsEmptyOrWhitespace();
-        }        
+        internal bool IsEmptyOrWhitespace() => _inputBuffer.IsEmptyOrWhitespace();
 
         internal void Update(float deltaSeconds)
         {
             Caret.Update(deltaSeconds);
+            RepeatingInput.Update(deltaSeconds);
             if (_dirty)
             {
                 CalculateStartAndEndIndices();
@@ -267,6 +246,8 @@ namespace QuakeConsole
             InputPrefix = settings.InputPrefix;
             InputPrefixColor = settings.InputPrefixColor;
             NumPositionsToMoveWhenOutOfScreen = settings.NumPositionsToMoveWhenOutOfScreen;
+            RepeatingInput.RepeatingInputCooldown = settings.TimeToCooldownRepeatingInput;
+            RepeatingInput.TimeUntilRepeatingInput = settings.TimeToTriggerRepeatingInput;
 
             Caret.SetDefaults(settings);
         }

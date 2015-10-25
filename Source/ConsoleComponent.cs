@@ -136,8 +136,8 @@ namespace QuakeConsole
         /// </summary>
         public float TimeToTriggerRepeatingInput
         {
-            get { return _console.TimeUntilRepeatingInput; }
-            set { _console.TimeUntilRepeatingInput = value; }
+            get { return _console.ConsoleInput.RepeatingInput.TimeUntilRepeatingInput; }
+            set { _console.ConsoleInput.RepeatingInput.TimeUntilRepeatingInput = value; }
         }
 
         /// <summary>
@@ -146,8 +146,8 @@ namespace QuakeConsole
         /// </summary>
         public float TimeToCooldownRepeatingInput
         {
-            get { return _console.TimeUntilRepeatingInput; }
-            set { _console.TimeUntilRepeatingInput = value; }
+            get { return _console.ConsoleInput.RepeatingInput.TimeUntilRepeatingInput; }
+            set { _console.ConsoleInput.RepeatingInput.TimeUntilRepeatingInput = value; }
         }
 
         /// <summary>

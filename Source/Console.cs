@@ -29,21 +29,12 @@ namespace QuakeConsole
         private RectangleF _windowArea;        
         private float _padding;
         private float _heightRatio;
-        private ConsoleState _state = ConsoleState.Closed;
         private bool _loaded;
 
         // Input history.        
         private readonly List<string> _inputHistory = new List<string>();
         private int _inputHistoryIndexer;
-        private bool _inputHistoryDoNotDecrement;
-
-        // User input.        
-        private readonly Timer _repeatedPressTresholdTimer = new Timer { AutoReset = false };
-        private readonly Timer _repeatedPressIntervalTimer = new Timer { AutoReset = true };
-
-        private bool _startRepeatedProcess;
-        private bool _isFastRepeating;
-        private Keys _downKey;                
+        private bool _inputHistoryDoNotDecrement;               
 
         public Console()
         {            
@@ -98,9 +89,9 @@ namespace QuakeConsole
 
         public ConsoleOutput ConsoleOutput { get; } = new ConsoleOutput();        
         
-        public bool IsVisible => _state != ConsoleState.Closed;
+        public bool IsVisible => State != ConsoleState.Closed;
         
-        public bool IsAcceptingInput => _state == ConsoleState.Open || _state == ConsoleState.Opening;
+        public bool IsAcceptingInput => State == ConsoleState.Open || State == ConsoleState.Opening;
         
         public Action<string> LogInput { get; set; }
         
@@ -163,28 +154,14 @@ namespace QuakeConsole
         public Dictionary<Keys, SymbolPair> SymbolMappings
         {
             get { return _symbolDefinitions; }
-            set
-            {
-                Check.ArgumentNotNull(value, "value", "Symbol mappings cannot be null.");
-                _symbolDefinitions = value;
-            }
-        }
-
-        public float RepeatingInputCooldown
-        {
-            get { return _repeatedPressIntervalTimer.TargetTime; }
-            set { _repeatedPressIntervalTimer.TargetTime = value; }
-        }
-
-        public float TimeUntilRepeatingInput
-        {
-            get { return _repeatedPressTresholdTimer.TargetTime; }
-            set { _repeatedPressTresholdTimer.TargetTime = value; }
+            set { _symbolDefinitions = value ?? new Dictionary<Keys, SymbolPair>(); }
         }
 
 #if MONOGAME
         internal InputManager Input { get; } = new InputManager();
 #endif
+
+        internal ConsoleState State { get; private set; } = ConsoleState.Closed;
 
         internal Dictionary<char, float> CharWidthMap { get; } = new Dictionary<char, float>();
 
@@ -206,14 +183,14 @@ namespace QuakeConsole
         
         public void ToggleOpenClose()
         {
-            switch (_state)
+            switch (State)
             {
                 case ConsoleState.Closed:
-                    _state = ConsoleState.Opening;
+                    State = ConsoleState.Opening;
                     _transitionTimer.Reset();
                     break;
                 case ConsoleState.Open:
-                    _state = ConsoleState.Closing;
+                    State = ConsoleState.Closing;
                     _transitionTimer.Reset();
                     break;
             }
@@ -240,7 +217,7 @@ namespace QuakeConsole
 #if MONOGAME
             Input.Update();
 #endif
-            switch (_state)
+            switch (State)
             {
                 case ConsoleState.Closing:
                     UpdateTimer(deltaSeconds, ConsoleState.Closed);
@@ -261,21 +238,6 @@ namespace QuakeConsole
                     goto case ConsoleState.Open;
                 case ConsoleState.Open:
                     HandleInput();
-                    if (_startRepeatedProcess && !_isFastRepeating)
-                    {
-                        _repeatedPressTresholdTimer.Update(deltaSeconds);
-                        if (_repeatedPressTresholdTimer.Finished)
-                        {
-                            _isFastRepeating = true;
-                            _repeatedPressIntervalTimer.Reset();
-                        }
-                    }
-                    else if (_isFastRepeating)
-                    {
-                        _repeatedPressIntervalTimer.Update(deltaSeconds);
-                        if (_repeatedPressIntervalTimer.Finished)
-                            HandleKey(_downKey);
-                    }
                     ConsoleInput.Update(deltaSeconds);
                     break;
             }
@@ -283,7 +245,7 @@ namespace QuakeConsole
 
         public void Draw()
         {
-            switch (_state)
+            switch (State)
             {
                 case ConsoleState.Closing:
                 case ConsoleState.Opening:
@@ -323,21 +285,11 @@ namespace QuakeConsole
         
         private void HandleInput()
         {            
-            if (!Input.IsKeyDown(_downKey))
-                ResetRepeatingPresses();
-
             foreach (KeyEvent keyEvent in Input.KeyEvents)
             {
                 // We are only interested in key presses.
                 if (keyEvent.Type == KeyEventType.Released)
                     continue;
-
-                if (keyEvent.Key != _downKey)
-                {
-                    ResetRepeatingPresses();
-                    _downKey = keyEvent.Key;
-                    _startRepeatedProcess = true;
-                }
 
                 ConsoleProcessResult result = HandleKey(keyEvent.Key);
                 if (result == ConsoleProcessResult.Break)
@@ -345,7 +297,7 @@ namespace QuakeConsole
             }
         }
 
-        private ConsoleProcessResult HandleKey(Keys key)
+        internal ConsoleProcessResult HandleKey(Keys key)
         {
             ConsoleProcessResult processResult = ProcessSpecialKey(key);
             if (processResult == ConsoleProcessResult.Continue ||
@@ -546,7 +498,7 @@ namespace QuakeConsole
             _transitionTimer.Update(deltaSeconds);
             if (_transitionTimer.Finished)
             {
-                _state = stateToSetWhenFinished;
+                State = stateToSetWhenFinished;
             }
         }
 
@@ -573,7 +525,7 @@ namespace QuakeConsole
                 Width = width,
                 Height = height * HeightRatio
             };
-            switch (_state)
+            switch (State)
             {
                 case ConsoleState.Closed:
                     newWindowArea.Y = -newWindowArea.Height;
@@ -586,15 +538,6 @@ namespace QuakeConsole
         private float GetMaxAllowedPadding()
         {
             return Math.Min(_windowArea.Width / 2 - _padding / 2, _windowArea.Height / 2 - _padding / 2);
-        }
-
-        private void ResetRepeatingPresses()
-        {
-            _downKey = Keys.None;
-            _startRepeatedProcess = false;
-            _isFastRepeating = false;
-            _repeatedPressTresholdTimer.Reset();
-            _repeatedPressIntervalTimer.Reset();
         }        
 
         private void SetDefaults(ConsoleSettings settings)
@@ -602,9 +545,7 @@ namespace QuakeConsole
             BackgroundColor = settings.BackgroundColor;            
             FontColor = settings.FontColor;
             HeightRatio = settings.HeightRatio;
-            OpenCloseTransitionSeconds = settings.TimeToToggleOpenClose;
-            RepeatingInputCooldown = settings.TimeToCooldownRepeatingInput;
-            TimeUntilRepeatingInput = settings.TimeToTriggerRepeatingInput;                        
+            OpenCloseTransitionSeconds = settings.TimeToToggleOpenClose;            
             Padding = settings.Padding;
             BottomBorderColor = settings.BottomBorderColor;
             BottomBorderThickness = settings.BottomBorderThickness;
