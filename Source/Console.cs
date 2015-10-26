@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QuakeConsole.Features;
 using QuakeConsole.Utilities;
 #if MONOGAME
 using Texture = Microsoft.Xna.Framework.Graphics.Texture2D;
@@ -29,12 +30,7 @@ namespace QuakeConsole
         private RectangleF _windowArea;        
         private float _padding;
         private float _heightRatio;
-        private bool _loaded;
-
-        // Input history.        
-        private readonly List<string> _inputHistory = new List<string>();
-        private int _inputHistoryIndexer;
-        private bool _inputHistoryDoNotDecrement;               
+        private bool _loaded;                    
 
         public Console()
         {            
@@ -68,6 +64,13 @@ namespace QuakeConsole
             ConsoleInput.LoadContent(this);
             ConsoleOutput.LoadContent(this);
             BgRenderer.LoadContent(this);
+            InputHistory.LoadContent(this);
+            Autocompletion.LoadContent(this);
+            CopyPasting.LoadContent(this);
+            Movement.LoadContent(this);
+            Tabbing.LoadContent(this);
+            Deletion.LoadContent(this);
+            CommandExecution.LoadContent(this);
         }
 
         public void Dispose()
@@ -91,9 +94,7 @@ namespace QuakeConsole
         
         public bool IsVisible => State != ConsoleState.Closed;
         
-        public bool IsAcceptingInput => State == ConsoleState.Open || State == ConsoleState.Opening;
-        
-        public Action<string> LogInput { get; set; }
+        public bool IsAcceptingInput => State == ConsoleState.Open || State == ConsoleState.Opening;                
         
         public SpriteFont Font
         {
@@ -161,11 +162,19 @@ namespace QuakeConsole
         internal InputManager Input { get; } = new InputManager();
 #endif
 
+        internal InputHistory InputHistory { get; } = new InputHistory();
+        internal Autocompletion Autocompletion { get; } = new Autocompletion();
+        internal CopyPasting CopyPasting { get; } = new CopyPasting();
+        internal Movement Movement { get; } = new Movement();
+        internal Tabbing Tabbing { get; } = new Tabbing();
+        internal Deletion Deletion { get; } = new Deletion();
+        internal CommandExecution CommandExecution { get; } = new CommandExecution();
+
         internal ConsoleState State { get; private set; } = ConsoleState.Closed;
 
         internal Dictionary<char, float> CharWidthMap { get; } = new Dictionary<char, float>();
 
-        internal BackgroundRenderer BgRenderer { get; } = new BackgroundRenderer();
+        internal TexturedBackground BgRenderer { get; } = new TexturedBackground();
         internal SpriteBatch SpriteBatch { get; private set; }
         internal GraphicsDevice GraphicsDevice { get; private set; }
 
@@ -202,8 +211,7 @@ namespace QuakeConsole
                 ConsoleOutput.Clear();
             if ((clearFlags & ConsoleClearFlags.InputBuffer) != 0)
                 ConsoleInput.Clear();
-            if ((clearFlags & ConsoleClearFlags.InputHistory) != 0)
-                ClearHistory();
+            InputHistory.Clear(clearFlags);
         }
         
         public void Reset()
@@ -288,167 +296,49 @@ namespace QuakeConsole
             foreach (KeyEvent keyEvent in Input.KeyEvents)
             {
                 // We are only interested in key presses.
-                if (keyEvent.Type == KeyEventType.Released)
-                    continue;
-
-                ConsoleProcessResult result = HandleKey(keyEvent.Key);
-                if (result == ConsoleProcessResult.Break)
-                    break;
+                if (keyEvent.Type == KeyEventType.Pressed)
+                    if (HandleKey(keyEvent.Key))
+                        break;
             }
         }
 
-        internal ConsoleProcessResult HandleKey(Keys key)
+        internal bool HandleKey(Keys key)
         {
-            ConsoleProcessResult processResult = ProcessSpecialKey(key);
-            if (processResult == ConsoleProcessResult.Continue ||
-                processResult == ConsoleProcessResult.Break)
-            {
-                return processResult;
-            }
-            processResult = ProcessRegularKey(key);
-            return processResult;
+            bool processedKey = ProcessSpecialKey(key);
+            if (processedKey)
+                return true;
+            processedKey = ProcessRegularKey(key);
+            return processedKey;
         }
 
-        private ConsoleProcessResult ProcessSpecialKey(Keys key)
+        private bool ProcessSpecialKey(Keys key)
         {
             ConsoleAction action;
-            if (!_actionDefinitions.ForwardTryGetValue(key, out action))
-                return ConsoleProcessResult.None;
+            if (!ActionDefinitions.ForwardTryGetValue(key, out action))
+                return false;
 
-            Keys modifier;
-            switch (action)
-            {                                    
-                case ConsoleAction.ExecuteCommand:
-                    string cmd = ConsoleInput.Value;                    
-                    // Determine if this is a line break or we should execute command straight away.
-                    if (_actionDefinitions.BackwardTryGetValue(ConsoleAction.NextLineModifier, out modifier) &&
-                        Input.IsKeyDown(modifier))
-                    {                        
-                        ConsoleOutput.AddCommandEntry(cmd);                        
-                    } 
-                    else
-                    {
-                        string executedCmd = cmd;
-                        if (ConsoleOutput.HasCommandEntry)
-                            executedCmd = ConsoleOutput.DequeueCommandEntry() + cmd;
-                                                
-                        // Replace our tab symbols with actual tab characters.
-                        executedCmd = executedCmd.Replace(Tab, "\t");
-                        // Log the command to be executed if logger is set.
-                        LogInput?.Invoke(executedCmd);
-                        // Execute command.
-                        _commandInterpreter.Execute(ConsoleOutput, executedCmd);
-                    }
-                                        
-                    // If the cmd matches the currently indexed historical entry then set a special flag
-                    // which when moving backward in history, does not actually move backward, but will instead
-                    // return the same entry that was returned before. This is similar to how Powershell and Cmd Prompt work.
-                    if (_inputHistory.Count == 0 || _inputHistoryIndexer == int.MaxValue || !_inputHistory[_inputHistoryIndexer].Equals(cmd))
-                        _inputHistoryIndexer = int.MaxValue;
-                    else
-                        _inputHistoryDoNotDecrement = true;
+            bool hasProcessedKey =  InputHistory.ProcessAction(action);
+            hasProcessedKey =       Autocompletion.ProcessAction(action)    || hasProcessedKey;
+            hasProcessedKey =       CopyPasting.ProcessAction(action)       || hasProcessedKey;
+            hasProcessedKey =       Movement.ProcessAction(action)          || hasProcessedKey;
+            hasProcessedKey =       Tabbing.ProcessAction(action)           || hasProcessedKey;
+            hasProcessedKey =       Deletion.ProcessAction(action)          || hasProcessedKey;
+            hasProcessedKey =       CommandExecution.ProcessAction(action)  || hasProcessedKey;
 
-                    ConsoleInput.LastAutocompleteEntry = null;
-
-                    // Find the last historical entry if any.
-                    string lastHistoricalEntry = null;
-                    if (_inputHistory.Count > 0)
-                        lastHistoricalEntry = _inputHistory[_inputHistory.Count - 1];
-
-                    // Only add current command to input history if it is not an empty string and
-                    // does not match the last historical entry.
-                    if (cmd != "" && !cmd.Equals(lastHistoricalEntry, StringComparison.Ordinal))
-                        _inputHistory.Add(cmd);
-
-                    ConsoleInput.Clear();                                        
-                    ConsoleInput.Caret.MoveBy(int.MinValue);                    
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.PreviousCommandInHistory:  
-                    if (!_inputHistoryDoNotDecrement)
-                        _inputHistoryIndexer--;                    
-                    ManageHistory();                    
-                    return ConsoleProcessResult.Break;                
-                case ConsoleAction.NextCommandInHistory:                
-                    _inputHistoryIndexer++;                    
-                    ManageHistory();                    
-                    return ConsoleProcessResult.Break;                
-                case ConsoleAction.Autocomplete:
-                    bool hasModifier = _actionDefinitions.BackwardTryGetValue(ConsoleAction.AutocompleteModifier, out modifier);
-                    if (hasModifier && !Input.IsKeyDown(modifier))
-                        return ConsoleProcessResult.None;
-                    bool canMoveBackwards = _actionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
-                    _commandInterpreter.Autocomplete(ConsoleInput, !canMoveBackwards || !Input.IsKeyDown(modifier));
-                    _inputHistoryIndexer = int.MaxValue;
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.MoveLeft:
-                    _actionDefinitions.BackwardTryGetValue(ConsoleAction.MoveByWordModifier, out modifier);
-                    if (Input.IsKeyDown(modifier))
-                        ConsoleInput.Caret.MoveToPreviousWord();
-                    else
-                        ConsoleInput.Caret.MoveBy(-1);
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.MoveRight:
-                    _actionDefinitions.BackwardTryGetValue(ConsoleAction.MoveByWordModifier, out modifier);
-                    if (Input.IsKeyDown(modifier))
-                        ConsoleInput.Caret.MoveToNextWord();
-                    else
-                        ConsoleInput.Caret.MoveBy(1);
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.MoveToBeginning:
-                    ConsoleInput.Caret.Index = 0;
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.MoveToEnd:
-                    ConsoleInput.Caret.Index = ConsoleInput.Length;
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.DeletePreviousChar:
-                    if (ConsoleInput.Length > 0 && ConsoleInput.Caret.Index > 0)
-                    {                        
-                        ConsoleInput.Remove(Math.Max(0, ConsoleInput.Caret.Index - 1), 1);
-                        ResetLastHistoryAndAutocompleteEntries();
-                    }
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.DeleteCurrentChar:
-                    if (ConsoleInput.Length > ConsoleInput.Caret.Index)
-                    {                        
-                        ConsoleInput.Remove(ConsoleInput.Caret.Index, 1);
-                        ResetLastHistoryAndAutocompleteEntries();
-                    }
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.Copy:
-                    _actionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
-                    if (!Input.IsKeyDown(modifier))
-                        break;
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.Paste:                    
-                    _actionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
-                    if (!Input.IsKeyDown(modifier))
-                        break;
-                    // TODO: Enable clipboard pasting. How to approach this in a cross-platform manner?
-                    //string clipboardVal = Clipboard.GetText(TextDataFormat.Text);
-                    //_currentInput.Append(clipboardVal);
-                    //MoveCaret(clipboardVal.Length);
-                    return ConsoleProcessResult.Break;
-                case ConsoleAction.Tab:
-                    _actionDefinitions.BackwardTryGetValue(ConsoleAction.TabModifier, out modifier);
-                    if (Input.IsKeyDown(modifier))
-                        ConsoleInput.RemoveTab();
-                    else
-                        ConsoleInput.Write(Tab);
-                    ResetLastHistoryAndAutocompleteEntries(); 
-                    return ConsoleProcessResult.Break;
-            }
-
-            return ConsoleProcessResult.None;
+            return hasProcessedKey;
         }
 
-        private ConsoleProcessResult ProcessRegularKey(Keys key)
+        private bool ProcessRegularKey(Keys key)
         {
             SymbolPair symbolPair;
             if (!_symbolDefinitions.TryGetValue(key, out symbolPair))
-                return ConsoleProcessResult.None;
+                return false;
+
+            InputHistory.ProcessSymbol(symbolPair);
+            Autocompletion.ProcessSymbol(symbolPair);
 
             List<Keys> uppercaseModifiers;
-            _actionDefinitions.BackwardTryGetValues(ConsoleAction.UppercaseModifier, out uppercaseModifiers);
+            ActionDefinitions.BackwardTryGetValues(ConsoleAction.UppercaseModifier, out uppercaseModifiers);
 
             bool toUpper = uppercaseModifiers != null && uppercaseModifiers.Any(x => Input.IsKeyDown(x));
 
@@ -456,41 +346,12 @@ namespace QuakeConsole
                 ? symbolPair.UppercaseSymbol
                 : symbolPair.LowercaseSymbol);
             
-            ResetLastHistoryAndAutocompleteEntries(); 
-            return ConsoleProcessResult.Break;
+            return true;
         }
 
-        private void ResetLastHistoryAndAutocompleteEntries()
-        {
-            ConsoleInput.LastAutocompleteEntry = null;
-            _inputHistoryIndexer = int.MaxValue;
-        }
-
-#endregion
         
 
-#region Input History
-
-        private void ManageHistory()
-        {
-            // Check if there are any entries in the history.
-            if (_inputHistory.Count <= 0) return;
-
-            _inputHistoryIndexer = MathUtil.Clamp(_inputHistoryIndexer, 0, _inputHistory.Count - 1);
-
-            _inputHistoryDoNotDecrement = false;
-            ConsoleInput.LastAutocompleteEntry = null;
-            ConsoleInput.Value = _inputHistory[_inputHistoryIndexer];
-        }
-
-        private void ClearHistory()
-        {
-            _inputHistory.Clear();
-            _inputHistoryIndexer = int.MaxValue;
-            _inputHistoryDoNotDecrement = false;
-        }
-
-#endregion
+#endregion       
 
 
         private void UpdateTimer(float deltaSeconds, ConsoleState stateToSetWhenFinished)

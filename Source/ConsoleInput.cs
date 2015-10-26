@@ -19,6 +19,9 @@ namespace QuakeConsole
 
         private Console _console;
 
+        private string _value;
+        private bool _valueDirty = true;
+
         private string _inputPrefix;
         private Vector2 _fontSize;
         private int _startIndex;
@@ -42,7 +45,7 @@ namespace QuakeConsole
             MeasureFontSize();
             CalculateInputPrefixWidth();
 
-            Caret.LoadContent(_console, _inputBuffer);
+            Caret.LoadContent(_console);
             Caret.Moved += (s, e) => _dirty = true;
 
             RepeatingInput.LoadContent(console);
@@ -57,7 +60,11 @@ namespace QuakeConsole
         /// this value will be set to null whenever anything from the normal <see cref="Console"/>
         /// input pipeline gets appended here.
         /// </summary>
-        public string LastAutocompleteEntry { get; set; }
+        public string LastAutocompleteEntry
+        {
+            get { return _console.Autocompletion.LastAutocompleteEntry; }
+            set { _console.Autocompletion.LastAutocompleteEntry = value; }
+        }
 
         /// <summary>
         /// Gets the <see cref="Caret"/> associated with the buffer. This indicates where user input will be appended.
@@ -108,7 +115,8 @@ namespace QuakeConsole
         public void Write(string symbol)
         {
             if (string.IsNullOrEmpty(symbol)) return;
-            _inputBuffer.Insert(Caret.Index, symbol);            
+            _inputBuffer.Insert(Caret.Index, symbol);
+            _valueDirty = true;
             Caret.MoveBy(symbol.Length);
         }
 
@@ -119,9 +127,9 @@ namespace QuakeConsole
         /// <param name="length">Number of symbols to remove.</param>
         public void Remove(int startIndex, int length)
         {
-            //Caret.Move(-length);
             Caret.Index = startIndex;
-            _inputBuffer.Remove(startIndex, length);                       
+            _inputBuffer.Remove(startIndex, length);
+            _valueDirty = true;                  
         }
 
         /// <summary>
@@ -129,12 +137,22 @@ namespace QuakeConsole
         /// </summary>
         public string Value
         {
-            get { return _inputBuffer.ToString(); }
+            get
+            {                
+                if (_valueDirty)
+                {
+                    _valueDirty = false;
+                    _value = _inputBuffer.ToString();
+                }
+                return _value;
+            }
             set
             {
                 _inputBuffer.Clear();
-                if (value != null) _inputBuffer.Append(value);
-                Caret.Index = _inputBuffer.Length;
+                _valueDirty = true;
+                if (value != null)
+                    _inputBuffer.Append(value);
+                Caret.Index = _inputBuffer.Length;                
             }
         }
 
@@ -165,6 +183,7 @@ namespace QuakeConsole
         public void Clear()
         {
             _inputBuffer.Clear();
+            _valueDirty = true;
             Caret.MoveBy(int.MinValue);
         }        
 
@@ -179,7 +198,15 @@ namespace QuakeConsole
         /// </summary>
         /// <param name="i">Index to take symbol from.</param>
         /// <returns>Indexed symbol.</returns>
-        public char this[int i] => _inputBuffer[i];
+        public char this[int i]
+        {
+            get { return _inputBuffer[i]; }
+            set
+            {
+                _inputBuffer[i] = value;
+                _valueDirty = true;
+            }
+        } 
 
         internal void RemoveTab()
         {
@@ -187,8 +214,8 @@ namespace QuakeConsole
             int counter = 0;
             for (int i = Caret.Index - 1; i >= 0; i--)
             {
-                if (counter >= _console.Tab.Length) break;
-                if (_inputBuffer[i] != _console.Tab[_console.Tab.Length - counter++ - 1])
+                if (counter >= _console.Tabbing.Tab.Length) break;
+                if (_inputBuffer[i] != _console.Tabbing.Tab[_console.Tabbing.Tab.Length - counter++ - 1])
                 {
                     isTab = false;
                     break;
@@ -197,9 +224,10 @@ namespace QuakeConsole
             int numToRemove = counter;
             if (isTab)
             {
-                _inputBuffer.Remove(Math.Max(0, Caret.Index - _console.Tab.Length), numToRemove);
+                _inputBuffer.Remove(Math.Max(0, Caret.Index - _console.Tabbing.Tab.Length), numToRemove);
+                _valueDirty = true;
             }
-            Caret.MoveBy(-_console.Tab.Length);
+            Caret.MoveBy(-_console.Tabbing.Tab.Length);
         }
 
         /// <summary>

@@ -3,6 +3,7 @@
     /// <summary>
     /// A contract for a <see cref="Console"/> command interpreter. Manages command execution and autocompletion features.
     /// </summary>
+    /// <remarks>Used, for example, to autocomplete user input.</remarks>
     public interface ICommandInterpreter
     {
         /// <summary>
@@ -11,6 +12,7 @@
         /// <param name="output">Buffer to append data which is shown to the user.</param>
         /// <param name="command">Command to execute.</param>
         void Execute(IConsoleOutput output, string command);
+
         /// <summary>
         /// Tries to autocomplete the current user input in the <see cref="ConsoleInput"/>.
         /// </summary>

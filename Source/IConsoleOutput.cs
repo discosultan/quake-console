@@ -1,5 +1,10 @@
 ﻿namespace QuakeConsole
 {
+    /// <summary>
+    /// A contract for the output part of the <see cref="Console"/>. Defines methods manipulating
+    /// the output.
+    /// </summary>
+    /// <remarks>Used, for example, to clear the output window or append results from outside the console.</remarks>
     public interface IConsoleOutput
     {
         /// <summary>

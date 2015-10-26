@@ -11,7 +11,7 @@ namespace QuakeConsole
 
         public OutputEntry(ConsoleOutput view)
         {
-            _view = view;                        
+            _view = view;
         }        
 
         public string Value
@@ -19,7 +19,7 @@ namespace QuakeConsole
             get { return _value; }
             set
             {
-                _value = value.Replace("\t", _view.Console.Tab);
+                _value = value.Replace("\t", _view.Console.Tabbing.Tab);
                 Lines.Clear();
                 Lines.Add(_value);
             }

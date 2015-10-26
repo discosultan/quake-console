@@ -68,8 +68,8 @@ namespace QuakeConsole
         /// </summary>
         public Action<string> LogInput
         {
-            get { return _console.LogInput; }
-            set { _console.LogInput = value; }
+            get { return _console.CommandExecution.LogInput; }
+            set { _console.CommandExecution.LogInput = value; }
         }
 
         /// <summary>

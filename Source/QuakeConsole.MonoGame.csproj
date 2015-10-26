@@ -59,11 +59,18 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BackgroundRenderer.cs" />
+    <Compile Include="Features\CommandExecution.cs" />
+    <Compile Include="Features\Deletion.cs" />
+    <Compile Include="Features\Tabbing.cs" />
+    <Compile Include="Features\Movement.cs" />
+    <Compile Include="Features\CopyPasting.cs" />
+    <Compile Include="TexturedBackground.cs" />
     <Compile Include="Caret.cs" />
     <Compile Include="ConsoleComponent.cs" />
     <Compile Include="Console.cs" />
     <Compile Include="Console.Definitions.cs" />
+    <Compile Include="Features\Autocompletion.cs" />
+    <Compile Include="Features\InputHistory.cs" />
     <Compile Include="Features\RepeatingInput.cs" />
     <Compile Include="ICommandInterpreter.cs" />
     <Compile Include="IConsoleInput.cs" />

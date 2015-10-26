@@ -1,5 +1,9 @@
 namespace QuakeConsole
 {
+    /// <summary>
+    /// A contract for the input part of the <see cref="Console"/>. Defines properties and methods
+    /// required to manipulate the input.
+    /// </summary>
     public interface IConsoleInput
     {
         /// <summary>

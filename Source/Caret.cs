@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Text;
+using Microsoft.Xna.Framework;
 using QuakeConsole.Utilities;
 #if MONOGAME
-using Microsoft.Xna.Framework;
 using MathUtil = Microsoft.Xna.Framework.MathHelper;
 #endif
 
-namespace QuakeConsole
+namespace QuakeConsole.Features
 {
     /// <summary>
     /// A blinking caret inside the <see cref="ConsoleInput"/> to show the location of the cursor.
@@ -18,17 +17,15 @@ namespace QuakeConsole
         private readonly Timer _caretBlinkingTimer = new Timer { AutoReset = true };
 
         private Console _console;
-        private StringBuilder _inputBuffer;
 
         private bool _drawCaret;
         private string _symbol;
         private int _index;
         private bool _loaded;
 
-        internal void LoadContent(Console console, StringBuilder inputBuffer)
+        internal void LoadContent(Console console)
         {
             _console = console;
-            _inputBuffer = inputBuffer;            
 
             console.FontChanged += (s, e) => CalculateSymbolWidth();
             CalculateSymbolWidth();
@@ -44,7 +41,7 @@ namespace QuakeConsole
             get { return _index; }
             set
             {
-                _index = MathUtil.Clamp(value, 0, _inputBuffer.Length); 
+                _index = MathUtil.Clamp(value, 0, _console.ConsoleInput.Length); 
                 Moved?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -107,10 +104,11 @@ namespace QuakeConsole
 
         public void MoveToPreviousWord()
         {
-            bool prevOnLetter = Index < _inputBuffer.Length && char.IsLetterOrDigit(_inputBuffer[Index]);
+            ConsoleInput input = _console.ConsoleInput;
+            bool prevOnLetter = Index < input.Length && char.IsLetterOrDigit(input[Index]);
             for (int i = Index - 1; i >= 0; i--)
             {
-                bool currentOnLetter = char.IsLetterOrDigit(_inputBuffer[i]);                
+                bool currentOnLetter = char.IsLetterOrDigit(input[i]);                
                 if (prevOnLetter && !currentOnLetter && i != Index - 1)
                 {
                     Index = i + 1;
@@ -123,10 +121,11 @@ namespace QuakeConsole
 
         public void MoveToNextWord()
         {
-            bool prevOnLetter = Index < _inputBuffer.Length && char.IsLetterOrDigit(_inputBuffer[Index]);
-            for (int i = Index + 1; i < _inputBuffer.Length; i++)
+            ConsoleInput input = _console.ConsoleInput;
+            bool prevOnLetter = Index < input.Length && char.IsLetterOrDigit(input[Index]);
+            for (int i = Index + 1; i < input.Length; i++)
             {
-                bool currentOnLetter = char.IsLetterOrDigit(_inputBuffer[i]);
+                bool currentOnLetter = char.IsLetterOrDigit(input[i]);
                 if (!prevOnLetter && currentOnLetter)
                 {
                     Index = i;
@@ -134,7 +133,7 @@ namespace QuakeConsole
                 }
                 prevOnLetter = currentOnLetter;
             }
-            Index = _inputBuffer.Length;
+            Index = input.Length;
         }
     }
 }

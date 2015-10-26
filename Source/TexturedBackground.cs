@@ -4,9 +4,9 @@ using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace QuakeConsole
+namespace QuakeConsole.Features
 {
-    internal class BackgroundRenderer : IDisposable
+    internal class TexturedBackground : IDisposable
     {
         private Console _console;
         private Effect _bgEffect;

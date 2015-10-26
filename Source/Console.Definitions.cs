@@ -11,7 +11,7 @@ namespace QuakeConsole
 {
     internal partial class Console
     {
-        private readonly BiDirectionalDictionary<Keys, ConsoleAction> _actionDefinitions = new BiDirectionalDictionary<Keys, ConsoleAction>
+        internal BiDirectionalDictionary<Keys, ConsoleAction> ActionDefinitions { get; } = new BiDirectionalDictionary<Keys, ConsoleAction>
         {
 #if MONOGAME
             { Keys.LeftControl, ConsoleAction.CopyPasteModifier },
@@ -133,8 +133,7 @@ namespace QuakeConsole
             //{ Keys.Tab, new SymbolPair("    ", "    ") } // Use 4 spaces instead.
         };
 
-        internal readonly string NewLine = "\n";
-        internal readonly string Tab = "    ";
+        internal readonly string NewLine = "\n";        
     }
 
     /// <summary>
@@ -178,13 +177,6 @@ namespace QuakeConsole
         Paste,
         Tab,
         TabModifier
-    }
-
-    internal enum ConsoleProcessResult
-    {
-        None,
-        Continue,
-        Break
     }
 
     internal enum ConsoleState
