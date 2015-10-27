@@ -29,10 +29,10 @@ namespace QuakeConsole
         string Value { get; set; }
 
         /// <summary>
-        /// Writes symbol to the <see cref="ConsoleInput"/>.
+        /// Writes to the <see cref="ConsoleInput"/>.
         /// </summary>
-        /// <param name="symbol">Symbol to write.</param>
-        void Write(string symbol);
+        /// <param name="value">Message to append.</param>
+        void Append(string value);
 
         /// <summary>
         /// Removes symbols from the <see cref="ConsoleInput"/>.
@@ -69,6 +69,6 @@ namespace QuakeConsole
         /// </summary>
         /// <param name="i">Index to take symbol from.</param>
         /// <returns>Indexed symbol.</returns>
-        char this[int i] { get; }
+        char this[int i] { get; set; }
     }
 }

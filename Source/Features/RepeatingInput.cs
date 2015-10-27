@@ -35,10 +35,12 @@ namespace QuakeConsole.Features
         {
             if (!Enabled || _console.State != ConsoleState.Open) return;
 
-            if (!_console.Input.IsKeyDown(_downKey))
+            ConsoleInput input = _console.ConsoleInput;
+
+            if (!input.Input.IsKeyDown(_downKey))
                 ResetRepeatingPresses();
 
-            foreach (KeyEvent keyEvent in _console.Input.KeyEvents)
+            foreach (KeyEvent keyEvent in input.Input.KeyEvents)
             {
                 if (keyEvent.Type == KeyEventType.Released)
                     continue;
@@ -64,7 +66,7 @@ namespace QuakeConsole.Features
             {
                 _repeatedPressIntervalTimer.Update(deltaSeconds);
                 if (_repeatedPressIntervalTimer.Finished)
-                    _console.HandleKey(_downKey);
+                    input.HandleKey(_downKey);
             }
         }
 

@@ -19,7 +19,7 @@ namespace QuakeConsole
             get { return _value; }
             set
             {
-                _value = value.Replace("\t", _view.Console.Tabbing.Tab);
+                _value = value.Replace("\t", _view.Console.TabSymbol);
                 Lines.Clear();
                 Lines.Add(_value);
             }
@@ -30,44 +30,9 @@ namespace QuakeConsole
         public int CalculateLines(float bufferAreaWidth, bool countPrefix)
         {
             Lines.Clear();
-            string[] values = Value.Split(_view.Console.NewLine, StringSplitOptions.None);                        
+            string[] values = Value.Split(_view.Console.NewlineSymbol, StringSplitOptions.None);                        
             for (int i = 0; i < values.Length; i++)
                 CalculateLinesPart(values[i], bufferAreaWidth, i == 0 && countPrefix);
-
-            //// Get the total width required to render the value.
-            //float width = font.MeasureString(_value).X;
-            //// Get the decimal value of number of lines required to render the value with our screen width.
-            //float parts = width / bufferAreaWidth;
-            //// Get the integral number of lines required to render the value with our screen width.
-            //var numChunks = (int) Math.Ceiling(parts);
-            //// Get the theoretical number of chars a line can fit.
-            //var theoreticalNumCharsOnLine = (int)(_value.Length / parts);
-
-            //int valueIndexer = 0;
-            //for (int i = 0; i < numChunks - 1; i++)
-            //{
-            //    int numCharsOnCurrentLine = theoreticalNumCharsOnLine;
-            //    string subStr;
-            //    do
-            //    {
-            //        subStr = _value.Substring(valueIndexer, numCharsOnCurrentLine);
-            //        float subStrWidth = font.MeasureString(subStr).X;
-            //        if (subStrWidth > bufferAreaWidth)
-            //        {
-            //            numCharsOnCurrentLine--;
-            //        }
-            //        else
-            //        {
-            //            break;
-            //        }
-            //    } while (numCharsOnCurrentLine > 0);
-
-            //    valueIndexer += numCharsOnCurrentLine;
-            //    Lines.Add(subStr ?? "");                
-            //}
-
-            //// Add last line.
-            //Lines.Add(_value.Substring(valueIndexer));
 
             return Lines.Count;
         }

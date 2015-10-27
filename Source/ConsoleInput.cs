@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Microsoft.Xna.Framework.Input;
 using QuakeConsole.Features;
 using QuakeConsole.Utilities;
 #if MONOGAME
@@ -9,9 +10,6 @@ using MathUtil = Microsoft.Xna.Framework.MathHelper;
 
 namespace QuakeConsole
 {
-    /// <summary>
-    /// Input part of the <see cref="Console"/>. User input, historical commands and autocompletion values will be appended here.
-    /// </summary>
     internal class ConsoleInput : IConsoleInput
     {        
         private readonly StringBuilder _inputBuffer = new StringBuilder();
@@ -31,49 +29,24 @@ namespace QuakeConsole
 
         private bool _loaded;
 
-        internal void LoadContent(Console console)
-        {
-            _console = console;
-            _console.FontChanged += (s, e) =>
-            {
-                MeasureFontSize();
-                CalculateInputPrefixWidth();
-                _dirty = true;
-            };
-            _console.WindowAreaChanged += (s, e) => _dirty = true;            
-
-            MeasureFontSize();
-            CalculateInputPrefixWidth();
-
-            Caret.LoadContent(_console);
-            Caret.Moved += (s, e) => _dirty = true;
-
-            RepeatingInput.LoadContent(console);
-
-            _loaded = true;
-        }
-
         public RepeatingInput RepeatingInput { get; } = new RepeatingInput();
 
-        /// <summary>
-        /// Gets or sets the last autocomplete entry which was added to the buffer. Note that
-        /// this value will be set to null whenever anything from the normal <see cref="Console"/>
-        /// input pipeline gets appended here.
-        /// </summary>
         public string LastAutocompleteEntry
         {
-            get { return _console.Autocompletion.LastAutocompleteEntry; }
-            set { _console.Autocompletion.LastAutocompleteEntry = value; }
+            get { return Autocompletion.LastAutocompleteEntry; }
+            set { Autocompletion.LastAutocompleteEntry = value; }
         }
 
-        /// <summary>
-        /// Gets the <see cref="Caret"/> associated with the buffer. This indicates where user input will be appended.
-        /// </summary>
+        public InputHistory InputHistory { get; } = new InputHistory();
+        public Autocompletion Autocompletion { get; } = new Autocompletion();
+        public CopyPasting CopyPasting { get; } = new CopyPasting();
+        public Movement Movement { get; } = new Movement();
+        public Tabbing Tabbing { get; } = new Tabbing();
+        public Deletion Deletion { get; } = new Deletion();
+        public CommandExecution CommandExecution { get; } = new CommandExecution();
+        public CaseSensitivity CaseSenitivity { get; } = new CaseSensitivity();
         public Caret Caret { get; } = new Caret();
 
-        /// <summary>
-        /// Gets or sets the location of caret. This indicates where user input will be appended.
-        /// </summary>
         public int CaretIndex
         {
             get { return Caret.Index; }
@@ -95,9 +68,6 @@ namespace QuakeConsole
         
         public Color InputPrefixColor { get; set; }
 
-        /// <summary>
-        /// Gets the number of characters currently in the buffer.
-        /// </summary>
         public int Length => _inputBuffer.Length;
 
         public int NumPositionsToMoveWhenOutOfScreen
@@ -106,35 +76,57 @@ namespace QuakeConsole
             set { _numPosToMoveWhenOutOfScreen = Math.Max(value, 1); }
         }
 
-        internal Vector2 InputPrefixSize { get; set; }
 
-        /// <summary>
-        /// Writes symbol to the <see cref="ConsoleInput"/>.
-        /// </summary>
-        /// <param name="symbol">Symbol to write.</param>
-        public void Write(string symbol)
+#if MONOGAME
+        public InputManager Input { get; } = new InputManager();
+#endif
+        public Vector2 InputPrefixSize { get; set; }
+
+        public void LoadContent(Console console)
         {
-            if (string.IsNullOrEmpty(symbol)) return;
-            _inputBuffer.Insert(Caret.Index, symbol);
-            _valueDirty = true;
-            Caret.MoveBy(symbol.Length);
-        }
+            _console = console;
+            _console.FontChanged += (s, e) =>
+            {
+                MeasureFontSize();
+                CalculateInputPrefixWidth();
+                _dirty = true;
+            };
+            _console.WindowAreaChanged += (s, e) => _dirty = true;
 
-        /// <summary>
-        /// Removes symbols from the <see cref="ConsoleInput"/>.
-        /// </summary>
-        /// <param name="startIndex">Index from which to start removing.</param>
-        /// <param name="length">Number of symbols to remove.</param>
+            MeasureFontSize();
+            CalculateInputPrefixWidth();
+
+            Caret.LoadContent(_console);
+            Caret.Moved += (s, e) => _dirty = true;
+
+            RepeatingInput.LoadContent(console);
+            InputHistory.LoadContent(console);
+            Autocompletion.LoadContent(console);
+            CopyPasting.LoadContent(console);
+            Movement.LoadContent(console);
+            Tabbing.LoadContent(console);
+            Deletion.LoadContent(console);
+            CommandExecution.LoadContent(console);
+            CaseSenitivity.LoadContent(console);
+
+            _loaded = true;
+        }
+        
+        public void Append(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return;
+            _inputBuffer.Insert(Caret.Index, value);
+            _valueDirty = true;
+            Caret.MoveBy(value.Length);
+        }
+        
         public void Remove(int startIndex, int length)
         {
             Caret.Index = startIndex;
             _inputBuffer.Remove(startIndex, length);
             _valueDirty = true;                  
         }
-
-        /// <summary>
-        /// Gets or sets the value typed into the buffer.
-        /// </summary>
+        
         public string Value
         {
             get
@@ -156,48 +148,23 @@ namespace QuakeConsole
             }
         }
 
-        /// <summary>
-        /// Gets a substring of the buffer.
-        /// </summary>
-        /// <param name="startIndex">Index ta take substring from.</param>
-        /// <param name="length">Number of symbols to include in the substring.</param>
-        /// <returns>Substring of the buffer.</returns>
         public string Substring(int startIndex, int length)
         {            
             return _inputBuffer.Substring(startIndex, length);
         }
 
-        /// <summary>
-        /// Gets a substring of the buffer.
-        /// </summary>
-        /// <param name="startIndex">Index ta take all the following symbols from.</param>        
-        /// <returns>Substring of the buffer.</returns>
         public string Substring(int startIndex)
         {            
             return _inputBuffer.Substring(startIndex);
         }
 
-        /// <summary>
-        /// Clears the input from the buffer.
-        /// </summary>
         public void Clear()
         {
             _inputBuffer.Clear();
             _valueDirty = true;
-            Caret.MoveBy(int.MinValue);
+            Caret.MoveBy(int.MinValue);            
         }        
 
-        /// <inheritdoc/>
-        public override string ToString()
-        {
-            return _inputBuffer.ToString();
-        }
-
-        /// <summary>
-        /// Gets the symbol at the specified index.
-        /// </summary>
-        /// <param name="i">Index to take symbol from.</param>
-        /// <returns>Indexed symbol.</returns>
         public char this[int i]
         {
             get { return _inputBuffer[i]; }
@@ -206,38 +173,18 @@ namespace QuakeConsole
                 _inputBuffer[i] = value;
                 _valueDirty = true;
             }
-        } 
+        }                
 
-        internal void RemoveTab()
+        public void Update(float deltaSeconds)
         {
-            bool isTab = true;
-            int counter = 0;
-            for (int i = Caret.Index - 1; i >= 0; i--)
-            {
-                if (counter >= _console.Tabbing.Tab.Length) break;
-                if (_inputBuffer[i] != _console.Tabbing.Tab[_console.Tabbing.Tab.Length - counter++ - 1])
-                {
-                    isTab = false;
-                    break;
-                }
-            }
-            int numToRemove = counter;
-            if (isTab)
-            {
-                _inputBuffer.Remove(Math.Max(0, Caret.Index - _console.Tabbing.Tab.Length), numToRemove);
-                _valueDirty = true;
-            }
-            Caret.MoveBy(-_console.Tabbing.Tab.Length);
-        }
-
-        /// <summary>
-        /// Gets or sets if the buffer is empty or contains only whitespace symbols.
-        /// </summary>
-        /// <returns>True if empty or contains only whitespace(s).</returns>
-        internal bool IsEmptyOrWhitespace() => _inputBuffer.IsEmptyOrWhitespace();
-
-        internal void Update(float deltaSeconds)
-        {
+#if MONOGAME
+            Input.Update();
+#endif
+            foreach (KeyEvent keyEvent in Input.KeyEvents)
+                // We are only interested in key presses.
+                if (keyEvent.Type == KeyEventType.Pressed)
+                    if (HandleKey(keyEvent.Key))
+                        break;
             Caret.Update(deltaSeconds);
             RepeatingInput.Update(deltaSeconds);
             if (_dirty)
@@ -247,7 +194,16 @@ namespace QuakeConsole
             }
         }
 
-        internal void Draw()
+        public bool HandleKey(Keys key)
+        {
+            bool processedKey = ProcessActionKey(key);
+            if (processedKey)
+                return true;
+            processedKey = ProcessSymbolKey(key);
+            return processedKey;
+        }
+
+        public void Draw()
         {            
             // Draw input prefix.
             var inputPosition = new Vector2(_console.Padding, _console.WindowArea.Y + _console.WindowArea.Height - _console.Padding - _fontSize.Y);
@@ -269,7 +225,7 @@ namespace QuakeConsole
             Caret.Draw(ref inputPosition, _console.FontColor);            
         }
 
-        internal void SetDefaults(ConsoleSettings settings)
+        public void SetSettings(ConsoleSettings settings)
         {
             InputPrefix = settings.InputPrefix;
             InputPrefixColor = settings.InputPrefixColor;
@@ -277,7 +233,41 @@ namespace QuakeConsole
             RepeatingInput.RepeatingInputCooldown = settings.TimeToCooldownRepeatingInput;
             RepeatingInput.TimeUntilRepeatingInput = settings.TimeToTriggerRepeatingInput;
 
-            Caret.SetDefaults(settings);
+            Caret.SetSettings(settings);
+        }
+
+        public override string ToString() => Value;
+
+        private bool ProcessActionKey(Keys key)
+        {
+            ConsoleAction action;
+            if (!_console.ActionDefinitions.ForwardTryGetValue(key, out action))
+                return false;
+
+            bool hasProcessedKey = InputHistory.ProcessAction(action);
+            hasProcessedKey = Autocompletion.ProcessAction(action) || hasProcessedKey;
+            hasProcessedKey = CopyPasting.ProcessAction(action) || hasProcessedKey;
+            hasProcessedKey = Movement.ProcessAction(action) || hasProcessedKey;
+            hasProcessedKey = Tabbing.ProcessAction(action) || hasProcessedKey;
+            hasProcessedKey = Deletion.ProcessAction(action) || hasProcessedKey;
+            hasProcessedKey = CommandExecution.ProcessAction(action) || hasProcessedKey;
+            hasProcessedKey = CaseSenitivity.ProcessAction(action) || hasProcessedKey;       
+
+            return hasProcessedKey;
+        }
+
+        private bool ProcessSymbolKey(Keys key)
+        {
+            Symbol symbol;
+            if (!_console.SymbolMappings.TryGetValue(key, out symbol))
+                return false;
+
+            InputHistory.ProcessSymbol(symbol);
+            Autocompletion.ProcessSymbol(symbol);
+
+            Append(CaseSenitivity.ProcessSymbol(symbol));
+
+            return true;
         }
 
         private void MeasureFontSize()

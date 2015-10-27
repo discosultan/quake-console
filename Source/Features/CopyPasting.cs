@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using System.Windows;
+using Microsoft.Xna.Framework.Input;
 
 namespace QuakeConsole.Features
 {
@@ -14,24 +15,25 @@ namespace QuakeConsole.Features
         {
             if (!Enabled) return false;
 
+            ConsoleInput input = _console.ConsoleInput;
+
             Keys modifier;
             bool hasProcessedAction = false;                        
             switch (action)
             {
                 case ConsoleAction.Copy:
                     _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
-                    if (!_console.Input.IsKeyDown(modifier))
+                    if (!input.Input.IsKeyDown(modifier))
                         break;
+                    // TODO: implement
                     hasProcessedAction = true;
                     break;
                 case ConsoleAction.Paste:
                     _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
-                    if (!_console.Input.IsKeyDown(modifier))
-                        break;
-                    // TODO: Enable clipboard pasting. How to approach this in a cross-platform manner?
-                    //string clipboardVal = Clipboard.GetText(TextDataFormat.Text);
-                    //_currentInput.Append(clipboardVal);
-                    //MoveCaret(clipboardVal.Length);
+                    if (!input.Input.IsKeyDown(modifier))
+                        break;                    
+                    string clipboardVal = Clipboard.GetText(TextDataFormat.Text);
+                    input.Append(clipboardVal);                    
                     hasProcessedAction = true;
                     break;
             }

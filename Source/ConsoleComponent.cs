@@ -68,15 +68,15 @@ namespace QuakeConsole
         /// </summary>
         public Action<string> LogInput
         {
-            get { return _console.CommandExecution.LogInput; }
-            set { _console.CommandExecution.LogInput = value; }
+            get { return _console.ConsoleInput.CommandExecution.LogInput; }
+            set { _console.ConsoleInput.CommandExecution.LogInput = value; }
         }
 
         /// <summary>
         /// Gets or sets the dictionary that is used to map keyboard keys to corresponding symbols
         /// shown in the <see cref="Console"/>.
         /// </summary>
-        public Dictionary<Keys, SymbolPair> KeyMappings
+        public Dictionary<Keys, Symbol> KeyMappings
         {
             get { return _console.SymbolMappings; }
             set { _console.SymbolMappings = value; }
@@ -146,8 +146,8 @@ namespace QuakeConsole
         /// </summary>
         public float TimeToCooldownRepeatingInput
         {
-            get { return _console.ConsoleInput.RepeatingInput.TimeUntilRepeatingInput; }
-            set { _console.ConsoleInput.RepeatingInput.TimeUntilRepeatingInput = value; }
+            get { return _console.ConsoleInput.RepeatingInput.RepeatingInputCooldown; }
+            set { _console.ConsoleInput.RepeatingInput.RepeatingInputCooldown = value; }
         }
 
         /// <summary>
@@ -256,6 +256,29 @@ namespace QuakeConsole
         }
 
         /// <summary>
+        /// Gets or sets the symbol used to represent a tab.
+        /// </summary>
+        /// <remarks>
+        /// By default, four spaces are used to simulate a tab since a lot of
+        /// <see cref="SpriteFont"/>s don't support the \t char.
+        /// </remarks>
+        public string TabSymbol
+        {
+            get { return _console.TabSymbol; }
+            set { _console.TabSymbol = value; }
+        }
+
+        /// <summary>
+        /// Gets or sets the symbol used to represent a newline.
+        /// </summary>
+        /// <remarks>Default is <see cref="Environment.NewLine"/>.</remarks>
+        public string NewlineSymbol
+        {
+            get { return _console.NewlineSymbol; }
+            set { _console.NewlineSymbol = value; }
+        }
+
+        /// <summary>
         /// Opens the console windows if it is closed. Closes it if it is opened.
         /// </summary>
         public void ToggleOpenClose()
@@ -276,10 +299,14 @@ namespace QuakeConsole
         public void Reset() => _console.Reset();
 
         /// <summary>
-        /// Writes a message to the console's output.
+        /// Gets the input writer of the console.
         /// </summary>
-        /// <param name="message">Message to write.</param>
-        public void WriteToOutput(string message) => _console.ConsoleOutput.Append(message);        
+        public IConsoleInput Input => _console.ConsoleInput;
+
+        /// <summary>
+        /// Gets the output writer of the console.
+        /// </summary>
+        public IConsoleOutput Output => _console.ConsoleOutput;
 
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)

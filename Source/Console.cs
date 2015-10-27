@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using QuakeConsole.Features;
 using QuakeConsole.Utilities;
 #if MONOGAME
@@ -15,71 +14,27 @@ namespace QuakeConsole
 {    
     internal partial class Console : IDisposable
     {
-        internal event EventHandler FontChanged;
-        internal event EventHandler PaddingChanged;
-        internal event EventHandler WindowAreaChanged;
-
-        // General.        
-        private ICommandInterpreter _commandInterpreter;
-        private GraphicsDeviceManager _graphicsDeviceManager;
+        public event EventHandler FontChanged;
+        public event EventHandler PaddingChanged;
+        public event EventHandler WindowAreaChanged;
 
         private readonly Timer _transitionTimer = new Timer { AutoReset = false };
+
+        private ICommandInterpreter _commandInterpreter;
+        private GraphicsDeviceManager _graphicsDeviceManager;        
         
         private Texture _whiteTexture;
         private SpriteFont _font;
         private RectangleF _windowArea;        
         private float _padding;
         private float _heightRatio;
-        private bool _loaded;                    
+        private string _tabSymbol = "    ";
+        private string _newlineSymbol = Environment.NewLine;
+        private bool _loaded;
 
         public Console()
         {            
-            SetDefaults(new ConsoleSettings());
-        }
-
-        public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager,
-            SpriteFont font, ICommandInterpreter commandInterpreter)
-        {
-            Check.ArgumentNotNull(deviceManager, nameof(deviceManager), "Cannot instantiate the console without graphics device manager.");
-            Check.ArgumentNotNull(font, nameof(font), "Cannot instantiate the console without a font.");
-
-            _commandInterpreter = commandInterpreter ?? new StubCommandInterpreter();
-            GraphicsDevice = device;
-            _graphicsDeviceManager = deviceManager;
-            Font = font;            
-
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceChanged;
-#if MONOGAME
-            _whiteTexture = new Texture2D(GraphicsDevice, 2, 2, false, SurfaceFormat.Color);
-            _whiteTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White });
-#else                   
-            _backgroundTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
-#endif
-            _loaded = true;
-
-            SetWindowWidthAndHeight();            
-
-            ConsoleInput.LoadContent(this);
-            ConsoleOutput.LoadContent(this);
-            BgRenderer.LoadContent(this);
-            InputHistory.LoadContent(this);
-            Autocompletion.LoadContent(this);
-            CopyPasting.LoadContent(this);
-            Movement.LoadContent(this);
-            Tabbing.LoadContent(this);
-            Deletion.LoadContent(this);
-            CommandExecution.LoadContent(this);
-        }
-
-        public void Dispose()
-        {
-            _graphicsDeviceManager.PreparingDeviceSettings -= OnPreparingDeviceChanged;
-
-            SpriteBatch?.Dispose();
-            _whiteTexture?.Dispose();
-            BgRenderer.Dispose();
+            SetSettings(new ConsoleSettings());
         }
 
         public ICommandInterpreter Interpreter
@@ -107,7 +62,19 @@ namespace QuakeConsole
                 FontChanged?.Invoke(this, EventArgs.Empty);               
             }
         }
-        
+
+        public string TabSymbol
+        {
+            get { return _tabSymbol; }
+            set { _tabSymbol = value ?? ""; }
+        }
+
+        public string NewlineSymbol
+        {
+            get { return _newlineSymbol; }
+            set { _newlineSymbol = value ?? ""; }
+        }
+
         public Color BackgroundColor { get; set; }
         
         public Color FontColor { get; set; }        
@@ -152,33 +119,21 @@ namespace QuakeConsole
         public Color BottomBorderColor { get; set; }
         public float BottomBorderThickness { get; set; }        
         
-        public Dictionary<Keys, SymbolPair> SymbolMappings
+        public Dictionary<Keys, Symbol> SymbolMappings
         {
             get { return _symbolDefinitions; }
-            set { _symbolDefinitions = value ?? new Dictionary<Keys, SymbolPair>(); }
+            set { _symbolDefinitions = value ?? new Dictionary<Keys, Symbol>(); }
         }
 
-#if MONOGAME
-        internal InputManager Input { get; } = new InputManager();
-#endif
+        public ConsoleState State { get; private set; } = ConsoleState.Closed;
 
-        internal InputHistory InputHistory { get; } = new InputHistory();
-        internal Autocompletion Autocompletion { get; } = new Autocompletion();
-        internal CopyPasting CopyPasting { get; } = new CopyPasting();
-        internal Movement Movement { get; } = new Movement();
-        internal Tabbing Tabbing { get; } = new Tabbing();
-        internal Deletion Deletion { get; } = new Deletion();
-        internal CommandExecution CommandExecution { get; } = new CommandExecution();
+        public Dictionary<char, float> CharWidthMap { get; } = new Dictionary<char, float>();
 
-        internal ConsoleState State { get; private set; } = ConsoleState.Closed;
+        public TexturedBackground BgRenderer { get; } = new TexturedBackground();
+        public SpriteBatch SpriteBatch { get; private set; }
+        public GraphicsDevice GraphicsDevice { get; private set; }
 
-        internal Dictionary<char, float> CharWidthMap { get; } = new Dictionary<char, float>();
-
-        internal TexturedBackground BgRenderer { get; } = new TexturedBackground();
-        internal SpriteBatch SpriteBatch { get; private set; }
-        internal GraphicsDevice GraphicsDevice { get; private set; }
-
-        internal RectangleF WindowArea
+        public RectangleF WindowArea
         {
             get { return _windowArea; }
             set
@@ -188,8 +143,46 @@ namespace QuakeConsole
                 _windowArea = value;
                 WindowAreaChanged?.Invoke(this, EventArgs.Empty);
             }
-        }        
-        
+        }
+
+        public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager,
+            SpriteFont font, ICommandInterpreter commandInterpreter)
+        {
+            Check.ArgumentNotNull(deviceManager, nameof(deviceManager), "Cannot instantiate the console without graphics device manager.");
+            Check.ArgumentNotNull(font, nameof(font), "Cannot instantiate the console without a font.");
+
+            _commandInterpreter = commandInterpreter ?? new StubCommandInterpreter();
+            GraphicsDevice = device;
+            _graphicsDeviceManager = deviceManager;
+            Font = font;
+
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+
+            _graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceChanged;
+#if MONOGAME
+            _whiteTexture = new Texture2D(GraphicsDevice, 2, 2, false, SurfaceFormat.Color);
+            _whiteTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White });
+#else                   
+            _backgroundTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
+#endif
+            _loaded = true;
+
+            SetWindowWidthAndHeight();
+
+            ConsoleInput.LoadContent(this);
+            ConsoleOutput.LoadContent(this);
+            BgRenderer.LoadContent(this);
+        }
+
+        public void Dispose()
+        {
+            _graphicsDeviceManager.PreparingDeviceSettings -= OnPreparingDeviceChanged;
+
+            SpriteBatch?.Dispose();
+            _whiteTexture?.Dispose();
+            BgRenderer.Dispose();
+        }
+
         public void ToggleOpenClose()
         {
             switch (State)
@@ -205,26 +198,25 @@ namespace QuakeConsole
             }
         }
         
-        public void Clear(ConsoleClearFlags clearFlags = ConsoleClearFlags.All)
+        public void Clear(ConsoleClearFlags flags = ConsoleClearFlags.All)
         {
-            if ((clearFlags & ConsoleClearFlags.OutputBuffer) != 0)
+            if ((flags & ConsoleClearFlags.OutputBuffer) != 0)
                 ConsoleOutput.Clear();
-            if ((clearFlags & ConsoleClearFlags.InputBuffer) != 0)
+            if ((flags & ConsoleClearFlags.InputBuffer) != 0)
                 ConsoleInput.Clear();
-            InputHistory.Clear(clearFlags);
+            if ((flags & ConsoleClearFlags.InputHistory) != 0)
+                ConsoleInput.InputHistory.Clear();
         }
         
         public void Reset()
         {
             Clear();
-            SetDefaults(new ConsoleSettings());
+            SetSettings(new ConsoleSettings());
         }
         
         public void Update(float deltaSeconds)
         {
-#if MONOGAME
-            Input.Update();
-#endif
+
             switch (State)
             {
                 case ConsoleState.Closing:
@@ -244,8 +236,7 @@ namespace QuakeConsole
                         WindowArea.Width,
                         WindowArea.Height);
                     goto case ConsoleState.Open;
-                case ConsoleState.Open:
-                    HandleInput();
+                case ConsoleState.Open:                    
                     ConsoleInput.Update(deltaSeconds);
                     break;
             }
@@ -289,78 +280,11 @@ namespace QuakeConsole
             }
         }
 
-#region Input handling
-        
-        private void HandleInput()
-        {            
-            foreach (KeyEvent keyEvent in Input.KeyEvents)
-            {
-                // We are only interested in key presses.
-                if (keyEvent.Type == KeyEventType.Pressed)
-                    if (HandleKey(keyEvent.Key))
-                        break;
-            }
-        }
-
-        internal bool HandleKey(Keys key)
-        {
-            bool processedKey = ProcessSpecialKey(key);
-            if (processedKey)
-                return true;
-            processedKey = ProcessRegularKey(key);
-            return processedKey;
-        }
-
-        private bool ProcessSpecialKey(Keys key)
-        {
-            ConsoleAction action;
-            if (!ActionDefinitions.ForwardTryGetValue(key, out action))
-                return false;
-
-            bool hasProcessedKey =  InputHistory.ProcessAction(action);
-            hasProcessedKey =       Autocompletion.ProcessAction(action)    || hasProcessedKey;
-            hasProcessedKey =       CopyPasting.ProcessAction(action)       || hasProcessedKey;
-            hasProcessedKey =       Movement.ProcessAction(action)          || hasProcessedKey;
-            hasProcessedKey =       Tabbing.ProcessAction(action)           || hasProcessedKey;
-            hasProcessedKey =       Deletion.ProcessAction(action)          || hasProcessedKey;
-            hasProcessedKey =       CommandExecution.ProcessAction(action)  || hasProcessedKey;
-
-            return hasProcessedKey;
-        }
-
-        private bool ProcessRegularKey(Keys key)
-        {
-            SymbolPair symbolPair;
-            if (!_symbolDefinitions.TryGetValue(key, out symbolPair))
-                return false;
-
-            InputHistory.ProcessSymbol(symbolPair);
-            Autocompletion.ProcessSymbol(symbolPair);
-
-            List<Keys> uppercaseModifiers;
-            ActionDefinitions.BackwardTryGetValues(ConsoleAction.UppercaseModifier, out uppercaseModifiers);
-
-            bool toUpper = uppercaseModifiers != null && uppercaseModifiers.Any(x => Input.IsKeyDown(x));
-
-            ConsoleInput.Write(toUpper
-                ? symbolPair.UppercaseSymbol
-                : symbolPair.LowercaseSymbol);
-            
-            return true;
-        }
-
-        
-
-#endregion       
-
-
         private void UpdateTimer(float deltaSeconds, ConsoleState stateToSetWhenFinished)
         {
             _transitionTimer.Update(deltaSeconds);
             if (_transitionTimer.Finished)
-            {
                 State = stateToSetWhenFinished;
-            }
         }
 
         private void OnPreparingDeviceChanged(object sender, PreparingDeviceSettingsEventArgs args)
@@ -401,7 +325,7 @@ namespace QuakeConsole
             return Math.Min(_windowArea.Width / 2 - _padding / 2, _windowArea.Height / 2 - _padding / 2);
         }        
 
-        private void SetDefaults(ConsoleSettings settings)
+        private void SetSettings(ConsoleSettings settings)
         {
             BackgroundColor = settings.BackgroundColor;            
             FontColor = settings.FontColor;
@@ -412,7 +336,7 @@ namespace QuakeConsole
             BottomBorderThickness = settings.BottomBorderThickness;
 
             BgRenderer.SetDefault(settings);
-            ConsoleInput.SetDefaults(settings);
+            ConsoleInput.SetSettings(settings);
             ConsoleOutput.SetDefaults(settings);
         }
     }

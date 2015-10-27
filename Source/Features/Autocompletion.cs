@@ -24,10 +24,10 @@ namespace QuakeConsole.Features
                 case ConsoleAction.Autocomplete:
                     Keys modifier;
                     bool hasModifier = _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.AutocompleteModifier, out modifier);
-                    if (!hasModifier || _console.Input.IsKeyDown(modifier))
+                    if (!hasModifier || input.Input.IsKeyDown(modifier))
                     {                       
                         bool canMoveBackwards = _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
-                        _console.Interpreter.Autocomplete(input, !canMoveBackwards || !_console.Input.IsKeyDown(modifier));
+                        _console.Interpreter.Autocomplete(input, !canMoveBackwards || !input.Input.IsKeyDown(modifier));
                         hasProcessedAction = true;
                     }
                     break;
@@ -55,7 +55,7 @@ namespace QuakeConsole.Features
             return hasProcessedAction;
         }
 
-        public void ProcessSymbol(SymbolPair symbol)
+        public void ProcessSymbol(Symbol symbol)
         {
             ResetAutocompleteEntry();
         }

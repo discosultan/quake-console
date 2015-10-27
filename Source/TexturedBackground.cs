@@ -4,7 +4,7 @@ using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace QuakeConsole.Features
+namespace QuakeConsole
 {
     internal class TexturedBackground : IDisposable
     {

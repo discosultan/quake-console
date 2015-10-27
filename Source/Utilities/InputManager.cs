@@ -20,12 +20,25 @@ namespace QuakeConsole.Utilities
         private KeyboardState _previousKeyState;
         private KeyboardState _currentKeyState;
 
-        public bool IsKeyDown(Keys key) => _currentKeyState.IsKeyDown(key);
+        public bool IsKeyDown(Keys key) => _currentKeyState.IsKeyDown(key);        
 
         public bool IsKeyPressed(Keys key) => _previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key);
 
-        public void Update()
+        public bool IsKeyToggled(Keys key)
         {
+            switch (key)
+            {
+                case Keys.CapsLock:
+                    return System.Windows.Input.Keyboard.IsKeyToggled(System.Windows.Input.Key.CapsLock);
+                case Keys.NumLock:
+                    return System.Windows.Input.Keyboard.IsKeyToggled(System.Windows.Input.Key.NumLock);
+                default:
+                    return false;
+            }            
+        }
+
+        public void Update()
+        {            
             _previousKeyState = _currentKeyState;
             _currentKeyState = Keyboard.GetState();
 

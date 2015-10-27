@@ -28,7 +28,7 @@ namespace QuakeConsole.Features
                     // Determine if this is a line break or we should execute command straight away.
                     Keys modifier;
                     if (_console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.NextLineModifier, out modifier) &&
-                        _console.Input.IsKeyDown(modifier))
+                        input.Input.IsKeyDown(modifier))
                     {
                         ouput.AddCommandEntry(cmd);
                     }
@@ -39,7 +39,7 @@ namespace QuakeConsole.Features
                             executedCmd = ouput.DequeueCommandEntry() + cmd;
 
                         // Replace our tab symbols with actual tab characters.
-                        executedCmd = executedCmd.Replace(_console.Tabbing.Tab, "\t");
+                        executedCmd = executedCmd.Replace(_console.TabSymbol, "\t");
                         // Log the command to be executed if logger is set.
                         LogInput?.Invoke(executedCmd);
                         // Execute command.

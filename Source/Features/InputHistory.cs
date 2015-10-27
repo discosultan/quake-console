@@ -30,6 +30,7 @@ namespace QuakeConsole.Features
                     // If the cmd matches the currently indexed historical entry then set a special flag
                     // which when moving backward in history, does not actually move backward, but will instead
                     // return the same entry that was returned before. This is similar to how Powershell and Cmd Prompt work.
+
                     if (_inputHistory.Count == 0 || _inputHistoryIndexer == int.MaxValue || !_inputHistory[_inputHistoryIndexer].Equals(cmd))
                         _inputHistoryIndexer = int.MaxValue;
                     else
@@ -64,15 +65,16 @@ namespace QuakeConsole.Features
             return hasProcessedAction;
         }
 
-        public void ProcessSymbol(SymbolPair symbol)
+        public void ProcessSymbol(Symbol symbol)
         {
             _inputHistoryIndexer = int.MaxValue;
         }
 
-        public void Clear(ConsoleClearFlags clearFlags)
+        public void Clear()
         {
-            if ((clearFlags & ConsoleClearFlags.InputHistory) != 0)
-                ClearHistory();
+            _inputHistory.Clear();
+            _inputHistoryIndexer = int.MaxValue;
+            _inputHistoryDoNotDecrement = false;
         }
 
         private void ManageHistory()
@@ -85,13 +87,6 @@ namespace QuakeConsole.Features
             _inputHistoryDoNotDecrement = false;
             _console.ConsoleInput.LastAutocompleteEntry = null;
             _console.ConsoleInput.Value = _inputHistory[_inputHistoryIndexer];
-        }
-
-        private void ClearHistory()
-        {
-            _inputHistory.Clear();
-            _inputHistoryIndexer = int.MaxValue;
-            _inputHistoryDoNotDecrement = false;
         }
     }
 }
