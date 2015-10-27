@@ -434,7 +434,7 @@ namespace QuakeConsole
         private static void SetAutocompleteValue(IConsoleInput consoleInput, int startIndex, string autocompleteEntry)
         {
             consoleInput.Remove(startIndex, consoleInput.Length - startIndex);
-            consoleInput.Write(autocompleteEntry);
+            consoleInput.Append(autocompleteEntry);
         }       
     }
 }

@@ -40,12 +40,15 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessorAutocompletionTests.cs" />
+    <Compile Include="MethodAutocompletionTests.cs" />
+    <Compile Include="Utilities\TestsBase.cs" />
     <Compile Include="OverwriteInputAutocompletionTests.cs" />
     <Compile Include="AssignmentAutocompletionTests.cs" />
     <Compile Include="ArrayAutocompletionTests.cs" />
     <Compile Include="GeneralAutocompletionTests.cs" />
-    <Compile Include="DummyObjects.cs" />
-    <Compile Include="FakeInputBuffer.cs" />
+    <Compile Include="Utilities\DummyObjects.cs" />
+    <Compile Include="Utilities\FakeInputBuffer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

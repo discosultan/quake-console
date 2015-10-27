@@ -1,34 +1,39 @@
 ﻿using NUnit.Framework;
+using QuakeConsole.Tests.Utilities;
 
 namespace QuakeConsole.Tests
 {
     [TestFixture]
-    public class AssignmentAutocompletionTests
+    public class AssignmentAutocompletionTestses : TestsBase
     {
-        private IConsoleInput _consoleInput;
-        private PythonInterpreter _interpreter;
+        private const string FirstInstanceName = "instance";
+        private const string StaticClassName = "Podobranchia";
+        private const string TargetFieldName = FirstInstanceName + ".Cymidine";
+        private const string TargetBooleanType = StaticClassName + ".Gymnogen";
+        private const string StringInstanceNameAndValue = "instance_c";
 
-        [SetUp]
-        public void Setup()
+        public override void Setup()
         {
-            _consoleInput = new FakeConsoleInput();
-            _interpreter = new PythonInterpreter();
-        }        
+            base.Setup();
+            Interpreter.AddVariable(FirstInstanceName, new Kickup(), int.MaxValue);
+            Interpreter.AddVariable(StringInstanceNameAndValue, StringInstanceNameAndValue, int.MaxValue);
+            Interpreter.AddType(typeof(Podobranchia), int.MaxValue);
+        }
 
         [Test]
         public void DerivedInstanceAssignableToBaseInstanceType()
         {
             var baseVar = new Base();
             var derivedVar = new Derived();
-            _interpreter.AddVariable("base", baseVar);
-            _interpreter.AddVariable("derived", derivedVar);
-            _consoleInput.Value = "base=";
-            _consoleInput.CaretIndex = _consoleInput.Length;
+            Interpreter.AddVariable("base", baseVar);
+            Interpreter.AddVariable("derived", derivedVar);
+            Input.Value = "base=";
+            Input.CaretIndex = Input.Length;
 
-            _interpreter.Autocomplete(_consoleInput, true); // =base
-            _interpreter.Autocomplete(_consoleInput, true); // =derived
+            Interpreter.Autocomplete(Input, true); // =base
+            Interpreter.Autocomplete(Input, true); // =derived
 
-            Assert.AreEqual("base=derived", _consoleInput.Value);
+            Assert.AreEqual("base=derived", Input.Value);
         }
 
         [Test]
@@ -36,17 +41,73 @@ namespace QuakeConsole.Tests
         {
             var baseVar = new Base();
             var derivedVar = new Derived();
-            _interpreter.AddVariable("base", baseVar);
-            _interpreter.AddVariable("derived", derivedVar);
-            _consoleInput.Value = "base=";
-            _consoleInput.CaretIndex = _consoleInput.Length;
+            Interpreter.AddVariable("base", baseVar);
+            Interpreter.AddVariable("derived", derivedVar);
+            Input.Value = "base=";
+            Input.CaretIndex = Input.Length;
 
-            _interpreter.Autocomplete(_consoleInput, true); // =base
-            _interpreter.Autocomplete(_consoleInput, true); // =derived
-            _interpreter.Autocomplete(_consoleInput, true); // =Base
-            _interpreter.Autocomplete(_consoleInput, true); // =Derived
+            Interpreter.Autocomplete(Input, true); // =base
+            Interpreter.Autocomplete(Input, true); // =derived
+            Interpreter.Autocomplete(Input, true); // =Base
+            Interpreter.Autocomplete(Input, true); // =Derived
 
-            Assert.AreEqual("base=Derived", _consoleInput.Value);
+            Assert.AreEqual("base=Derived", Input.Value);
+        }
+
+        [Test]
+        public void InstanceStringFieldInput_Assignment_CaretAtEnd_Autocomplete_StringInstanceSelected()
+        {
+            Input.Value = TargetFieldName + Assignment;
+            Input.CaretIndex = Input.Length;
+
+            Interpreter.Autocomplete(Input, true);
+
+            Assert.AreEqual(TargetFieldName + Assignment + StringInstanceNameAndValue, Input.Value);
+        }
+
+        [Test]
+        public void InstanceStringFieldInput_Assignment_CaretAtEnd_AutocompleteTwice_StringTypeSelected()
+        {
+            Input.Value = TargetFieldName + Assignment;
+            Input.CaretIndex = Input.Length;
+
+            Interpreter.Autocomplete(Input, true);
+            Interpreter.Autocomplete(Input, true);
+
+            Assert.AreEqual(TargetFieldName + Assignment + "String", Input.Value);
+        }
+
+        [Test]
+        public void InstanceStringFieldInput_Assignment_Space_CaretAtEnd_Autocomplete_StringInstanceSelected()
+        {
+            Input.Value = TargetFieldName + Assignment + Space;
+            Input.CaretIndex = Input.Length;
+
+            Interpreter.Autocomplete(Input, true);
+
+            Assert.AreEqual(TargetFieldName + Assignment + Space + StringInstanceNameAndValue, Input.Value);
+        }
+
+        [Test]
+        public void BoolType_Assignment_CaretAtEnd_Autocomplete_PredefinedTypeSelected()
+        {
+            Input.Value = TargetBooleanType + Assignment;
+            Input.CaretIndex = Input.Length;
+
+            Interpreter.Autocomplete(Input, true);
+
+            Assert.AreEqual(TargetBooleanType + Assignment + "False", Input.Value);
+        }
+
+        [Test]
+        public void NewVariable_Assignment_CaretAtEnd_Autocomplete_FirstInstanceSelected()
+        {
+            Input.Value = "x" + Assignment;
+            Input.CaretIndex = Input.Length;
+
+            Interpreter.Autocomplete(Input, true);
+
+            Assert.AreEqual("x" + Assignment + FirstInstanceName, Input.Value);
         }
     }    
 

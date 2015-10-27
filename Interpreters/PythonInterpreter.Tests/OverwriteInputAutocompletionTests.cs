@@ -1,54 +1,45 @@
 ﻿using NUnit.Framework;
+using QuakeConsole.Tests.Utilities;
 
 namespace QuakeConsole.Tests
 {
     [TestFixture]
-    public class OverwriteInputAutocompletionTests
+    public class OverwriteInputAutocompletionTests : TestsBase
     {
-        private IConsoleInput _consoleInput;
-        private PythonInterpreter _interpreter;
-
-        [SetUp]
-        public void Setup()
-        {
-            _consoleInput = new FakeConsoleInput();
-            _interpreter = new PythonInterpreter();
-        }        
-
         [Test]
         public void CaretAtEndOfTargetValue_OverwriteFollowingInputUponAutocomplete()
         {            
-            _interpreter.AddVariable("variable", new object());
-            _consoleInput.Value = "va gibberish";
-            _consoleInput.CaretIndex = 2;
+            Interpreter.AddVariable("variable", new object());
+            Input.Value = "va gibberish";
+            Input.CaretIndex = 2;
 
-            _interpreter.Autocomplete(_consoleInput, true);
+            Interpreter.Autocomplete(Input, true);
 
-            Assert.AreEqual("variable", _consoleInput.Value);
+            Assert.AreEqual("variable", Input.Value);
         }
 
         [Test]
         public void CaretAtTargetValue_OverwriteFollowingInputUponAutocomplete()
         {
-            _interpreter.AddVariable("variable", new object());
-            _consoleInput.Value = "va gibberish";
-            _consoleInput.CaretIndex = 1;
+            Interpreter.AddVariable("variable", new object());
+            Input.Value = "va gibberish";
+            Input.CaretIndex = 1;
 
-            _interpreter.Autocomplete(_consoleInput, true);
+            Interpreter.Autocomplete(Input, true);
 
-            Assert.AreEqual("variable", _consoleInput.Value);
+            Assert.AreEqual("variable", Input.Value);
         }
 
         [Test]
         public void CaretAtBeginningOfInput_OverwriteInput()
         {
-            _interpreter.AddVariable("variable", new object());
-            _consoleInput.Value = "gibberish";
-            _consoleInput.CaretIndex = 0;
+            Interpreter.AddVariable("variable", new object());
+            Input.Value = "gibberish";
+            Input.CaretIndex = 0;
 
-            _interpreter.Autocomplete(_consoleInput, true);
+            Interpreter.Autocomplete(Input, true);
 
-            Assert.AreEqual("variable", _consoleInput.Value);
+            Assert.AreEqual("variable", Input.Value);
         }
     }        
 }

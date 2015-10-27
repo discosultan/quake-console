@@ -164,7 +164,7 @@ namespace QuakeConsole
             if (commandString.StartsWith(input.LastAutocompleteEntry, StringComparisonMethod))
             {
                 input.Clear();
-                input.Write(commandString);
+                input.Append(commandString);
                 return true;
             }
             return false;
