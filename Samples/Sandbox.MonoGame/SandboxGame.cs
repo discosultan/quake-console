@@ -15,7 +15,8 @@ namespace Sandbox
     {        
         private const Keys ToggleConsole = Keys.OemTilde;
         private const float ConsoleBackgroundSpeedFactor = 1/24f;        
-        private static readonly Color BackgroundColor = new Color(0x1d, 0x1d, 0x1d, 0xff);        
+        private static readonly Color BackgroundColor = new Color(0x1d, 0x1d, 0x1d, 0xff);
+        private static readonly Color SelectionColor = Color.DarkGray;
         private static readonly Vector2 ConsoleBackgroundTiling = new Vector2(2.5f, 1.5f);
 
         private readonly GraphicsDeviceManager _graphics;
@@ -51,6 +52,7 @@ namespace Sandbox
                 BackgroundColor = Color.White,                
                 BottomBorderThickness = 4.0f,
                 BottomBorderColor = Color.Red,
+                SelectionColor = SelectionColor,                
                 LogInput = cmd => Debug.WriteLine(cmd) // Logs input commands to VS output window.
             };            
             Components.Add(_console);

@@ -64,6 +64,7 @@
     <Compile Include="Features\CommandExecution.cs" />
     <Compile Include="Features\CaseSensitivity.cs" />
     <Compile Include="Features\Deletion.cs" />
+    <Compile Include="Features\Selection.cs" />
     <Compile Include="Features\Tabbing.cs" />
     <Compile Include="Features\Movement.cs" />
     <Compile Include="Features\CopyPasting.cs" />

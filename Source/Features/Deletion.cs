@@ -20,12 +20,16 @@ namespace QuakeConsole.Features
             switch (action)
             {
                 case ConsoleAction.DeletePreviousChar:
-                    if (input.Length > 0 && input.Caret.Index > 0)
+                    if (input.Selection.HasSelection)
+                        input.Remove(input.Selection.SelectionStart, input.Selection.SelectionLength);   
+                    else if (input.Length > 0 && input.Caret.Index > 0)
                         input.Remove(Math.Max(0, input.Caret.Index - 1), 1);
                     hasProcessedAction = true;
                     break;
                 case ConsoleAction.DeleteCurrentChar:
-                    if (input.Length > input.Caret.Index)
+                    if (input.Selection.HasSelection)
+                        input.Remove(input.Selection.SelectionStart, input.Selection.SelectionLength);
+                    else if (input.Length > input.Caret.Index)
                         input.Remove(input.Caret.Index, 1);
                     hasProcessedAction = true;
                     break;

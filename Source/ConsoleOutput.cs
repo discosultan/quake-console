@@ -13,16 +13,13 @@ namespace QuakeConsole
     /// Output part of the <see cref="Console"/>. Command execution info will be appended here.
     /// </summary>
     internal class ConsoleOutput : IConsoleOutput
-    {
-        private const string MeasureFontSizeSymbol = "x";
-        
+    {                
         private readonly CircularArray<OutputEntry> _entries = new CircularArray<OutputEntry>();
         private readonly List<OutputEntry> _commandEntries = new List<OutputEntry>();        
         private readonly StringBuilder _stringBuilder = new StringBuilder();
 
         private Pool<OutputEntry> _entryPool;
 
-        private Vector2 _fontSize;
         private int _maxNumRows;
         private int _numRows;           
         private bool _removeOverflownEntries;        
@@ -41,7 +38,6 @@ namespace QuakeConsole
             };
             Console.FontChanged += (s, e) =>
             {
-                CalculateFontSize();
                 CalculateRows();
                 RemoveOverflownBufferEntriesIfAllowed();
             };
@@ -51,7 +47,6 @@ namespace QuakeConsole
                 RemoveOverflownBufferEntriesIfAllowed();
             };
 
-            CalculateFontSize();
             CalculateRows();
         }
         
@@ -111,7 +106,7 @@ namespace QuakeConsole
             {
                 _stringBuilder.Append(_commandEntries[i].Value);
                 //if (i != _commandEntries.Count - 1)
-                _stringBuilder.Append("\n");
+                _stringBuilder.Append(Console.NewlineSymbol);
             }
             _commandEntries.Clear();
             return _stringBuilder.ToString();
@@ -122,7 +117,7 @@ namespace QuakeConsole
             // Draw from bottom to top.
             var viewPosition = new Vector2(
                 Console.Padding, 
-                Console.WindowArea.Y + Console.WindowArea.Height - Console.Padding - Console.ConsoleInput.InputPrefixSize.Y - _fontSize.Y);
+                Console.WindowArea.Y + Console.WindowArea.Height - Console.Padding - Console.ConsoleInput.InputPrefixSize.Y - Console.FontSize.Y);
 
             int rowCounter = 0;
 
@@ -162,7 +157,7 @@ namespace QuakeConsole
                     entry.Lines[j],
                     tempViewPos, 
                     Console.FontColor);
-                viewPosition.Y -= _fontSize.Y;
+                viewPosition.Y -= Console.FontSize.Y;
                 rowCounter++;
             }
         }
@@ -192,10 +187,10 @@ namespace QuakeConsole
         private void CalculateRows()
         {
             // Take top padding into account and hide any row which is only partly visible.
-            //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / _fontSize.Y) - 1, 0);            
+            //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / Console.FontSize.Y) - 1, 0);            
 
             // Disregard top padding and allow any row which is only partly visible.
-            _maxNumRows = Math.Max((int)Math.Ceiling(((Console.WindowArea.Height - Console.Padding) / _fontSize.Y)) - 1, 0);
+            _maxNumRows = Math.Max((int)Math.Ceiling(((Console.WindowArea.Height - Console.Padding) / Console.FontSize.Y)) - 1, 0);
             
             _numRows = _commandEntries.Count + /*GetNumRows(_commandEntries) +*/ GetNumRows(_entries);
         }
@@ -204,10 +199,5 @@ namespace QuakeConsole
         {
             return collection.Sum(entry => entry.CalculateLines(Console.WindowArea.Width - Console.Padding * 2, false));
         }
-
-        private void CalculateFontSize()
-        {
-            _fontSize = Console.Font.MeasureString(MeasureFontSizeSymbol);
-        }        
     }
 }

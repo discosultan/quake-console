@@ -269,13 +269,22 @@ namespace QuakeConsole
         }
 
         /// <summary>
-        /// Gets or sets the symbol used to represent a newline.
+        /// Gets or sets the color used to draw the background of the selected portion of user input.
         /// </summary>
-        /// <remarks>Default is <see cref="Environment.NewLine"/>.</remarks>
-        public string NewlineSymbol
+        public Color SelectionColor
         {
-            get { return _console.NewlineSymbol; }
-            set { _console.NewlineSymbol = value; }
+            get { return _console.ConsoleInput.Selection.Color; }
+            set { _console.ConsoleInput.Selection.Color = value; }
+            
+        }
+
+        /// <summary>
+        /// Gets or sets if selecting text is allowed in the console window.
+        /// </summary>
+        public bool TextSelectionEnabled
+        {
+            get { return _console.ConsoleInput.Selection.Enabled; }
+            set { _console.ConsoleInput.Selection.Enabled = value; }
         }
 
         /// <summary>

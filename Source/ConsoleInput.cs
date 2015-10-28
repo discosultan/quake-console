@@ -20,8 +20,7 @@ namespace QuakeConsole
         private string _value;
         private bool _valueDirty = true;
 
-        private string _inputPrefix;
-        private Vector2 _fontSize;
+        private string _inputPrefix;        
         private int _startIndex;
         private int _endIndex;        
         private int _numPosToMoveWhenOutOfScreen;
@@ -45,7 +44,10 @@ namespace QuakeConsole
         public Deletion Deletion { get; } = new Deletion();
         public CommandExecution CommandExecution { get; } = new CommandExecution();
         public CaseSensitivity CaseSenitivity { get; } = new CaseSensitivity();
+        public Selection Selection { get; } = new Selection();
         public Caret Caret { get; } = new Caret();
+
+        public int VisibleStartIndex => _startIndex;
 
         public int CaretIndex
         {
@@ -87,13 +89,11 @@ namespace QuakeConsole
             _console = console;
             _console.FontChanged += (s, e) =>
             {
-                MeasureFontSize();
                 CalculateInputPrefixWidth();
                 _dirty = true;
             };
             _console.WindowAreaChanged += (s, e) => _dirty = true;
 
-            MeasureFontSize();
             CalculateInputPrefixWidth();
 
             Caret.LoadContent(_console);
@@ -108,6 +108,7 @@ namespace QuakeConsole
             Deletion.LoadContent(console);
             CommandExecution.LoadContent(console);
             CaseSenitivity.LoadContent(console);
+            Selection.LoadContent(console);
 
             _loaded = true;
         }
@@ -140,8 +141,7 @@ namespace QuakeConsole
             }
             set
             {
-                _inputBuffer.Clear();
-                _valueDirty = true;
+                ClearInput();
                 if (value != null)
                     _inputBuffer.Append(value);
                 Caret.Index = _inputBuffer.Length;                
@@ -160,8 +160,7 @@ namespace QuakeConsole
 
         public void Clear()
         {
-            _inputBuffer.Clear();
-            _valueDirty = true;
+            ClearInput();
             Caret.MoveBy(int.MinValue);            
         }        
 
@@ -205,8 +204,10 @@ namespace QuakeConsole
 
         public void Draw()
         {            
+            // Draw selection.
+            Selection.Draw();
             // Draw input prefix.
-            var inputPosition = new Vector2(_console.Padding, _console.WindowArea.Y + _console.WindowArea.Height - _console.Padding - _fontSize.Y);
+            var inputPosition = new Vector2(_console.Padding, _console.WindowArea.Y + _console.WindowArea.Height - _console.Padding - _console.FontSize.Y);
             _console.SpriteBatch.DrawString(
                 _console.Font, 
                 InputPrefix, 
@@ -232,11 +233,20 @@ namespace QuakeConsole
             NumPositionsToMoveWhenOutOfScreen = settings.NumPositionsToMoveWhenOutOfScreen;
             RepeatingInput.RepeatingInputCooldown = settings.TimeToCooldownRepeatingInput;
             RepeatingInput.TimeUntilRepeatingInput = settings.TimeToTriggerRepeatingInput;
+            Selection.Color = settings.SelectionColor;
+            Selection.Enabled = settings.TextSelectionEnabled;
 
             Caret.SetSettings(settings);
         }
 
         public override string ToString() => Value;
+
+        private void ClearInput()
+        {
+            Selection.Clear();
+            _inputBuffer.Clear();
+            _valueDirty = true;
+        }
 
         private bool ProcessActionKey(Keys key)
         {
@@ -251,7 +261,8 @@ namespace QuakeConsole
             hasProcessedKey = Tabbing.ProcessAction(action) || hasProcessedKey;
             hasProcessedKey = Deletion.ProcessAction(action) || hasProcessedKey;
             hasProcessedKey = CommandExecution.ProcessAction(action) || hasProcessedKey;
-            hasProcessedKey = CaseSenitivity.ProcessAction(action) || hasProcessedKey;       
+            hasProcessedKey = CaseSenitivity.ProcessAction(action) || hasProcessedKey;
+            hasProcessedKey = Selection.ProcessAction(action) || hasProcessedKey;
 
             return hasProcessedKey;
         }
@@ -262,18 +273,17 @@ namespace QuakeConsole
             if (!_console.SymbolMappings.TryGetValue(key, out symbol))
                 return false;
 
-            InputHistory.ProcessSymbol(symbol);
-            Autocompletion.ProcessSymbol(symbol);
+            if (Selection.HasSelection)
+                Remove(Selection.SelectionStart, Selection.SelectionLength);
 
             Append(CaseSenitivity.ProcessSymbol(symbol));
 
-            return true;
-        }
+            InputHistory.ProcessSymbol(symbol);
+            Autocompletion.ProcessSymbol(symbol);
+            Selection.ProcessSymbol(symbol);
 
-        private void MeasureFontSize()
-        {
-            _fontSize = _console.Font.MeasureString("x");
-        }
+            return true;
+        }        
 
         private void CalculateInputPrefixWidth()
         {            

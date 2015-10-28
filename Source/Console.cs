@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuakeConsole.Features;
 using QuakeConsole.Utilities;
 #if MONOGAME
 using Texture = Microsoft.Xna.Framework.Graphics.Texture2D;
@@ -14,6 +13,8 @@ namespace QuakeConsole
 {    
     internal partial class Console : IDisposable
     {
+        private const string MeasureFontSizeSymbol = "x";
+
         public event EventHandler FontChanged;
         public event EventHandler PaddingChanged;
         public event EventHandler WindowAreaChanged;
@@ -22,13 +23,12 @@ namespace QuakeConsole
 
         private ICommandInterpreter _commandInterpreter;
         private GraphicsDeviceManager _graphicsDeviceManager;        
-        
-        private Texture _whiteTexture;
+                
         private SpriteFont _font;
         private RectangleF _windowArea;        
         private float _padding;
         private float _heightRatio;
-        private string _tabSymbol = "    ";
+        private string _tabSymbol;
         private string _newlineSymbol = Environment.NewLine;
         private bool _loaded;
 
@@ -58,10 +58,15 @@ namespace QuakeConsole
             {
                 Check.ArgumentNotNull(value, nameof(value), "Font cannot be null.");
                 _font = value;                
-                CharWidthMap.Clear();                
+                CharWidthMap.Clear();
+                MeasureFontSize();
                 FontChanged?.Invoke(this, EventArgs.Empty);               
             }
         }
+
+        public Vector2 FontSize { get; private set; }
+
+        public Texture WhiteTexture { get; private set; }
 
         public string TabSymbol
         {
@@ -160,13 +165,14 @@ namespace QuakeConsole
 
             _graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceChanged;
 #if MONOGAME
-            _whiteTexture = new Texture2D(GraphicsDevice, 2, 2, false, SurfaceFormat.Color);
-            _whiteTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White });
+            WhiteTexture = new Texture2D(GraphicsDevice, 2, 2, false, SurfaceFormat.Color);
+            WhiteTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White });
 #else                   
-            _backgroundTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
+            WhiteTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
 #endif
             _loaded = true;
 
+            MeasureFontSize();
             SetWindowWidthAndHeight();
 
             ConsoleInput.LoadContent(this);
@@ -179,7 +185,7 @@ namespace QuakeConsole
             _graphicsDeviceManager.PreparingDeviceSettings -= OnPreparingDeviceChanged;
 
             SpriteBatch?.Dispose();
-            _whiteTexture?.Dispose();
+            WhiteTexture?.Dispose();
             BgRenderer.Dispose();
         }
 
@@ -258,7 +264,7 @@ namespace QuakeConsole
                     else
                     {
                         SpriteBatch.Draw(
-                            _whiteTexture,
+                            WhiteTexture,
                             WindowArea,
                             new RectangleF(
                                 0,
@@ -269,7 +275,7 @@ namespace QuakeConsole
                     }
                     // Draw bottom border if enabled (thickness larger than zero).
                     if (BottomBorderThickness > 0)
-                        SpriteBatch.Draw(_whiteTexture,
+                        SpriteBatch.Draw(WhiteTexture,
                             new RectangleF(0, WindowArea.Bottom, WindowArea.Width, BottomBorderThickness),
                             BottomBorderColor);                                        
                     // Draw output and input strings.
@@ -323,7 +329,12 @@ namespace QuakeConsole
         private float GetMaxAllowedPadding()
         {
             return Math.Min(_windowArea.Width / 2 - _padding / 2, _windowArea.Height / 2 - _padding / 2);
-        }        
+        }
+
+        private void MeasureFontSize()
+        {
+            FontSize = Font.MeasureString(MeasureFontSizeSymbol);
+        }
 
         private void SetSettings(ConsoleSettings settings)
         {
@@ -334,6 +345,7 @@ namespace QuakeConsole
             Padding = settings.Padding;
             BottomBorderColor = settings.BottomBorderColor;
             BottomBorderThickness = settings.BottomBorderThickness;
+            TabSymbol = settings.TabSymbol;
 
             BgRenderer.SetDefault(settings);
             ConsoleInput.SetSettings(settings);

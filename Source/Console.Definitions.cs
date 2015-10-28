@@ -38,6 +38,8 @@ namespace QuakeConsole
             { Keys.Down, ConsoleAction.NextCommandInHistory },                                    
             { Keys.LeftShift, ConsoleAction.PreviousEntryModifier },
             { Keys.RightShift, ConsoleAction.PreviousEntryModifier },
+            { Keys.X, ConsoleAction.Cut },
+            { Keys.C, ConsoleAction.Copy },            
             { Keys.V, ConsoleAction.Paste },
             { Keys.LeftShift, ConsoleAction.NextLineModifier },
             //{ Keys.Tab, ConsoleAction.Autocomplete },            
@@ -48,7 +50,9 @@ namespace QuakeConsole
             { Keys.LeftControl, ConsoleAction.MoveByWordModifier },
             { Keys.RightControl, ConsoleAction.MoveByWordModifier },
             { Keys.CapsLock, ConsoleAction.CapsLock },
-            { Keys.NumLock, ConsoleAction.NumLock }
+            { Keys.NumLock, ConsoleAction.NumLock },
+            { Keys.LeftShift, ConsoleAction.SelectionModifier },
+            { Keys.RightShift, ConsoleAction.SelectionModifier }
         };
 
         private Dictionary<Keys, Symbol> _symbolDefinitions = new Dictionary<Keys, Symbol>
@@ -189,10 +193,12 @@ namespace QuakeConsole
         DeleteCurrentChar,
         //NumLock,      
         Clear,
+        Cut,
         Copy,
         Paste,
         Tab,
-        TabModifier
+        TabModifier,
+        SelectionModifier
     }
 
     internal enum ConsoleState
@@ -221,5 +227,8 @@ namespace QuakeConsole
         public float BottomBorderThickness { get; set; } = 0.0f;
         public Texture2D BackgroundTexture { get; set; }
         public Matrix BackgroundTextureTransform { get; set; } = Matrix.Identity;
+        public Color SelectionColor { get; set; } = new Color(1.0f, 1.0f, 0.0f, 0.5f);
+        public string TabSymbol { get; set; } = "    ";
+        public bool TextSelectionEnabled { get; set; } = true;
     }
 }
