@@ -11,10 +11,6 @@ namespace QuakeConsole.Features
 
         private bool _enabled = true;
 
-        private string _toSelectionStartString;
-        private Vector2 _toSelectionStartStringSize;
-        private Vector2 _selectionValueSize;
-
         public bool Enabled
         {
             get { return _enabled; }
@@ -36,7 +32,7 @@ namespace QuakeConsole.Features
         public bool HasSelection => _selectionActive && SelectionLength > 0;
         public int SelectionStart { get; private set; }
         public int SelectionLength { get; private set; }
-        public string SelectionValue { get; private set; }
+        public string SelectionValue => _console.ConsoleInput.Substring(SelectionStart, SelectionLength);
         public Color Color { get; set; }
 
         public bool ProcessAction(ConsoleAction action)
@@ -111,12 +107,13 @@ namespace QuakeConsole.Features
             if (!HasSelection) return;
 
             // TODO: Fix drawing offset when input runs out of screen
+            var input = _console.ConsoleInput;
 
             var offset = new Vector2(
                 _console.Padding + _console.ConsoleInput.InputPrefixSize.X, 
                 _console.WindowArea.Y + _console.WindowArea.Height - _console.Padding - _console.FontSize.Y);            
-            float startX = _toSelectionStartStringSize.X;
-            float width = _selectionValueSize.X;
+            float startX = input.MeasureSubstring(0, SelectionStart).X;
+            float width = input.MeasureSubstring(SelectionStart, SelectionLength).X;
             var destRectangle = new RectangleF(
                 offset.X + startX,
                 offset.Y,
@@ -132,14 +129,6 @@ namespace QuakeConsole.Features
         {
             SelectionLength = Math.Abs(_selectionIndex2 - _selectionIndex1);
             SelectionStart = _selectionIndex1 <= _selectionIndex2 ? _selectionIndex1 : _selectionIndex2;
-
-            if (SelectionLength > 0)
-            {
-                _toSelectionStartString = _console.ConsoleInput.Value.Substring(0, SelectionStart);
-                _toSelectionStartStringSize = _console.Font.MeasureString(_toSelectionStartString);
-                SelectionValue = _console.ConsoleInput.Value.Substring(SelectionStart, SelectionLength);
-                _selectionValueSize = _console.Font.MeasureString(SelectionValue);
-            }
         }
     }
 }

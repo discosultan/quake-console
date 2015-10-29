@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using Microsoft.Xna.Framework.Input;
 using QuakeConsole.Features;
 using QuakeConsole.Utilities;
@@ -12,13 +11,9 @@ namespace QuakeConsole
 {
     internal class ConsoleInput : IConsoleInput
     {        
-        private readonly StringBuilder _inputBuffer = new StringBuilder();
-        private readonly StringBuilder _drawBuffer = new StringBuilder(); // Helper buffer for drawing to avoid unnecessary string allocations.      
+        private readonly SpriteFontStringBuilder _inputBuffer = new SpriteFontStringBuilder();        
 
-        private Console _console;
-
-        private string _value;
-        private bool _valueDirty = true;
+        private Console _console;        
 
         private string _inputPrefix;        
         private int _startIndex;
@@ -90,8 +85,10 @@ namespace QuakeConsole
             _console.FontChanged += (s, e) =>
             {
                 CalculateInputPrefixWidth();
+                _inputBuffer.Font = _console.Font;
                 _dirty = true;
             };
+            _inputBuffer.Font = _console.Font;
             _console.WindowAreaChanged += (s, e) => _dirty = true;
 
             CalculateInputPrefixWidth();
@@ -117,7 +114,6 @@ namespace QuakeConsole
         {
             if (string.IsNullOrEmpty(value)) return;
             _inputBuffer.Insert(Caret.Index, value);
-            _valueDirty = true;
             Caret.MoveBy(value.Length);
         }
         
@@ -125,20 +121,11 @@ namespace QuakeConsole
         {
             Caret.Index = startIndex;
             _inputBuffer.Remove(startIndex, length);
-            _valueDirty = true;                  
         }
         
         public string Value
         {
-            get
-            {                
-                if (_valueDirty)
-                {
-                    _valueDirty = false;
-                    _value = _inputBuffer.ToString();
-                }
-                return _value;
-            }
+            get { return _inputBuffer.ToString(); } // Does not allocate if value is cached.
             set
             {
                 ClearInput();
@@ -147,6 +134,8 @@ namespace QuakeConsole
                 Caret.Index = _inputBuffer.Length;                
             }
         }
+
+        public Vector2 MeasureSubstring(int startIndex, int length) => _inputBuffer.MeasureSubstring(startIndex, length);
 
         public string Substring(int startIndex, int length)
         {            
@@ -167,11 +156,7 @@ namespace QuakeConsole
         public char this[int i]
         {
             get { return _inputBuffer[i]; }
-            set
-            {
-                _inputBuffer[i] = value;
-                _valueDirty = true;
-            }
+            set { _inputBuffer[i] = value; }
         }                
 
         public void Update(float deltaSeconds)
@@ -216,13 +201,9 @@ namespace QuakeConsole
             // Draw input buffer.
             inputPosition.X += InputPrefixSize.X;
             if (_inputBuffer.Length > 0)
-            {                
-                _inputBuffer.ClearAndCopyTo(_drawBuffer, _startIndex, _endIndex - _startIndex + 1);
-                _console.SpriteBatch.DrawString(_console.Font, _drawBuffer, inputPosition, _console.FontColor);
-            }
+                _console.SpriteBatch.DrawString(_console.Font, _inputBuffer.Substring(_startIndex, _endIndex - _startIndex + 1), inputPosition, _console.FontColor);
             // Draw caret. 
-            _inputBuffer.ClearAndCopyTo(_drawBuffer, _startIndex, Caret.Index - _startIndex);
-            inputPosition.X = _console.Padding + InputPrefixSize.X + _console.Font.MeasureString(_drawBuffer).X;
+            inputPosition.X = _console.Padding + InputPrefixSize.X + _inputBuffer.MeasureSubstring(_startIndex, Caret.Index - _startIndex).X;
             Caret.Draw(ref inputPosition, _console.FontColor);            
         }
 
@@ -245,7 +226,6 @@ namespace QuakeConsole
         {
             Selection.Clear();
             _inputBuffer.Clear();
-            _valueDirty = true;
         }
 
         private bool ProcessActionKey(Keys key)
