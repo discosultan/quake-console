@@ -72,7 +72,7 @@ namespace QuakeConsole.Features
                     }
                     _previousCaretIndex = caret.Index;
                     break;
-                case ConsoleAction.Autocomplete:
+                case ConsoleAction.AutocompleteForward:
                 case ConsoleAction.ExecuteCommand:
                 case ConsoleAction.Tab:
                 case ConsoleAction.DeleteCurrentChar:

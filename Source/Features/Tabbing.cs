@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.Xna.Framework.Input;
 
 namespace QuakeConsole.Features
 {
@@ -11,26 +10,21 @@ namespace QuakeConsole.Features
 
         public void LoadContent(Console console) => _console = console;
 
-        public bool ProcessAction(ConsoleAction action)
+        public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return false;            
+            if (!Enabled) return;            
 
             ConsoleInput input = _console.ConsoleInput;
 
-            bool hasProcessedAction = false;
             switch (action)
             {
                 case ConsoleAction.Tab:
-                    Keys modifier;
-                    _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.TabModifier, out modifier);
-                    if (input.Input.IsKeyDown(modifier))
-                        RemoveTab();
-                    else
-                        input.Append(_console.TabSymbol);
-                    hasProcessedAction = true;
+                    input.Append(_console.TabSymbol);
+                    break;
+                case ConsoleAction.RemoveTab:
+                    RemoveTab();
                     break;
             }
-            return hasProcessedAction;
         }
 
         public void RemoveTab()

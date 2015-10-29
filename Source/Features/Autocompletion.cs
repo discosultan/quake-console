@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-
-namespace QuakeConsole.Features
+﻿namespace QuakeConsole.Features
 {
     internal class Autocompletion
     {
@@ -12,24 +10,19 @@ namespace QuakeConsole.Features
 
         public void LoadContent(Console console) => _console = console;
 
-        public bool ProcessAction(ConsoleAction action)
+        public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return false;
+            if (!Enabled) return;
             
             ConsoleInput input = _console.ConsoleInput;
 
-            bool hasProcessedAction = false;
             switch (action)
             {
-                case ConsoleAction.Autocomplete:
-                    Keys modifier;
-                    bool hasModifier = _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.AutocompleteModifier, out modifier);
-                    if (!hasModifier || input.Input.IsKeyDown(modifier))
-                    {                       
-                        bool canMoveBackwards = _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.PreviousEntryModifier, out modifier);
-                        _console.Interpreter.Autocomplete(input, !canMoveBackwards || !input.Input.IsKeyDown(modifier));
-                        hasProcessedAction = true;
-                    }
+                case ConsoleAction.AutocompleteForward:
+                    _console.Interpreter.Autocomplete(input, true);
+                    break;
+                case ConsoleAction.AutocompleteBackward:
+                    _console.Interpreter.Autocomplete(input, false);
                     break;
                 case ConsoleAction.ExecuteCommand:
                     ResetAutocompleteEntry();                    
@@ -40,22 +33,17 @@ namespace QuakeConsole.Features
                     break;
                 case ConsoleAction.DeleteCurrentChar:
                     if (input.Length > input.Caret.Index)
-                        ResetAutocompleteEntry();                    
+                        ResetAutocompleteEntry();
                     break;
-                    // TODO: Reset on paste
-                    //case ConsoleAction.Paste:
-                    //    _actionDefinitions.BackwardTryGetValue(ConsoleAction.CopyPasteModifier, out modifier);
-                    //    if (!Input.IsKeyDown(modifier))
-                    //        break;                                        
-                    //break;
+                case ConsoleAction.Paste:
+                case ConsoleAction.Cut:
                 case ConsoleAction.Tab:
-                    ResetAutocompleteEntry();                    
-                    break;
-            }
-            return hasProcessedAction;
+                    ResetAutocompleteEntry();
+                    break;                                    
+            }            
         }
 
-        public void ProcessSymbol(Symbol symbol)
+        public void OnSymbol(Symbol symbol)
         {
             ResetAutocompleteEntry();
         }

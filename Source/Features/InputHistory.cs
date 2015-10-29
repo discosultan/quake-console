@@ -17,16 +17,16 @@ namespace QuakeConsole.Features
 
         public void LoadContent(Console console) => _console = console;
 
-        public bool ProcessAction(ConsoleAction action)
+        public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return false;
+            if (!Enabled) return;
 
             string cmd = _console.ConsoleInput.Value;
 
-            bool hasProcessedAction = false;
             switch (action)
             {
                 case ConsoleAction.ExecuteCommand:
+                case ConsoleAction.NewLine:
                     // If the cmd matches the currently indexed historical entry then set a special flag
                     // which when moving backward in history, does not actually move backward, but will instead
                     // return the same entry that was returned before. This is similar to how Powershell and Cmd Prompt work.
@@ -45,24 +45,20 @@ namespace QuakeConsole.Features
                     // does not match the last historical entry.
                     if (cmd != "" && !cmd.Equals(lastHistoricalEntry, StringComparison.Ordinal))
                         _inputHistory.Add(cmd);
-                    hasProcessedAction = true;
                     break;
                 case ConsoleAction.PreviousCommandInHistory:
                     if (!_inputHistoryDoNotDecrement)
                         _inputHistoryIndexer--;
                     ManageHistory();
-                    hasProcessedAction = true;
                     break;
                 case ConsoleAction.NextCommandInHistory:
                     _inputHistoryIndexer++;
                     ManageHistory();
-                    hasProcessedAction = true;
                     break;
-                case ConsoleAction.Autocomplete:
+                case ConsoleAction.AutocompleteForward:
                     _inputHistoryIndexer = int.MaxValue;                    
                     break;
             }
-            return hasProcessedAction;
         }
 
         public void ProcessSymbol(Symbol symbol)

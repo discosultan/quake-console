@@ -17,22 +17,17 @@ namespace QuakeConsole.Features
         }
 
         private bool _capsLockToggled;
-        //private bool _numLockToggled;        
 
-        public bool ProcessAction(ConsoleAction action)
+        public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return false;
+            if (!Enabled) return;
 
-            bool hasProcessedAction = false;            
             switch (action)
             {
                 case ConsoleAction.CapsLock:
-                //case ConsoleAction.NumLock:                    
                     CheckKeysToggled();
-                    hasProcessedAction = true;
                     break;
             }
-            return hasProcessedAction;
         }
 
         public string ProcessSymbol(Symbol symbol)

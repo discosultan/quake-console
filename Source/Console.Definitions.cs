@@ -11,47 +11,48 @@ namespace QuakeConsole
 {
     internal partial class Console
     {
-        internal BiDirectionalDictionary<Keys, ConsoleAction> ActionDefinitions { get; } = new BiDirectionalDictionary<Keys, ConsoleAction>
+        internal ConsoleActionMap ActionDefinitions { get; } = new ConsoleActionMap
         {
-#if MONOGAME
-            { Keys.LeftControl, ConsoleAction.CopyPasteModifier },
-            { Keys.RightControl, ConsoleAction.CopyPasteModifier },
-            { Keys.LeftControl, ConsoleAction.AutocompleteModifier },
-            { Keys.RightControl, ConsoleAction.AutocompleteModifier },
-#else
+#if PARADOX
             { Keys.NumPadEnter, ConsoleAction.ExecuteCommand },
-            { Keys.LeftCtrl, ConsoleAction.CopyPasteModifier },
-            { Keys.RightCtrl, ConsoleAction.CopyPasteModifier },
-            { Keys.LeftCtrl, ConsoleAction.AutocompleteModifier },
-            { Keys.RightCtrl, ConsoleAction.AutocompleteModifier },
+            { Keys.LeftShift, Keys.NumPadEnter, ConsoleAction.NextLineModifier },
+            { Keys.RightShift, Keys.NumPadEnter, ConsoleAction.NextLineModifier },
 #endif            
             { Keys.Enter, ConsoleAction.ExecuteCommand },
             { Keys.Left, ConsoleAction.MoveLeft },
             { Keys.Right, ConsoleAction.MoveRight },
+            { Keys.LeftControl, Keys.Left, ConsoleAction.MoveLeftWord },
+            { Keys.RightControl, Keys.Left, ConsoleAction.MoveLeftWord },
+            { Keys.LeftControl, Keys.Right, ConsoleAction.MoveRightWord },
+            { Keys.RightControl, Keys.Right, ConsoleAction.MoveRightWord },
             { Keys.Home, ConsoleAction.MoveToBeginning },
             { Keys.End, ConsoleAction.MoveToEnd },
             { Keys.Back, ConsoleAction.DeletePreviousChar },
             { Keys.Delete, ConsoleAction.DeleteCurrentChar },
-            { Keys.LeftShift, ConsoleAction.UppercaseModifier },
+            { Keys.LeftShift, ConsoleAction.UppercaseModifier }, // ?
             { Keys.RightShift, ConsoleAction.UppercaseModifier },
             { Keys.Up, ConsoleAction.PreviousCommandInHistory },
-            { Keys.Down, ConsoleAction.NextCommandInHistory },                                    
-            { Keys.LeftShift, ConsoleAction.PreviousEntryModifier },
-            { Keys.RightShift, ConsoleAction.PreviousEntryModifier },
-            { Keys.X, ConsoleAction.Cut },
-            { Keys.C, ConsoleAction.Copy },            
-            { Keys.V, ConsoleAction.Paste },
-            { Keys.LeftShift, ConsoleAction.NextLineModifier },
-            //{ Keys.Tab, ConsoleAction.Autocomplete },            
-            { Keys.Space, ConsoleAction.Autocomplete },            
+            { Keys.Down, ConsoleAction.NextCommandInHistory },
+            { Keys.LeftControl, Keys.X, ConsoleAction.Cut },
+            { Keys.RightControl, Keys.X, ConsoleAction.Cut },
+            { Keys.LeftControl, Keys.C, ConsoleAction.Copy },
+            { Keys.RightControl, Keys.C, ConsoleAction.Copy },
+            { Keys.LeftControl, Keys.V, ConsoleAction.Paste },
+            { Keys.RightControl, Keys.V, ConsoleAction.Paste },
+            { Keys.LeftShift, Keys.Enter, ConsoleAction.NewLine },
+            { Keys.RightShift, Keys.Enter, ConsoleAction.NewLine },
+            { Keys.LeftControl, Keys.Space, ConsoleAction.AutocompleteForward },
+            { Keys.RightControl, Keys.Space, ConsoleAction.AutocompleteForward },
+            { Keys.LeftControl, Keys.LeftShift, Keys.Space, ConsoleAction.AutocompleteBackward },
+            { Keys.LeftControl, Keys.RightShift, Keys.Space, ConsoleAction.AutocompleteBackward },
+            { Keys.RightControl, Keys.LeftShift, Keys.Space, ConsoleAction.AutocompleteBackward },
+            { Keys.RightControl, Keys.RightShift, Keys.Space, ConsoleAction.AutocompleteBackward },
             { Keys.Tab, ConsoleAction.Tab },
-            { Keys.LeftShift, ConsoleAction.TabModifier },
-            { Keys.RightShift, ConsoleAction.TabModifier },
-            { Keys.LeftControl, ConsoleAction.MoveByWordModifier },
-            { Keys.RightControl, ConsoleAction.MoveByWordModifier },
+            { Keys.LeftShift, Keys.Tab, ConsoleAction.RemoveTab },
+            { Keys.RightShift, Keys.Tab, ConsoleAction.RemoveTab },
             { Keys.CapsLock, ConsoleAction.CapsLock },
             { Keys.NumLock, ConsoleAction.NumLock },
-            { Keys.LeftShift, ConsoleAction.SelectionModifier },
+            { Keys.LeftShift, ConsoleAction.SelectionModifier }, // ?
             { Keys.RightShift, ConsoleAction.SelectionModifier }
         };
 
@@ -172,9 +173,10 @@ namespace QuakeConsole
     {
         None,
         DeletePreviousChar,
-        Autocomplete,
+        AutocompleteForward,
+        AutocompleteBackward,
         ExecuteCommand,
-        NextLineModifier,
+        NewLine,
         UppercaseModifier,
         CopyPasteModifier,
         PreviousEntryModifier,
@@ -186,8 +188,10 @@ namespace QuakeConsole
         MoveToEnd,
         MoveToBeginning,
         MoveLeft,
+        MoveLeftWord,
         PreviousCommandInHistory,
         MoveRight,
+        MoveRightWord,
         NextCommandInHistory,
         //Insert, // input modifier
         DeleteCurrentChar,
@@ -197,7 +201,7 @@ namespace QuakeConsole
         Copy,
         Paste,
         Tab,
-        TabModifier,
+        RemoveTab,
         SelectionModifier
     }
 

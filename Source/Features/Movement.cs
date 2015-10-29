@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-
-namespace QuakeConsole.Features
+﻿namespace QuakeConsole.Features
 {
     internal class Movement
     {
@@ -10,42 +8,33 @@ namespace QuakeConsole.Features
 
         public void LoadContent(Console console) => _console = console;
 
-        public bool ProcessAction(ConsoleAction action)
+        public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return false;
+            if (!Enabled) return;
 
             ConsoleInput input = _console.ConsoleInput;
 
-            Keys modifier;
-            bool hasProcessedAction = false;
             switch (action)
             {
                 case ConsoleAction.MoveLeft:
-                    _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.MoveByWordModifier, out modifier);
-                    if (input.Input.IsKeyDown(modifier))
-                        MoveToPreviousWord();
-                    else
-                        input.Caret.MoveBy(-1);
-                    hasProcessedAction = true;
+                    input.Caret.MoveBy(-1);
+                    break;
+                case ConsoleAction.MoveLeftWord:
+                    MoveToPreviousWord();
                     break;
                 case ConsoleAction.MoveRight:
-                    _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.MoveByWordModifier, out modifier);
-                    if (input.Input.IsKeyDown(modifier))
-                        MoveToNextWord();
-                    else
-                        input.Caret.MoveBy(1);
-                    hasProcessedAction = true;
+                    input.Caret.MoveBy(1);
+                    break;
+                case ConsoleAction.MoveRightWord:
+                    MoveToNextWord();
                     break;
                 case ConsoleAction.MoveToBeginning:
                     input.Caret.Index = 0;
-                    hasProcessedAction = true;
                     break;
                 case ConsoleAction.MoveToEnd:
                     input.Caret.Index = input.Length;
-                    hasProcessedAction = true;
                     break;
             }
-            return hasProcessedAction;
         }
 
         public void MoveToPreviousWord()

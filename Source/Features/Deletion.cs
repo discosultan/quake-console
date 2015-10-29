@@ -10,13 +10,12 @@ namespace QuakeConsole.Features
 
         public void LoadContent(Console console) => _console = console;
 
-        public bool ProcessAction(ConsoleAction action)
+        public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return false;
+            if (!Enabled) return;
 
             ConsoleInput input = _console.ConsoleInput;
 
-            bool hasProcessedAction = false;            
             switch (action)
             {
                 case ConsoleAction.DeletePreviousChar:
@@ -24,17 +23,14 @@ namespace QuakeConsole.Features
                         input.Remove(input.Selection.SelectionStart, input.Selection.SelectionLength);   
                     else if (input.Length > 0 && input.Caret.Index > 0)
                         input.Remove(Math.Max(0, input.Caret.Index - 1), 1);
-                    hasProcessedAction = true;
                     break;
                 case ConsoleAction.DeleteCurrentChar:
                     if (input.Selection.HasSelection)
                         input.Remove(input.Selection.SelectionStart, input.Selection.SelectionLength);
                     else if (input.Length > input.Caret.Index)
                         input.Remove(input.Caret.Index, 1);
-                    hasProcessedAction = true;
                     break;
             }
-            return hasProcessedAction;
         }
     }
 }

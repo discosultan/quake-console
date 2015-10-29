@@ -37,22 +37,26 @@ namespace QuakeConsole.Utilities
             }            
         }
 
+        public List<Keys> DownKeys { get; private set; }
+        public List<Keys> PressedKeys { get; } = new List<Keys>();
+
         public void Update()
         {            
             _previousKeyState = _currentKeyState;
             _currentKeyState = Keyboard.GetState();
 
-            KeyEvents.Clear();
-            Keys[] pressedKeys = _currentKeyState.GetPressedKeys(); // TODO: per frame heap allocs
-            foreach (Keys key in pressedKeys)
+            DownKeys.Clear();
+            PressedKeys.Clear();
+            Keys[] keys = _currentKeyState.GetPressedKeys(); // TODO: per frame heap allocs
+            foreach (Keys key in keys)
             {
-                if (_previousKeyState.IsKeyDown(key) && _currentKeyState.IsKeyUp(key))
-                    KeyEvents.Add(new KeyEvent {Key = key, Type = KeyEventType.Released});
                 if (_previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key))
-                    KeyEvents.Add(new KeyEvent { Key = key, Type = KeyEventType.Pressed });
+                    PressedKeys.Add(key);
+                else //if (_previousKeyState.IsKeyDown(key) && _currentKeyState.IsKeyDown(key))
+                    DownKeys.Add(key);
             }
         }
 
-        public List<KeyEvent> KeyEvents { get; } = new List<KeyEvent>();
+        //public List<KeyEvent> KeyEvents { get; } = new List<KeyEvent>();
     }
 }

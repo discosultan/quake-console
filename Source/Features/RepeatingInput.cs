@@ -40,15 +40,12 @@ namespace QuakeConsole.Features
             if (!input.Input.IsKeyDown(_downKey))
                 ResetRepeatingPresses();
 
-            foreach (KeyEvent keyEvent in input.Input.KeyEvents)
+            foreach (Keys key in input.Input.DownKeys)
             {
-                if (keyEvent.Type == KeyEventType.Released)
-                    continue;
-
-                if (keyEvent.Key != _downKey)
+                if (key != _downKey)
                 {
                     ResetRepeatingPresses();
-                    _downKey = keyEvent.Key;
+                    _downKey = key;
                     _startRepeatedProcess = true;
                 }
             }

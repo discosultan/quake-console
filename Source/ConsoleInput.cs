@@ -164,11 +164,21 @@ namespace QuakeConsole
 #if MONOGAME
             Input.Update();
 #endif
-            foreach (KeyEvent keyEvent in Input.KeyEvents)
-                // We are only interested in key presses.
-                if (keyEvent.Type == KeyEventType.Pressed)
-                    if (HandleKey(keyEvent.Key))
-                        break;
+            ConsoleAction action;
+            if (_console.ActionDefinitions.TryGetAction(Input.DownKeys, Input.PressedKeys, out action))
+            {
+                ProcessAction(action);
+            }
+            else
+            {
+                foreach (Keys key in Input.PressedKeys)
+                {
+                    Symbol symbol;
+                    if (_console.SymbolMappings.TryGetValue(key, out symbol))
+                        ProcessSymbol(symbol);
+                }
+            }
+
             Caret.Update(deltaSeconds);
             RepeatingInput.Update(deltaSeconds);
             if (_dirty)
@@ -176,15 +186,6 @@ namespace QuakeConsole
                 CalculateStartAndEndIndices();
                 _dirty = false;
             }
-        }
-
-        public bool HandleKey(Keys key)
-        {
-            bool processedKey = ProcessActionKey(key);
-            if (processedKey)
-                return true;
-            processedKey = ProcessSymbolKey(key);
-            return processedKey;
         }
 
         public void Draw()
@@ -228,41 +229,29 @@ namespace QuakeConsole
             _inputBuffer.Clear();
         }
 
-        private bool ProcessActionKey(Keys key)
-        {
-            ConsoleAction action;
-            if (!_console.ActionDefinitions.ForwardTryGetValue(key, out action))
-                return false;
-
-            bool hasProcessedKey = InputHistory.ProcessAction(action);
-            hasProcessedKey = Autocompletion.ProcessAction(action) || hasProcessedKey;
-            hasProcessedKey = CopyPasting.ProcessAction(action) || hasProcessedKey;
-            hasProcessedKey = Movement.ProcessAction(action) || hasProcessedKey;
-            hasProcessedKey = Tabbing.ProcessAction(action) || hasProcessedKey;
-            hasProcessedKey = Deletion.ProcessAction(action) || hasProcessedKey;
-            hasProcessedKey = CommandExecution.ProcessAction(action) || hasProcessedKey;
-            hasProcessedKey = CaseSenitivity.ProcessAction(action) || hasProcessedKey;
-            hasProcessedKey = Selection.ProcessAction(action) || hasProcessedKey;
-
-            return hasProcessedKey;
+        public void ProcessAction(ConsoleAction action)
+        {            
+            InputHistory.OnAction(action);
+            Autocompletion.OnAction(action);
+            CopyPasting.OnAction(action);
+            Movement.OnAction(action);
+            Tabbing.OnAction(action);
+            Deletion.OnAction(action);
+            CommandExecution.OnAction(action);
+            CaseSenitivity.ProcessAction(action);
+            Selection.ProcessAction(action);
         }
 
-        private bool ProcessSymbolKey(Keys key)
+        public void ProcessSymbol(Symbol symbol)
         {
-            Symbol symbol;
-            if (!_console.SymbolMappings.TryGetValue(key, out symbol))
-                return false;
-
             if (Selection.HasSelection)
                 Remove(Selection.SelectionStart, Selection.SelectionLength);
 
             Append(CaseSenitivity.ProcessSymbol(symbol));
 
             InputHistory.ProcessSymbol(symbol);
-            Autocompletion.ProcessSymbol(symbol);
+            Autocompletion.OnSymbol(symbol);
             Selection.ProcessSymbol(symbol);
-
-            return true;
         }        
 
         private void CalculateInputPrefixWidth()

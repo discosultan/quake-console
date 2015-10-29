@@ -64,6 +64,7 @@
     <Compile Include="Features\CommandExecution.cs" />
     <Compile Include="Features\CaseSensitivity.cs" />
     <Compile Include="Features\Deletion.cs" />
+    <Compile Include="Features\MultiLineInput.cs" />
     <Compile Include="Features\Selection.cs" />
     <Compile Include="Features\Tabbing.cs" />
     <Compile Include="Features\Movement.cs" />
@@ -83,11 +84,13 @@
     <Compile Include="ConsoleOutput.cs" />
     <Compile Include="OutputEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Symbol.cs" />
+    <Compile Include="Utilities\Symbol.cs" />
     <Compile Include="Utilities\BiDirectionalDictionary.cs" />
+    <Compile Include="Utilities\ConsoleActionMap.cs" />
+    <Compile Include="Utilities\Int3.cs" />
+    <Compile Include="Utilities\SpriteFontStringBuilder.cs" />
     <Compile Include="Utilities\Check.cs" />
     <Compile Include="Utilities\CircularArray.cs" />
-    <Compile Include="Utilities\Garbage.cs" />
     <Compile Include="Utilities\InputManager.cs" />
     <Compile Include="Utilities\Pool.cs" />
     <Compile Include="Utilities\RectangleF.cs" />
