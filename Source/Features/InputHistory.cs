@@ -61,7 +61,7 @@ namespace QuakeConsole.Features
             }
         }
 
-        public void ProcessSymbol(Symbol symbol)
+        public void OnSymbol(Symbol symbol)
         {
             _inputHistoryIndexer = int.MaxValue;
         }

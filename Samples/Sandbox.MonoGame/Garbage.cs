@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using Microsoft.Xna.Framework;
+
 #if MONOGAME
 using Microsoft.Xna.Framework;
 #endif
 
-namespace QuakeConsole.Utilities
+namespace Sandbox
 {
     /// <summary>
     /// Static class used to display current and average garbage allocations.

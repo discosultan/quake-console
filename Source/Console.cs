@@ -175,6 +175,7 @@ namespace QuakeConsole
             MeasureFontSize();
             SetWindowWidthAndHeight();
 
+            ActionDefinitions.LoadContent(this);
             ConsoleInput.LoadContent(this);
             ConsoleOutput.LoadContent(this);
             BgRenderer.LoadContent(this);
@@ -275,7 +276,8 @@ namespace QuakeConsole
                     }
                     // Draw bottom border if enabled (thickness larger than zero).
                     if (BottomBorderThickness > 0)
-                        SpriteBatch.Draw(WhiteTexture,
+                        SpriteBatch.Draw(
+                            WhiteTexture,
                             new RectangleF(0, WindowArea.Bottom, WindowArea.Width, BottomBorderThickness),
                             BottomBorderColor);                                        
                     // Draw output and input strings.

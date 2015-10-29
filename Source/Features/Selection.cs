@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using QuakeConsole.Utilities;
 
 namespace QuakeConsole.Features
@@ -22,7 +21,18 @@ namespace QuakeConsole.Features
             }
         }
 
-        public void LoadContent(Console console) => _console = console;
+        public void LoadContent(Console console)
+        {
+            _console = console;
+            _console.ConsoleInput.Caret.Moved += (s, e) =>
+            {
+                if (!_console.ActionDefinitions.AreModifiersAppliedForAction(ConsoleAction.SelectionModifier))
+                {
+                    Clear();
+                    _previousCaretIndex = _console.ConsoleInput.Caret.Index;
+                }
+            };
+        } 
 
         private int _selectionIndex1;
         private int _selectionIndex2;        
@@ -35,22 +45,21 @@ namespace QuakeConsole.Features
         public string SelectionValue => _console.ConsoleInput.Substring(SelectionStart, SelectionLength);
         public Color Color { get; set; }
 
-        public bool ProcessAction(ConsoleAction action)
+        public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return false;
+            if (!Enabled) return;
 
-            ConsoleInput input = _console.ConsoleInput;
             Caret caret = _console.ConsoleInput.Caret;
             
             switch (action)
             {
                 case ConsoleAction.MoveLeft:
                 case ConsoleAction.MoveRight:
+                case ConsoleAction.MoveLeftWord:
+                case ConsoleAction.MoveRightWord:
                 case ConsoleAction.MoveToBeginning:
                 case ConsoleAction.MoveToEnd:
-                    Keys modifier;
-                    _console.ActionDefinitions.BackwardTryGetValue(ConsoleAction.SelectionModifier, out modifier);
-                    if (input.Input.IsKeyDown(modifier))
+                    if (_console.ActionDefinitions.AreModifiersAppliedForAction(ConsoleAction.SelectionModifier))
                     {
                         if (_selectionActive)
                         {                            
@@ -72,20 +81,7 @@ namespace QuakeConsole.Features
                     }
                     _previousCaretIndex = caret.Index;
                     break;
-                case ConsoleAction.AutocompleteForward:
-                case ConsoleAction.ExecuteCommand:
-                case ConsoleAction.Tab:
-                case ConsoleAction.DeleteCurrentChar:
-                case ConsoleAction.DeletePreviousChar:
-                case ConsoleAction.Paste:
-                case ConsoleAction.Cut:
-                case ConsoleAction.NextCommandInHistory:
-                case ConsoleAction.PreviousCommandInHistory:                  
-                    Clear();
-                    _previousCaretIndex = caret.Index;
-                    break;
             }
-            return false;
         }
 
         public void Clear()
@@ -96,7 +92,7 @@ namespace QuakeConsole.Features
             _selectionIndex2 = 0;
         }
 
-        public void ProcessSymbol(Symbol symbol)
+        public void OnSymbol(Symbol symbol)
         {            
             Clear();                        
             _previousCaretIndex = _console.ConsoleInput.Caret.Index;

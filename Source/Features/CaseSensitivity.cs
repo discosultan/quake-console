@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 
 namespace QuakeConsole.Features
 {
@@ -34,12 +32,9 @@ namespace QuakeConsole.Features
         {
             if (!Enabled)
                 return symbol.Lowercase;
-
-            List<Keys> uppercaseModifiers;
-            _console.ActionDefinitions.BackwardTryGetValues(ConsoleAction.UppercaseModifier, out uppercaseModifiers);
-
-            bool capsLockApplies = symbol.Lowercase.Length == 1 && char.IsLetter(symbol.Lowercase[0]) && _capsLockToggled;            
-            bool uppercaseModifierApplies = uppercaseModifiers != null && uppercaseModifiers.Any(x => _console.ConsoleInput.Input.IsKeyDown(x));
+            
+            bool capsLockApplies = symbol.Lowercase.Length == 1 && char.IsLetter(symbol.Lowercase[0]) && _capsLockToggled;
+            bool uppercaseModifierApplies = _console.ActionDefinitions.AreModifiersAppliedForAction(ConsoleAction.UppercaseModifier);
 
             return capsLockApplies ^ uppercaseModifierApplies 
                 ? symbol.Uppercase 
@@ -49,7 +44,6 @@ namespace QuakeConsole.Features
         private void CheckKeysToggled()
         {
             _capsLockToggled = _console.ConsoleInput.Input.IsKeyToggled(Keys.CapsLock);
-            //_numLockToggled = _console.ConsoleInput.Input.IsKeyToggled(Keys.NumLock);
         }
     }
 }

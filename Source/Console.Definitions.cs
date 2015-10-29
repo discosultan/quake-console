@@ -29,8 +29,8 @@ namespace QuakeConsole
             { Keys.End, ConsoleAction.MoveToEnd },
             { Keys.Back, ConsoleAction.DeletePreviousChar },
             { Keys.Delete, ConsoleAction.DeleteCurrentChar },
-            { Keys.LeftShift, ConsoleAction.UppercaseModifier }, // ?
-            { Keys.RightShift, ConsoleAction.UppercaseModifier },
+            { Keys.LeftShift, Keys.None, ConsoleAction.UppercaseModifier }, // ?
+            { Keys.RightShift, Keys.None, ConsoleAction.UppercaseModifier },
             { Keys.Up, ConsoleAction.PreviousCommandInHistory },
             { Keys.Down, ConsoleAction.NextCommandInHistory },
             { Keys.LeftControl, Keys.X, ConsoleAction.Cut },
@@ -52,8 +52,8 @@ namespace QuakeConsole
             { Keys.RightShift, Keys.Tab, ConsoleAction.RemoveTab },
             { Keys.CapsLock, ConsoleAction.CapsLock },
             { Keys.NumLock, ConsoleAction.NumLock },
-            { Keys.LeftShift, ConsoleAction.SelectionModifier }, // ?
-            { Keys.RightShift, ConsoleAction.SelectionModifier }
+            { Keys.LeftShift, Keys.None, ConsoleAction.SelectionModifier }, // ?
+            { Keys.RightShift, Keys.None, ConsoleAction.SelectionModifier }
         };
 
         private Dictionary<Keys, Symbol> _symbolDefinitions = new Dictionary<Keys, Symbol>

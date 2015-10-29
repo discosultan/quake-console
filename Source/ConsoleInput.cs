@@ -40,6 +40,7 @@ namespace QuakeConsole
         public CommandExecution CommandExecution { get; } = new CommandExecution();
         public CaseSensitivity CaseSenitivity { get; } = new CaseSensitivity();
         public Selection Selection { get; } = new Selection();
+        public MultiLineInput MultiLineInput { get; } = new MultiLineInput();
         public Caret Caret { get; } = new Caret();
 
         public int VisibleStartIndex => _startIndex;
@@ -106,6 +107,7 @@ namespace QuakeConsole
             CommandExecution.LoadContent(console);
             CaseSenitivity.LoadContent(console);
             Selection.LoadContent(console);
+            MultiLineInput.LoadContent(console);
 
             _loaded = true;
         }
@@ -165,7 +167,7 @@ namespace QuakeConsole
             Input.Update();
 #endif
             ConsoleAction action;
-            if (_console.ActionDefinitions.TryGetAction(Input.DownKeys, Input.PressedKeys, out action))
+            if (_console.ActionDefinitions.TryGetAction(out action))
             {
                 ProcessAction(action);
             }
@@ -238,8 +240,10 @@ namespace QuakeConsole
             Tabbing.OnAction(action);
             Deletion.OnAction(action);
             CommandExecution.OnAction(action);
-            CaseSenitivity.ProcessAction(action);
-            Selection.ProcessAction(action);
+            CaseSenitivity.OnAction(action);
+            Selection.OnAction(action);
+            MultiLineInput.OnAction(action);
+            RepeatingInput.OnAction(action);
         }
 
         public void ProcessSymbol(Symbol symbol)
@@ -249,9 +253,10 @@ namespace QuakeConsole
 
             Append(CaseSenitivity.ProcessSymbol(symbol));
 
-            InputHistory.ProcessSymbol(symbol);
+            InputHistory.OnSymbol(symbol);
             Autocompletion.OnSymbol(symbol);
-            Selection.ProcessSymbol(symbol);
+            Selection.OnSymbol(symbol);
+            RepeatingInput.OnSymbol(symbol);
         }        
 
         private void CalculateInputPrefixWidth()

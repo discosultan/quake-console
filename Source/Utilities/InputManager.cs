@@ -37,7 +37,7 @@ namespace QuakeConsole.Utilities
             }            
         }
 
-        public List<Keys> DownKeys { get; private set; }
+        public List<Keys> DownKeys { get; } = new List<Keys>();
         public List<Keys> PressedKeys { get; } = new List<Keys>();
 
         public void Update()
@@ -52,7 +52,9 @@ namespace QuakeConsole.Utilities
             {
                 if (_previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key))
                     PressedKeys.Add(key);
-                else //if (_previousKeyState.IsKeyDown(key) && _currentKeyState.IsKeyDown(key))
+                //else //if (_previousKeyState.IsKeyDown(key) && _currentKeyState.IsKeyDown(key))
+                //    DownKeys.Add(key);
+                if (_currentKeyState.IsKeyDown(key))
                     DownKeys.Add(key);
             }
         }

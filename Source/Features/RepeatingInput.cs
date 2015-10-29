@@ -1,6 +1,5 @@
 ﻿using System;
 using QuakeConsole.Utilities;
-using Microsoft.Xna.Framework.Input;
 
 namespace QuakeConsole.Features
 {    
@@ -11,7 +10,10 @@ namespace QuakeConsole.Features
 
         private bool _startRepeatedProcess;
         private bool _isFastRepeating;
-        private Keys _downKey;
+        private bool _isActionInsteadOfSymbol;
+        private bool _anyInput;
+        private Symbol _lastSymbol;
+        private ConsoleAction _lastAction;
 
         private Console _console;
 
@@ -37,18 +39,8 @@ namespace QuakeConsole.Features
 
             ConsoleInput input = _console.ConsoleInput;
 
-            if (!input.Input.IsKeyDown(_downKey))
-                ResetRepeatingPresses();
-
-            foreach (Keys key in input.Input.DownKeys)
-            {
-                if (key != _downKey)
-                {
-                    ResetRepeatingPresses();
-                    _downKey = key;
-                    _startRepeatedProcess = true;
-                }
-            }
+            if (!_anyInput)
+                ResetRepeatingPresses();            
 
             if (_startRepeatedProcess && !_isFastRepeating)
             {
@@ -63,13 +55,48 @@ namespace QuakeConsole.Features
             {
                 _repeatedPressIntervalTimer.Update(deltaSeconds);
                 if (_repeatedPressIntervalTimer.Finished)
-                    input.HandleKey(_downKey);
+                    if (_isActionInsteadOfSymbol)
+                        input.ProcessAction(_lastAction);
+                    else
+                        input.ProcessSymbol(_lastSymbol);
             }
+            _anyInput = false;
+        }
+
+        public void OnSymbol(Symbol symbol)
+        {
+            if (_isActionInsteadOfSymbol)
+            {
+                _isActionInsteadOfSymbol = false;
+                ResetRepeatingPresses();                
+            }
+            else if (_lastSymbol != symbol)
+            {
+                ResetRepeatingPresses();
+            }
+            _lastSymbol = symbol;
+            _startRepeatedProcess = true;
+            _anyInput = true;
+        }
+
+        public void OnAction(ConsoleAction action)
+        {
+            if (!_isActionInsteadOfSymbol)
+            {
+                _isActionInsteadOfSymbol = true;
+                ResetRepeatingPresses();
+            }
+            else if (_lastAction != action)
+            {                
+                ResetRepeatingPresses();                
+            }
+            _lastAction = action;
+            _startRepeatedProcess = true;
+            _anyInput = true;
         }
 
         private void ResetRepeatingPresses()
-        {
-            _downKey = Keys.None;
+        {            
             _startRepeatedProcess = false;
             _isFastRepeating = false;
             _repeatedPressTresholdTimer.Reset();
