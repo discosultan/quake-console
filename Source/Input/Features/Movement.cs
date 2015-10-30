@@ -1,50 +1,47 @@
-﻿namespace QuakeConsole.Features
+﻿namespace QuakeConsole.Input.Features
 {
     internal class Movement
     {
-        private Console _console;
+        private ConsoleInput _input;
 
         public bool Enabled { get; set; } = true;
 
-        public void LoadContent(Console console) => _console = console;
+        public void LoadContent(ConsoleInput input) => _input = input;
 
         public void OnAction(ConsoleAction action)
         {
             if (!Enabled) return;
 
-            ConsoleInput input = _console.ConsoleInput;
-
             switch (action)
             {
                 case ConsoleAction.MoveLeft:
-                    input.Caret.MoveBy(-1);
+                    _input.Caret.MoveBy(-1);
                     break;
                 case ConsoleAction.MoveLeftWord:
                     MoveToPreviousWord();
                     break;
                 case ConsoleAction.MoveRight:
-                    input.Caret.MoveBy(1);
+                    _input.Caret.MoveBy(1);
                     break;
                 case ConsoleAction.MoveRightWord:
                     MoveToNextWord();
                     break;
                 case ConsoleAction.MoveToBeginning:
-                    input.Caret.Index = 0;
+                    _input.Caret.Index = 0;
                     break;
                 case ConsoleAction.MoveToEnd:
-                    input.Caret.Index = input.Length;
+                    _input.Caret.Index = _input.Length;
                     break;
             }
         }
 
         public void MoveToPreviousWord()
         {
-            ConsoleInput input = _console.ConsoleInput;
-            Caret caret = input.Caret;
-            bool prevOnLetter = caret.Index < input.Length && char.IsLetterOrDigit(input[caret.Index]);
+            Caret caret = _input.Caret;
+            bool prevOnLetter = caret.Index < _input.Length && char.IsLetterOrDigit(_input[caret.Index]);
             for (int i = caret.Index - 1; i >= 0; i--)
             {
-                bool currentOnLetter = char.IsLetterOrDigit(input[i]);
+                bool currentOnLetter = char.IsLetterOrDigit(_input[i]);
                 if (prevOnLetter && !currentOnLetter && i != caret.Index - 1)
                 {
                     caret.Index = i + 1;
@@ -57,12 +54,11 @@
 
         public void MoveToNextWord()
         {
-            ConsoleInput input = _console.ConsoleInput;
-            Caret caret = input.Caret;
-            bool prevOnLetter = caret.Index < input.Length && char.IsLetterOrDigit(input[caret.Index]);
-            for (int i = caret.Index + 1; i < input.Length; i++)
+            Caret caret = _input.Caret;
+            bool prevOnLetter = caret.Index < _input.Length && char.IsLetterOrDigit(_input[caret.Index]);
+            for (int i = caret.Index + 1; i < _input.Length; i++)
             {
-                bool currentOnLetter = char.IsLetterOrDigit(input[i]);
+                bool currentOnLetter = char.IsLetterOrDigit(_input[i]);
                 if (!prevOnLetter && currentOnLetter)
                 {
                     caret.Index = i;
@@ -70,7 +66,7 @@
                 }
                 prevOnLetter = currentOnLetter;
             }
-            caret.Index = input.Length;
+            caret.Index = _input.Length;
         }
     }
 }

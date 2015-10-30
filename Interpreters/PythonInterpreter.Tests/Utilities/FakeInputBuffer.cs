@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using QuakeConsole.Input;
 
 namespace QuakeConsole.Tests.Utilities
 {

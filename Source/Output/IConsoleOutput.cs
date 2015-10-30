@@ -1,4 +1,4 @@
-﻿namespace QuakeConsole
+﻿namespace QuakeConsole.Output
 {
     /// <summary>
     /// A contract for the output part of the <see cref="Console"/>. Defines methods manipulating

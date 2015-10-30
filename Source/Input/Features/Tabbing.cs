@@ -1,25 +1,23 @@
 ﻿using System;
 
-namespace QuakeConsole.Features
+namespace QuakeConsole.Input.Features
 {
     internal class Tabbing
     {
-        private Console _console;        
+        private ConsoleInput _input;
 
         public bool Enabled { get; set; } = true;        
 
-        public void LoadContent(Console console) => _console = console;
+        public void LoadContent(ConsoleInput input) => _input = input;
 
         public void OnAction(ConsoleAction action)
         {
             if (!Enabled) return;            
 
-            ConsoleInput input = _console.ConsoleInput;
-
             switch (action)
             {
                 case ConsoleAction.Tab:
-                    input.Append(_console.TabSymbol);
+                    _input.Append(_input.Console.TabSymbol);
                     break;
                 case ConsoleAction.RemoveTab:
                     RemoveTab();
@@ -29,14 +27,13 @@ namespace QuakeConsole.Features
 
         public void RemoveTab()
         {
-            ConsoleInput input = _console.ConsoleInput;
-
             bool isTab = true;
             int counter = 0;
-            for (int i = input.Caret.Index - 1; i >= 0; i--)
+            string tabSymbol = _input.Console.TabSymbol;
+            for (int i = _input.Caret.Index - 1; i >= 0; i--)
             {
-                if (counter >= _console.TabSymbol.Length) break;
-                if (input[i] != _console.TabSymbol[_console.TabSymbol.Length - counter++ - 1])
+                if (counter >= tabSymbol.Length) break;
+                if (_input[i] != tabSymbol[tabSymbol.Length - counter++ - 1])
                 {
                     isTab = false;
                     break;
@@ -44,8 +41,8 @@ namespace QuakeConsole.Features
             }
             int numToRemove = counter;
             if (isTab)
-                input.Remove(Math.Max(0, input.Caret.Index - _console.TabSymbol.Length), numToRemove);                
-            input.Caret.MoveBy(-_console.TabSymbol.Length);
+                _input.Remove(Math.Max(0, _input.Caret.Index - tabSymbol.Length), numToRemove);
+            _input.Caret.MoveBy(-tabSymbol.Length);
         }
     }
 }

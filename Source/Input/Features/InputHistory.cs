@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace QuakeConsole.Features
+namespace QuakeConsole.Input.Features
 {
     internal class InputHistory
     {
@@ -11,17 +11,17 @@ namespace QuakeConsole.Features
         private int _inputHistoryIndexer;
         private bool _inputHistoryDoNotDecrement;
 
-        private Console _console;
+        private ConsoleInput _input;
 
         public bool Enabled { get; set; } = true;
 
-        public void LoadContent(Console console) => _console = console;
+        public void LoadContent(ConsoleInput input) => _input = input;
 
         public void OnAction(ConsoleAction action)
         {
             if (!Enabled) return;
 
-            string cmd = _console.ConsoleInput.Value;
+            string cmd = _input.Value;
 
             switch (action)
             {
@@ -81,8 +81,8 @@ namespace QuakeConsole.Features
             _inputHistoryIndexer = MathHelper.Clamp(_inputHistoryIndexer, 0, _inputHistory.Count - 1);
 
             _inputHistoryDoNotDecrement = false;
-            _console.ConsoleInput.LastAutocompleteEntry = null;
-            _console.ConsoleInput.Value = _inputHistory[_inputHistoryIndexer];
+            _input.LastAutocompleteEntry = null;
+            _input.Value = _inputHistory[_inputHistoryIndexer];
         }
     }
 }

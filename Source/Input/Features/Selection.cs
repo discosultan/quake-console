@@ -2,11 +2,11 @@
 using Microsoft.Xna.Framework;
 using QuakeConsole.Utilities;
 
-namespace QuakeConsole.Features
+namespace QuakeConsole.Input.Features
 {
     internal class Selection
     {
-        private Console _console;
+        private ConsoleInput _input;
 
         private bool _enabled = true;
 
@@ -21,17 +21,18 @@ namespace QuakeConsole.Features
             }
         }
 
-        public void LoadContent(Console console)
+        public void LoadContent(ConsoleInput input)
         {
-            _console = console;
-            _console.ConsoleInput.Caret.Moved += (s, e) =>
+            _input = input;
+            _input.Caret.Moved += (s, e) =>
             {
-                if (!_console.ActionDefinitions.AreModifiersAppliedForAction(ConsoleAction.SelectionModifier))
+                if (!_input.ActionDefinitions.AreModifiersAppliedForAction(ConsoleAction.SelectionModifier, _input.Input))
                 {
                     Clear();
-                    _previousCaretIndex = _console.ConsoleInput.Caret.Index;
+                    _previousCaretIndex = _input.Caret.Index;
                 }
             };
+            _input.Cleared += (s, e) => Clear();            
         } 
 
         private int _selectionIndex1;
@@ -42,15 +43,14 @@ namespace QuakeConsole.Features
         public bool HasSelection => _selectionActive && SelectionLength > 0;
         public int SelectionStart { get; private set; }
         public int SelectionLength { get; private set; }
-        public string SelectionValue => _console.ConsoleInput.Substring(SelectionStart, SelectionLength);
+        public string SelectionValue => _input.Substring(SelectionStart, SelectionLength);
         public Color Color { get; set; }
 
         public void OnAction(ConsoleAction action)
         {
             if (!Enabled) return;
 
-            Caret caret = _console.ConsoleInput.Caret;
-            
+            Caret caret = _input.Caret;
             switch (action)
             {
                 case ConsoleAction.MoveLeft:
@@ -59,7 +59,7 @@ namespace QuakeConsole.Features
                 case ConsoleAction.MoveRightWord:
                 case ConsoleAction.MoveToBeginning:
                 case ConsoleAction.MoveToEnd:
-                    if (_console.ActionDefinitions.AreModifiersAppliedForAction(ConsoleAction.SelectionModifier))
+                    if (_input.ActionDefinitions.AreModifiersAppliedForAction(ConsoleAction.SelectionModifier, _input.Input))
                     {
                         if (_selectionActive)
                         {                            
@@ -84,39 +84,32 @@ namespace QuakeConsole.Features
             }
         }
 
-        public void Clear()
-        {
-            _selectionActive = false;
-            _previousCaretIndex = 0;
-            _selectionIndex1 = 0;
-            _selectionIndex2 = 0;
-        }
-
         public void OnSymbol(Symbol symbol)
         {            
             Clear();                        
-            _previousCaretIndex = _console.ConsoleInput.Caret.Index;
+            _previousCaretIndex = _input.Caret.Index;
         }
 
         public void Draw()
         {
             if (!HasSelection) return;
 
-            // TODO: Fix drawing offset when input runs out of screen
-            var input = _console.ConsoleInput;
-
             var offset = new Vector2(
-                _console.Padding + _console.ConsoleInput.InputPrefixSize.X, 
-                _console.WindowArea.Y + _console.WindowArea.Height - _console.Padding - _console.FontSize.Y);            
-            float startX = input.MeasureSubstring(0, SelectionStart).X;
-            float width = input.MeasureSubstring(SelectionStart, SelectionLength).X;
+                _input.Console.Padding + _input.Console.ConsoleInput.InputPrefixSize.X, 
+                _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y);
+
+            int startIndex = Math.Max(SelectionStart - _input.VisibleStartIndex, 0);
+            int length = Math.Min(SelectionLength, _input.VisibleLength - startIndex);
+
+            float startX = _input.MeasureSubstring(0, startIndex).X;
+            float width = _input.MeasureSubstring(SelectionStart, length).X;
             var destRectangle = new RectangleF(
                 offset.X + startX,
                 offset.Y,
                 width, 
-                _console.FontSize.Y);
-            _console.SpriteBatch.Draw(
-                _console.WhiteTexture,
+                _input.Console.FontSize.Y);
+            _input.Console.SpriteBatch.Draw(
+                _input.Console.WhiteTexture,
                 destRectangle,
                 Color);
         }
@@ -125,6 +118,14 @@ namespace QuakeConsole.Features
         {
             SelectionLength = Math.Abs(_selectionIndex2 - _selectionIndex1);
             SelectionStart = _selectionIndex1 <= _selectionIndex2 ? _selectionIndex1 : _selectionIndex2;
+        }
+
+        private void Clear()
+        {
+            _selectionActive = false;
+            _previousCaretIndex = 0;
+            _selectionIndex1 = 0;
+            _selectionIndex2 = 0;
         }
     }
 }

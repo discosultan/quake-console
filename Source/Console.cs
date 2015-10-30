@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using QuakeConsole.Input;
+using QuakeConsole.Output;
 using QuakeConsole.Utilities;
 #if MONOGAME
 using Texture = Microsoft.Xna.Framework.Graphics.Texture2D;
 using MathUtil = Microsoft.Xna.Framework.MathHelper;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 #endif
 
 namespace QuakeConsole
 {    
-    internal partial class Console : IDisposable
+    internal class Console : IDisposable
     {
         private const string MeasureFontSizeSymbol = "x";
 
@@ -122,13 +123,7 @@ namespace QuakeConsole
         }
 
         public Color BottomBorderColor { get; set; }
-        public float BottomBorderThickness { get; set; }        
-        
-        public Dictionary<Keys, Symbol> SymbolMappings
-        {
-            get { return _symbolDefinitions; }
-            set { _symbolDefinitions = value ?? new Dictionary<Keys, Symbol>(); }
-        }
+        public float BottomBorderThickness { get; set; }                
 
         public ConsoleState State { get; private set; } = ConsoleState.Closed;
 
@@ -175,7 +170,6 @@ namespace QuakeConsole
             MeasureFontSize();
             SetWindowWidthAndHeight();
 
-            ActionDefinitions.LoadContent(this);
             ConsoleInput.LoadContent(this);
             ConsoleOutput.LoadContent(this);
             BgRenderer.LoadContent(this);
@@ -353,5 +347,33 @@ namespace QuakeConsole
             ConsoleInput.SetSettings(settings);
             ConsoleOutput.SetDefaults(settings);
         }
+    }
+
+    /// <summary>
+    /// Defines which subparts of the <see cref="Console"/> to clear.
+    /// </summary>
+    [Flags]
+    public enum ConsoleClearFlags
+    {
+        /// <summary>
+        /// Does not clear anything.
+        /// </summary>
+        None = 0,
+        /// <summary>
+        /// Clears the text in the output part of the console.
+        /// </summary>
+        OutputBuffer = 1,
+        /// <summary>
+        /// Clears the text in the input part of the console and resets Caret position.
+        /// </summary>
+        InputBuffer = 2,
+        /// <summary>
+        /// Removes any history of user input.
+        /// </summary>
+        InputHistory = 4,
+        /// <summary>
+        /// Clears everything.
+        /// </summary>
+        All = OutputBuffer | InputBuffer | InputHistory
     }
 }

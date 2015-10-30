@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using QuakeConsole.Input;
 using QuakeConsole.Utilities;
 #if MONOGAME
-using Microsoft.Xna.Framework;
+
 #endif
 
-namespace QuakeConsole
+namespace QuakeConsole.Output
 {
     /// <summary>
     /// Output part of the <see cref="Console"/>. Command execution info will be appended here.
@@ -28,9 +30,7 @@ namespace QuakeConsole
         {
             Console = console;
             _entryPool = new Pool<OutputEntry>(() => new OutputEntry(this));
-
-            // TODO: Set flags only and do any calculation in Update. While this would win in performance
-            // TODO: in some cases, I'm not convinced it's worth the hit against readability.
+            
             Console.PaddingChanged += (s, e) =>
             {
                 CalculateRows();

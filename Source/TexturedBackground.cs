@@ -3,6 +3,7 @@ using System.IO;
 using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using QuakeConsole.Input;
 
 namespace QuakeConsole
 {

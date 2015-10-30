@@ -1,4 +1,7 @@
-﻿namespace QuakeConsole
+﻿using QuakeConsole.Input;
+using QuakeConsole.Output;
+
+namespace QuakeConsole
 {
     /// <summary>
     /// A contract for a <see cref="Console"/> command interpreter. Manages command execution and autocompletion features.

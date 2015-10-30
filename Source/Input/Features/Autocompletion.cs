@@ -1,38 +1,36 @@
-﻿namespace QuakeConsole.Features
+﻿namespace QuakeConsole.Input.Features
 {
     internal class Autocompletion
     {
-        private Console _console;
+        private ConsoleInput _input;
 
         public bool Enabled { get; set; } = true;
 
         public string LastAutocompleteEntry { get; set; }
 
-        public void LoadContent(Console console) => _console = console;
+        public void LoadContent(ConsoleInput console) => _input = console;
 
         public void OnAction(ConsoleAction action)
         {
             if (!Enabled) return;
             
-            ConsoleInput input = _console.ConsoleInput;
-
             switch (action)
             {
                 case ConsoleAction.AutocompleteForward:
-                    _console.Interpreter.Autocomplete(input, true);
+                    _input.Console.Interpreter.Autocomplete(_input, true);
                     break;
                 case ConsoleAction.AutocompleteBackward:
-                    _console.Interpreter.Autocomplete(input, false);
+                    _input.Console.Interpreter.Autocomplete(_input, false);
                     break;
                 case ConsoleAction.ExecuteCommand:
                     ResetAutocompleteEntry();                    
                     break;
                 case ConsoleAction.DeletePreviousChar:                
-                    if (input.Length > 0 && input.Caret.Index > 0)
+                    if (_input.Length > 0 && _input.Caret.Index > 0)
                         ResetAutocompleteEntry();                    
                     break;
                 case ConsoleAction.DeleteCurrentChar:
-                    if (input.Length > input.Caret.Index)
+                    if (_input.Length > _input.Caret.Index)
                         ResetAutocompleteEntry();
                     break;
                 case ConsoleAction.Paste:

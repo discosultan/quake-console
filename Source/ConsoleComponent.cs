@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using QuakeConsole.Input;
+using QuakeConsole.Output;
 
 namespace QuakeConsole
 {
@@ -78,8 +80,8 @@ namespace QuakeConsole
         /// </summary>
         public Dictionary<Keys, Symbol> KeyMappings
         {
-            get { return _console.SymbolMappings; }
-            set { _console.SymbolMappings = value; }
+            get { return _console.ConsoleInput.SymbolMappings; }
+            set { _console.ConsoleInput.SymbolMappings = value; }
         }
 
         /// <summary>

@@ -1,40 +1,40 @@
 ﻿using System;
+using QuakeConsole.Output;
 
-namespace QuakeConsole.Features
+namespace QuakeConsole.Input.Features
 {
     internal class CommandExecution
     {
-        private Console _console;
+        private ConsoleInput _input;
 
         public bool Enabled { get; set; } = true;
 
         public Action<string> LogInput { get; set; }
 
-        public void LoadContent(Console console) => _console = console;
+        public void LoadContent(ConsoleInput input) => _input = input;
 
         public void OnAction(ConsoleAction action)
         {
             if (!Enabled) return;
-
-            ConsoleInput input = _console.ConsoleInput;
-            ConsoleOutput ouput = _console.ConsoleOutput;
+            
+            ConsoleOutput ouput = _input.Console.ConsoleOutput;
 
             switch (action)
             {
                 case ConsoleAction.ExecuteCommand:
-                    string cmd = input.Value;
+                    string cmd = _input.Value;
                     string executedCmd = cmd;
                     if (ouput.HasCommandEntry)
                         executedCmd = ouput.DequeueCommandEntry() + cmd;
 
                     // Replace our tab symbols with actual tab characters.
-                    executedCmd = executedCmd.Replace(_console.TabSymbol, "\t");
+                    executedCmd = executedCmd.Replace(_input.Console.TabSymbol, "\t");
                     // Log the command to be executed if logger is set.
                     LogInput?.Invoke(executedCmd);
                     // Execute command.
-                    _console.Interpreter.Execute(ouput, executedCmd);
-                    input.Clear();
-                    input.Caret.MoveBy(int.MinValue);
+                    _input.Console.Interpreter.Execute(ouput, executedCmd);
+                    _input.Clear();
+                    _input.Caret.MoveBy(int.MinValue);
                     break;
             }
         }

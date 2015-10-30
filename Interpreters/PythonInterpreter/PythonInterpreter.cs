@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using Microsoft.Scripting.Hosting;
+using QuakeConsole.Input;
+using QuakeConsole.Output;
 using QuakeConsole.Utilities;
 
 namespace QuakeConsole
