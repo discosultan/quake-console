@@ -36,9 +36,9 @@ namespace QuakeConsole.Input.Features
                     string[] newlineSplits = clipboardVal.Split(_singleElementArray, StringSplitOptions.None);
                     if (newlineSplits.Length > 1)
                     {
-                        _input.Clear();
+                        //_input.Clear();
                         for (int i = 0; i < newlineSplits.Length - 1; i++)
-                            _input.Console.ConsoleOutput.AddCommandEntry(newlineSplits[i]);                        
+                            _input.MultiLineInput.AddNewLine(newlineSplits[i]);
                     }
                     _input.Append(newlineSplits[newlineSplits.Length - 1]);
                     break;

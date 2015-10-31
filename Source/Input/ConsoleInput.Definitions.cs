@@ -40,6 +40,10 @@ namespace QuakeConsole.Input
             { Keys.RightControl, Keys.V, ConsoleAction.Paste },
             { Keys.LeftShift, Keys.Enter, ConsoleAction.NewLine },
             { Keys.RightShift, Keys.Enter, ConsoleAction.NewLine },
+            { Keys.LeftShift, Keys.Up, ConsoleAction.MovePreviousLine },
+            { Keys.RightShift, Keys.Up, ConsoleAction.MovePreviousLine },
+            { Keys.LeftShift, Keys.Down, ConsoleAction.MoveNextLine },
+            { Keys.RightShift, Keys.Down, ConsoleAction.MoveNextLine },
             { Keys.LeftControl, Keys.Space, ConsoleAction.AutocompleteForward },
             { Keys.RightControl, Keys.Space, ConsoleAction.AutocompleteForward },
             { Keys.LeftControl, Keys.LeftShift, Keys.Space, ConsoleAction.AutocompleteBackward },
@@ -140,8 +144,6 @@ namespace QuakeConsole.Input
         };         
     }
 
-
-
     internal enum ConsoleAction : byte
     {
         None,
@@ -150,6 +152,8 @@ namespace QuakeConsole.Input
         AutocompleteForward,
         AutocompleteBackward,
         ExecuteCommand,
+        MovePreviousLine,
+        MoveNextLine,
         NewLine,        
         CapsLock,
         NumLock, // TODO: implement
@@ -197,7 +201,7 @@ namespace QuakeConsole.Input
         public float BottomBorderThickness { get; set; } = 0.0f;
         public Texture2D BackgroundTexture { get; set; }
         public Matrix BackgroundTextureTransform { get; set; } = Matrix.Identity;
-        public Color SelectionColor { get; set; } = new Color(1.0f, 1.0f, 0.0f, 0.5f);
+        public Color SelectionColor { get; set; } = new Color(0.5f, 0.5f, 0.5f, 1.0f);
         public string TabSymbol { get; set; } = "    ";
         public bool TextSelectionEnabled { get; set; } = true;
     }

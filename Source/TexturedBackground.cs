@@ -59,7 +59,7 @@ namespace QuakeConsole
             _console.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
         }
 
-        public void SetDefault(ConsoleSettings settings)
+        public void SetDefaults(ConsoleSettings settings)
         {
             Texture = settings.BackgroundTexture;
             TextureTransform = settings.BackgroundTextureTransform;

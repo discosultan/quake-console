@@ -98,8 +98,10 @@ namespace QuakeConsole.Input.Features
                 _input.Console.Padding + _input.Console.ConsoleInput.InputPrefixSize.X, 
                 _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y);
 
-            int startIndex = Math.Max(SelectionStart - _input.VisibleStartIndex, 0);
-            int length = Math.Min(SelectionLength, _input.VisibleLength - startIndex);
+            InputEntry activeLine = _input.MultiLineInput.ActiveLine;
+
+            int startIndex = Math.Max(SelectionStart - activeLine.VisibleStartIndex, 0);
+            int length = Math.Min(SelectionLength, activeLine.VisibleLength - startIndex);
 
             float startX = _input.MeasureSubstring(0, startIndex).X;
             float width = _input.MeasureSubstring(SelectionStart, length).X;

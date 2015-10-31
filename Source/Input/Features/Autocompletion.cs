@@ -23,6 +23,10 @@
                     _input.Console.Interpreter.Autocomplete(_input, false);
                     break;
                 case ConsoleAction.ExecuteCommand:
+                case ConsoleAction.Paste:
+                case ConsoleAction.Cut:
+                case ConsoleAction.Tab:
+                case ConsoleAction.NewLine:
                     ResetAutocompleteEntry();                    
                     break;
                 case ConsoleAction.DeletePreviousChar:                
@@ -33,11 +37,7 @@
                     if (_input.Length > _input.Caret.Index)
                         ResetAutocompleteEntry();
                     break;
-                case ConsoleAction.Paste:
-                case ConsoleAction.Cut:
-                case ConsoleAction.Tab:
-                    ResetAutocompleteEntry();
-                    break;                                    
+                    // TODO: Reset on line switch.
             }            
         }
 

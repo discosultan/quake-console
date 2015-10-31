@@ -22,17 +22,14 @@ namespace QuakeConsole.Input.Features
             switch (action)
             {
                 case ConsoleAction.ExecuteCommand:
-                    string cmd = _input.Value;
-                    string executedCmd = cmd;
-                    if (ouput.HasCommandEntry)
-                        executedCmd = ouput.DequeueCommandEntry() + cmd;
-
+                    string cmd = _input.MultiLineInput.GetInput();
+                    _input.MultiLineInput.Clear();
                     // Replace our tab symbols with actual tab characters.
-                    executedCmd = executedCmd.Replace(_input.Console.TabSymbol, "\t");
+                    cmd = cmd.Replace(_input.Console.TabSymbol, "\t");
                     // Log the command to be executed if logger is set.
-                    LogInput?.Invoke(executedCmd);
+                    LogInput?.Invoke(cmd);
                     // Execute command.
-                    _input.Console.Interpreter.Execute(ouput, executedCmd);
+                    _input.Console.Interpreter.Execute(ouput, cmd);
                     _input.Clear();
                     _input.Caret.MoveBy(int.MinValue);
                     break;

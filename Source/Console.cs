@@ -61,6 +61,7 @@ namespace QuakeConsole
                 _font = value;                
                 CharWidthMap.Clear();
                 MeasureFontSize();
+                CalculateMaxNumberOfVisibleLines();
                 FontChanged?.Invoke(this, EventArgs.Empty);               
             }
         }
@@ -113,6 +114,7 @@ namespace QuakeConsole
                         value,
                         0,
                         GetMaxAllowedPadding());
+                    CalculateMaxNumberOfVisibleLines();
                     PaddingChanged?.Invoke(this, EventArgs.Empty);
                 }
                 else
@@ -141,9 +143,14 @@ namespace QuakeConsole
                 value.Width = Math.Max(value.Width, 0);
                 value.Height = Math.Max(value.Height, 0);
                 _windowArea = value;
+                CalculateMaxNumberOfVisibleLines();
                 WindowAreaChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        public int LineIndexAfterInput => ConsoleInput.MultiLineInput.InputLines.Count;
+        public int NumberOfAvailableLinesAfterInput => TotalNumberOfVisibleLines - ConsoleInput.MultiLineInput.InputLines.Count;
+        public int TotalNumberOfVisibleLines { get; private set; }
 
         public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager,
             SpriteFont font, ICommandInterpreter commandInterpreter)
@@ -169,6 +176,7 @@ namespace QuakeConsole
 
             MeasureFontSize();
             SetWindowWidthAndHeight();
+            CalculateMaxNumberOfVisibleLines();
 
             ConsoleInput.LoadContent(this);
             ConsoleOutput.LoadContent(this);
@@ -343,9 +351,18 @@ namespace QuakeConsole
             BottomBorderThickness = settings.BottomBorderThickness;
             TabSymbol = settings.TabSymbol;
 
-            BgRenderer.SetDefault(settings);
-            ConsoleInput.SetSettings(settings);
+            BgRenderer.SetDefaults(settings);
+            ConsoleInput.SetDefaults(settings);
             ConsoleOutput.SetDefaults(settings);
+        }
+
+        private void CalculateMaxNumberOfVisibleLines()
+        {            
+            // Take top padding into account and hide any row which is only partly visible.
+            //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / Console.FontSize.Y) - 1, 0);            
+
+            // Disregard top padding and allow any row which is only partly visible.
+            TotalNumberOfVisibleLines = Math.Max((int)Math.Ceiling((WindowArea.Height - Padding) / FontSize.Y), 0);
         }
     }
 

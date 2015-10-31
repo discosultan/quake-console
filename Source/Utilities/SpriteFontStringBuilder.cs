@@ -25,6 +25,12 @@ namespace QuakeConsole.Utilities
             SetDirtyAndClearCache();
         }
 
+        public void Append(StringBuilder value)
+        {
+            for (int i = 0; i < value.Length; i++)
+                _stringBuilder.Append(value[i]);
+        }
+
         public void Insert(int startIndex, string value)
         {
             _stringBuilder.Insert(startIndex, value);
@@ -34,7 +40,12 @@ namespace QuakeConsole.Utilities
         public void Remove(int startIndex, int length)
         {
             _stringBuilder.Remove(startIndex, length);
-            SetDirtyAndClearCache();
+            SetDirtyAndClearCache();                        
+        }        
+
+        public void Remove(int startIndex)
+        {
+            Remove(startIndex, _stringBuilder.Length - startIndex);
         }
 
         public string Substring(int startIndex, int length)
@@ -108,5 +119,7 @@ namespace QuakeConsole.Utilities
             _substringCache.Clear();
             _stringSizeCache.Clear();
         }
+
+        public static implicit operator StringBuilder(SpriteFontStringBuilder value) => value._stringBuilder;
     }
 }

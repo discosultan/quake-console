@@ -19,14 +19,18 @@ namespace QuakeConsole.Input.Features
                 case ConsoleAction.DeletePreviousChar:
                     if (_input.Selection.HasSelection)
                         _input.Remove(_input.Selection.SelectionStart, _input.Selection.SelectionLength);   
-                    else if (_input.Length > 0 && _input.Caret.Index > 0)
-                        _input.Remove(Math.Max(0, _input.Caret.Index - 1), 1);
+                    else if (_input.CaretIndex == 0)
+                        _input.MultiLineInput.RemoveActiveLine();
+                    else if (_input.Length > 0 && _input.CaretIndex > 0)
+                        _input.Remove(Math.Max(0, _input.CaretIndex - 1), 1);
                     break;
                 case ConsoleAction.DeleteCurrentChar:
                     if (_input.Selection.HasSelection)
                         _input.Remove(_input.Selection.SelectionStart, _input.Selection.SelectionLength);
-                    else if (_input.Length > _input.Caret.Index)
-                        _input.Remove(_input.Caret.Index, 1);
+                    else if (_input.CaretIndex == _input.Length)
+                        _input.MultiLineInput.RemoveNextLine();
+                    else if (_input.Length > _input.CaretIndex)
+                        _input.Remove(_input.CaretIndex, 1);
                     break;
             }
         }

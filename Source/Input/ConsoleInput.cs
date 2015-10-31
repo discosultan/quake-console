@@ -13,12 +13,10 @@ namespace QuakeConsole.Input
     internal partial class ConsoleInput : IConsoleInput
     {
         public event EventHandler Cleared;
-
-        private readonly SpriteFontStringBuilder _inputBuffer = new SpriteFontStringBuilder();        
+        public event EventHandler PrefixChanged;        
 
         private string _inputPrefix;        
-        private int _numPosToMoveWhenOutOfScreen;
-        private bool _dirty;
+        private int _numPosToMoveWhenOutOfScreen;        
 
         private bool _loaded;
 
@@ -45,9 +43,6 @@ namespace QuakeConsole.Input
             set { _symbolDefinitions = value ?? new Dictionary<Keys, Symbol>(); }
         }
 
-        public int VisibleStartIndex { get; private set; }
-        public int VisibleLength { get; private set; }
-
         public string LastAutocompleteEntry
         {
             get { return Autocompletion.LastAutocompleteEntry; }
@@ -69,13 +64,13 @@ namespace QuakeConsole.Input
                 _inputPrefix = value;
                 if (_loaded)
                     CalculateInputPrefixWidth();
-                _dirty = true;
+                PrefixChanged?.Invoke(this, EventArgs.Empty);
             }
         }
         
         public Color InputPrefixColor { get; set; }
 
-        public int Length => _inputBuffer.Length;
+        public int Length => MultiLineInput.ActiveLine.Buffer.Length;
 
         public int NumPositionsToMoveWhenOutOfScreen
         {
@@ -88,20 +83,11 @@ namespace QuakeConsole.Input
         public void LoadContent(Console console)
         {
             Console = console;
-            Console.FontChanged += (s, e) =>
-            {
-                CalculateInputPrefixWidth();
-                _inputBuffer.Font = Console.Font;
-                _dirty = true;
-            };
-            _inputBuffer.Font = Console.Font;
-            Console.WindowAreaChanged += (s, e) => _dirty = true;
 
+            Console.FontChanged += (s, e) => CalculateInputPrefixWidth();            
             CalculateInputPrefixWidth();
 
-            Caret.LoadContent(Console);
-            Caret.Moved += (s, e) => _dirty = true;
-
+            Caret.LoadContent(this);
             RepeatingInput.LoadContent(this);
             InputHistory.LoadContent(this);
             Autocompletion.LoadContent(this);
@@ -120,51 +106,51 @@ namespace QuakeConsole.Input
         public void Append(string value)
         {
             if (string.IsNullOrEmpty(value)) return;
-            _inputBuffer.Insert(Caret.Index, value);
+            MultiLineInput.ActiveLine.Buffer.Insert(Caret.Index, value);
             Caret.MoveBy(value.Length);
         }
         
         public void Remove(int startIndex, int length)
         {
             Caret.Index = startIndex;
-            _inputBuffer.Remove(startIndex, length);
+            MultiLineInput.ActiveLine.Buffer.Remove(startIndex, length);
         }
         
         public string Value
         {
-            get { return _inputBuffer.ToString(); } // Does not allocate if value is cached.
+            get { return MultiLineInput.ActiveLine.Buffer.ToString(); } // Does not allocate if value is cached.
             set
             {
                 Clear();
                 if (value != null)
-                    _inputBuffer.Append(value);
-                Caret.Index = _inputBuffer.Length;                
+                    MultiLineInput.ActiveLine.Buffer.Append(value);
+                Caret.Index = MultiLineInput.ActiveLine.Buffer.Length;                
             }
         }
 
-        public Vector2 MeasureSubstring(int startIndex, int length) => _inputBuffer.MeasureSubstring(startIndex, length);
+        public Vector2 MeasureSubstring(int startIndex, int length) => MultiLineInput.ActiveLine.Buffer.MeasureSubstring(startIndex, length);
 
         public string Substring(int startIndex, int length)
         {            
-            return _inputBuffer.Substring(startIndex, length);
+            return MultiLineInput.ActiveLine.Buffer.Substring(startIndex, length);
         }
 
         public string Substring(int startIndex)
         {            
-            return _inputBuffer.Substring(startIndex);
+            return MultiLineInput.ActiveLine.Buffer.Substring(startIndex);
         }
 
         public void Clear()
         {
-            _inputBuffer.Clear();
+            MultiLineInput.ActiveLine.Clear(); // TODO: clear all.
             Caret.MoveBy(int.MinValue);
             Cleared?.Invoke(this, EventArgs.Empty);
         }        
 
         public char this[int i]
         {
-            get { return _inputBuffer[i]; }
-            set { _inputBuffer[i] = value; }
+            get { return MultiLineInput.ActiveLine.Buffer[i]; }
+            set { MultiLineInput.ActiveLine.Buffer[i] = value; }
         }                
 
         public void Update(float deltaSeconds)
@@ -176,11 +162,6 @@ namespace QuakeConsole.Input
 
             Caret.Update(deltaSeconds);
             RepeatingInput.Update(deltaSeconds);
-            if (_dirty)
-            {
-                CalculateStartAndEndIndices();
-                _dirty = false;
-            }
         }
 
         public void ProcessInput(InputState input)
@@ -231,26 +212,24 @@ namespace QuakeConsole.Input
         }
 
         public void Draw()
-        {            
-            // Draw selection.
+        {                        
             Selection.Draw();
-            // Draw input prefix.
-            var inputPosition = new Vector2(Console.Padding, Console.WindowArea.Y + Console.WindowArea.Height - Console.Padding - Console.FontSize.Y);
-            Console.SpriteBatch.DrawString(
-                Console.Font, 
-                InputPrefix, 
-                inputPosition, 
-                InputPrefixColor);
-            // Draw input buffer.
-            inputPosition.X += InputPrefixSize.X;
-            if (_inputBuffer.Length > 0)
-                Console.SpriteBatch.DrawString(Console.Font, _inputBuffer.Substring(VisibleStartIndex, VisibleLength), inputPosition, Console.FontColor);
-            // Draw caret. 
-            inputPosition.X = Console.Padding + InputPrefixSize.X + _inputBuffer.MeasureSubstring(VisibleStartIndex, Caret.Index - VisibleStartIndex).X;
-            Caret.Draw(ref inputPosition, Console.FontColor);            
+            MultiLineInput.Draw();
+            Caret.Draw();            
+        }
+
+        public void DrawStringOnActiveRow(string value, int startIndex)
+        {
+            float rowOffset = MultiLineInput.InputLines.Count - MultiLineInput.ActiveLineIndex;
+
+            Vector2 position = new Vector2(
+                Console.Padding + InputPrefixSize.X + MultiLineInput.ActiveLine.Buffer.MeasureSubstring(
+                    MultiLineInput.ActiveLine.VisibleStartIndex, startIndex - MultiLineInput.ActiveLine.VisibleStartIndex).X,
+                Console.WindowArea.Y + Console.WindowArea.Height - Console.Padding - Console.FontSize.Y * rowOffset);
+            Console.SpriteBatch.DrawString(Console.Font, value, position, Console.FontColor);
         }
         
-        public void SetSettings(ConsoleSettings settings)
+        public void SetDefaults(ConsoleSettings settings)
         {
             InputPrefix = settings.InputPrefix;
             InputPrefixColor = settings.InputPrefixColor;
@@ -268,51 +247,6 @@ namespace QuakeConsole.Input
         private void CalculateInputPrefixWidth()
         {
             InputPrefixSize = Console.Font.MeasureString(InputPrefix);
-        }
-
-        private void CalculateStartAndEndIndices()
-        {
-            float windowWidth = Console.WindowArea.Width - Console.Padding * 2 - InputPrefixSize.X;
-
-            if (Caret.Index > _inputBuffer.Length - 1)
-                windowWidth -= Caret.Width;
-
-            while (Caret.Index <= VisibleStartIndex && VisibleStartIndex > 0)
-                VisibleStartIndex = Math.Max(VisibleStartIndex - NumPositionsToMoveWhenOutOfScreen, 0);
-
-            VisibleLength = MathUtil.Min(VisibleLength, _inputBuffer.Length - VisibleStartIndex - 1);
-
-            float widthProgress = 0f;
-            int indexer = VisibleStartIndex;
-            int targetIndex = Caret.Index;            
-            while (indexer < _inputBuffer.Length)
-            {
-                char c = _inputBuffer[indexer++];
-
-                float charWidth;
-                if (!Console.CharWidthMap.TryGetValue(c, out charWidth))
-                {
-                    charWidth = Console.Font.MeasureString(c.ToString()).X;
-                    Console.CharWidthMap.Add(c, charWidth);
-                }
-                
-                widthProgress += charWidth;
-
-                if (widthProgress > windowWidth)
-                {                    
-                    if (targetIndex >= VisibleStartIndex && targetIndex - VisibleStartIndex < VisibleLength || indexer - 1 == VisibleStartIndex) break;
-
-                    if (targetIndex >= VisibleStartIndex)
-                    {
-                        VisibleStartIndex += NumPositionsToMoveWhenOutOfScreen;
-                        VisibleStartIndex = Math.Min(VisibleStartIndex, _inputBuffer.Length - 1);
-                    }
-                    CalculateStartAndEndIndices();
-                    break;
-                }
-
-                VisibleLength = indexer - VisibleStartIndex;
-            }
         }
     }
 }

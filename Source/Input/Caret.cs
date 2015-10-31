@@ -13,18 +13,18 @@ namespace QuakeConsole.Input
 
         private readonly Timer _caretBlinkingTimer = new Timer { AutoReset = true };
 
-        private Console _console;
+        private ConsoleInput _input;
 
         private bool _drawCaret;
         private string _symbol;
         private int _index;
         private bool _loaded;
 
-        public void LoadContent(Console console)
+        public void LoadContent(ConsoleInput input)
         {
-            _console = console;
+            _input = input;
 
-            console.FontChanged += (s, e) => CalculateSymbolWidth();
+            _input.Console.FontChanged += (s, e) => CalculateSymbolWidth();
             CalculateSymbolWidth();
 
             _loaded = true;
@@ -35,8 +35,11 @@ namespace QuakeConsole.Input
             get { return _index; }
             set
             {
-                _index = MathUtil.Clamp(value, 0, _console.ConsoleInput.Length); 
-                Moved?.Invoke(this, EventArgs.Empty);
+                if (value != _index)
+                {
+                    _index = MathUtil.Clamp(value, 0, _input.Length);
+                    Moved?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
         
@@ -72,10 +75,10 @@ namespace QuakeConsole.Input
                 _drawCaret = !_drawCaret;
         }
 
-        public void Draw(ref Vector2 position, Color color)
+        public void Draw()
         {
             if (_drawCaret)
-                _console.SpriteBatch.DrawString(_console.Font, Symbol, position, color);
+                _input.DrawStringOnActiveRow(Symbol, Index);                
         }
 
         public void SetSettings(ConsoleSettings settings)
@@ -86,7 +89,7 @@ namespace QuakeConsole.Input
 
         private void CalculateSymbolWidth()
         {            
-            Width = _console.Font.MeasureString(Symbol).X;            
+            Width = _input.Console.Font.MeasureString(Symbol).X;            
         }              
     }
 }

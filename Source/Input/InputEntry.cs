@@ -1,4 +1,5 @@
 ﻿using System;
+using QuakeConsole.Utilities;
 #if MONOGAME
 using MathUtil = Microsoft.Xna.Framework.MathHelper;
 #endif
@@ -8,16 +9,74 @@ namespace QuakeConsole.Input
     internal class InputEntry
     {
         private readonly ConsoleInput _input;
+        private readonly SpriteFontStringBuilder _inputBuffer = new SpriteFontStringBuilder();
+
+        private bool _dirty = true;
 
         public InputEntry(ConsoleInput input)
         {
             _input = input;
+            input.PrefixChanged += (s, e) => SetDirty();
+            input.Console.FontChanged += (s, e) =>
+            {
+                SetDirty();
+                _inputBuffer.Font = _input.Console.Font;
+            };            
+            input.Console.WindowAreaChanged += (s, e) => SetDirty();
+            input.Caret.Moved += (s, e) => SetDirty(); // TODO: refactor out.
+
+            _inputBuffer.Font = _input.Console.Font;
         }
 
-        public string Value { get; set; } = "";
+        public SpriteFontStringBuilder Buffer => _inputBuffer;
 
-        public int VisibleStartIndex { get; private set; }
-        public int VisibleLength { get; private set; }
+        public string Value
+        {
+            get { return _inputBuffer.ToString(); } // Does not allocate if value is cached.
+            set
+            {
+                Clear();
+                if (value != null)
+                    _inputBuffer.Append(value);
+            }
+        }
+
+        public void Clear()
+        {
+            _inputBuffer.Clear();
+            SetDirty();
+        }
+
+        private int _visibleStartIndex;
+        private int _visibleLength;
+
+        public int VisibleStartIndex
+        {
+            get
+            {
+                if (_dirty)
+                {
+                    CalculateStartAndEndIndices();
+                    _dirty = false;
+                }
+                return _visibleStartIndex;
+            }
+        }
+
+        public int VisibleLength
+        {
+            get
+            {
+                if (_dirty)
+                {
+                    CalculateStartAndEndIndices();
+                    _dirty = false;
+                }
+                return _visibleLength;
+            }
+        }
+
+        private void SetDirty() => _dirty = true;
 
         private void CalculateStartAndEndIndices()
         {
@@ -25,17 +84,17 @@ namespace QuakeConsole.Input
 
             float windowWidth = console.WindowArea.Width - console.Padding * 2 - _input.InputPrefixSize.X;
 
-            if (_input.Caret.Index > _input.Length - 1)
+            if (_input.CaretIndex > _input.Length - 1)
                 windowWidth -= _input.Caret.Width;
 
-            while (_input.Caret.Index <= VisibleStartIndex && VisibleStartIndex > 0)
-                VisibleStartIndex = Math.Max(VisibleStartIndex - _input.NumPositionsToMoveWhenOutOfScreen, 0);
+            while (_input.CaretIndex <= _visibleStartIndex && _visibleStartIndex > 0)
+                _visibleStartIndex = Math.Max(_visibleStartIndex - _input.NumPositionsToMoveWhenOutOfScreen, 0);
 
-            VisibleLength = MathUtil.Min(VisibleLength, _input.Length - VisibleStartIndex - 1);
+            _visibleLength = MathUtil.Min(_visibleLength, _input.Length - _visibleStartIndex - 1);
 
             float widthProgress = 0f;
-            int indexer = VisibleStartIndex;
-            int targetIndex = _input.Caret.Index;
+            int indexer = _visibleStartIndex;
+            int targetIndex = _input.CaretIndex;
             while (indexer < _input.Length)
             {
                 char c = _input[indexer++];
@@ -51,18 +110,18 @@ namespace QuakeConsole.Input
 
                 if (widthProgress > windowWidth)
                 {
-                    if (targetIndex >= VisibleStartIndex && targetIndex - VisibleStartIndex < VisibleLength || indexer - 1 == VisibleStartIndex) break;
+                    if (targetIndex >= _visibleStartIndex && targetIndex - _visibleStartIndex < _visibleLength || indexer - 1 == _visibleStartIndex) break;
 
-                    if (targetIndex >= VisibleStartIndex)
+                    if (targetIndex >= _visibleStartIndex)
                     {
-                        VisibleStartIndex += _input.NumPositionsToMoveWhenOutOfScreen;
-                        VisibleStartIndex = Math.Min(VisibleStartIndex, _input.Length - 1);
+                        _visibleStartIndex += _input.NumPositionsToMoveWhenOutOfScreen;
+                        _visibleStartIndex = Math.Min(_visibleStartIndex, _input.Length - 1);
                     }
                     CalculateStartAndEndIndices();
                     break;
                 }
 
-                VisibleLength = indexer - VisibleStartIndex;
+                _visibleLength = indexer - _visibleStartIndex;
             }
         }
     }
