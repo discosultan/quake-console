@@ -9,7 +9,6 @@ namespace QuakeConsole.Input
     internal class InputEntry
     {
         private readonly ConsoleInput _input;
-        private readonly SpriteFontStringBuilder _inputBuffer = new SpriteFontStringBuilder();
 
         private bool _dirty = true;
 
@@ -20,30 +19,30 @@ namespace QuakeConsole.Input
             input.Console.FontChanged += (s, e) =>
             {
                 SetDirty();
-                _inputBuffer.Font = _input.Console.Font;
+                Buffer.Font = _input.Console.Font;
             };            
             input.Console.WindowAreaChanged += (s, e) => SetDirty();
             input.Caret.Moved += (s, e) => SetDirty(); // TODO: refactor out.
 
-            _inputBuffer.Font = _input.Console.Font;
+            Buffer.Font = _input.Console.Font;
         }
 
-        public SpriteFontStringBuilder Buffer => _inputBuffer;
+        public SpriteFontStringBuilder Buffer { get; } = new SpriteFontStringBuilder();
 
         public string Value
         {
-            get { return _inputBuffer.ToString(); } // Does not allocate if value is cached.
+            get { return Buffer.ToString(); } // Does not allocate if value is cached.
             set
             {
                 Clear();
                 if (value != null)
-                    _inputBuffer.Append(value);
+                    Buffer.Append(value);
             }
         }
 
         public void Clear()
         {
-            _inputBuffer.Clear();
+            Buffer.Clear();
             SetDirty();
         }
 
@@ -90,6 +89,7 @@ namespace QuakeConsole.Input
             while (_input.CaretIndex <= _visibleStartIndex && _visibleStartIndex > 0)
                 _visibleStartIndex = Math.Max(_visibleStartIndex - _input.NumPositionsToMoveWhenOutOfScreen, 0);
 
+            // TODO: ensure _visibleLength not less than 0.
             _visibleLength = MathUtil.Min(_visibleLength, _input.Length - _visibleStartIndex - 1);
 
             float widthProgress = 0f;

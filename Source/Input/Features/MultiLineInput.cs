@@ -77,7 +77,7 @@ namespace QuakeConsole.Input.Features
         public void AddNewLine(string value)
         {
             if (value == null) return;
-            
+
             string stringToMoveToNextLine = ActiveLine.Buffer.Substring(_input.Caret.Index);
 
             InputEntry entry = _inputEntryPool.Fetch();
@@ -123,9 +123,11 @@ namespace QuakeConsole.Input.Features
                 console.Padding,
                 console.WindowArea.Y + console.WindowArea.Height - console.Padding - console.FontSize.Y);
 
-            for (int i = 0; i < InputLines.Count; i++)
+            int rowCounter = 0;
+            for (int i = InputLines.Count - 1; i >= 0; i--)
             {
-                if (i + 1 > _input.Console.TotalNumberOfVisibleLines)
+                rowCounter++;
+                if (rowCounter > _input.Console.TotalNumberOfVisibleLines)
                     break;
                 DrawRow(InputLines[i], ref viewPosition, true);
             }

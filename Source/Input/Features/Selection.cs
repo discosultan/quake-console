@@ -96,7 +96,7 @@ namespace QuakeConsole.Input.Features
 
             var offset = new Vector2(
                 _input.Console.Padding + _input.Console.ConsoleInput.InputPrefixSize.X, 
-                _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y);
+                _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y * (_input.MultiLineInput.InputLines.Count - _input.MultiLineInput.ActiveLineIndex));
 
             InputEntry activeLine = _input.MultiLineInput.ActiveLine;
 
