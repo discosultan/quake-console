@@ -15,7 +15,18 @@ namespace QuakeConsole.Input.Features
 
         public bool Enabled { get; set; } = true;
 
+        public class LineSwitchedArgs : EventArgs
+        {
+            public int PreviousLineIndex;
+            public int NewLineIndex;
+            public ConsoleAction CausingAction;
+        }
+        private readonly LineSwitchedArgs _lineSwitchedArgs = new LineSwitchedArgs();        
+
+        public event EventHandler<LineSwitchedArgs> LineSwitched;
+
         public int ActiveLineIndex { get; private set; }
+
         public List<InputEntry> InputLines { get; } = new List<InputEntry>();
         public InputEntry ActiveLine => InputLines[ActiveLineIndex];                
 
@@ -32,8 +43,8 @@ namespace QuakeConsole.Input.Features
             foreach (InputEntry entry in InputLines)
                 _inputEntryPool.Release(entry);
             InputLines.Clear();
-            InputLines.Add(_inputEntryPool.Fetch());
-            ActiveLineIndex = 0;
+            InputLines.Add(_inputEntryPool.Fetch());                        
+            SetActiveLineIndex(0, ConsoleAction.None);
         }
 
         public string GetInput()
@@ -53,8 +64,8 @@ namespace QuakeConsole.Input.Features
             if (ActiveLineIndex == 0) return;
 
             InputEntry lineToRemove = ActiveLine;
-            InputLines.RemoveAt(ActiveLineIndex);
-            ActiveLineIndex--;
+            InputLines.RemoveAt(ActiveLineIndex);            
+            SetActiveLineIndex(ActiveLineIndex - 1, ConsoleAction.None);
             _input.Caret.Index = ActiveLine.Buffer.Length;
             ActiveLine.Buffer.Append(lineToRemove.Buffer);            
             _inputEntryPool.Release(lineToRemove);
@@ -82,8 +93,8 @@ namespace QuakeConsole.Input.Features
 
             InputEntry entry = _inputEntryPool.Fetch();
             entry.Value = value;
-            InputLines.Add(entry);
-            ActiveLineIndex++;
+            InputLines.Add(entry);            
+            SetActiveLineIndex(ActiveLineIndex + 1, ConsoleAction.NewLine);
             _input.Caret.MoveBy(int.MaxValue);
             entry.Buffer.Append(stringToMoveToNextLine);            
         }
@@ -104,11 +115,11 @@ namespace QuakeConsole.Input.Features
                     previousActiveLine.Buffer.Remove(previousCaretIndex);                                                            
                     break;
                 case ConsoleAction.MovePreviousLine:
-                    ActiveLineIndex = Math.Max(ActiveLineIndex - 1, 0);
+                    SetActiveLineIndex(Math.Max(ActiveLineIndex - 1, 0), ConsoleAction.MovePreviousLine);                    
                     _input.Caret.Index = Math.Min(_input.Caret.Index, ActiveLine.Buffer.Length);
                     break;
                 case ConsoleAction.MoveNextLine:
-                    ActiveLineIndex = Math.Min(ActiveLineIndex + 1, InputLines.Count - 1);
+                    SetActiveLineIndex(Math.Min(ActiveLineIndex + 1, InputLines.Count - 1), ConsoleAction.MovePreviousLine);                    
                     _input.Caret.Index = Math.Min(_input.Caret.Index, ActiveLine.Buffer.Length);
                     break;
             }
@@ -152,6 +163,18 @@ namespace QuakeConsole.Input.Features
                 tempViewPos,
                 console.FontColor);
             viewPosition.Y -= console.FontSize.Y;
-        }        
+        }
+
+        private void SetActiveLineIndex(int value, ConsoleAction causingAction)
+        {            
+            if (value != ActiveLineIndex)
+            {                
+                _lineSwitchedArgs.PreviousLineIndex = ActiveLineIndex;
+                _lineSwitchedArgs.NewLineIndex = value;
+                ActiveLineIndex = value;
+                _lineSwitchedArgs.CausingAction = causingAction;
+                LineSwitched?.Invoke(this, _lineSwitchedArgs);
+            }
+        }
     }
 }

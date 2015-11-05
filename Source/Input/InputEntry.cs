@@ -124,5 +124,10 @@ namespace QuakeConsole.Input
                 _visibleLength = indexer - _visibleStartIndex;
             }
         }
+
+        public override string ToString()
+        {
+            return Buffer.ToString();
+        }
     }
 }

@@ -13,7 +13,7 @@ namespace QuakeConsole.Input
     internal partial class ConsoleInput : IConsoleInput
     {
         public event EventHandler Cleared;
-        public event EventHandler PrefixChanged;        
+        public event EventHandler PrefixChanged;
 
         private string _inputPrefix;        
         private int _numPosToMoveWhenOutOfScreen;        

@@ -158,7 +158,7 @@ namespace QuakeConsole
             Check.ArgumentNotNull(deviceManager, nameof(deviceManager), "Cannot instantiate the console without graphics device manager.");
             Check.ArgumentNotNull(font, nameof(font), "Cannot instantiate the console without a font.");
 
-            _commandInterpreter = commandInterpreter ?? new StubCommandInterpreter();
+            Interpreter = commandInterpreter;
             GraphicsDevice = device;
             _graphicsDeviceManager = deviceManager;
             Font = font;
