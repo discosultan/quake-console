@@ -70,7 +70,7 @@ namespace QuakeConsole.Input
         
         public Color InputPrefixColor { get; set; }
 
-        public int Length => MultiLineInput.ActiveLine.Buffer.Length;
+        public int Length => MultiLineInput.ActiveLine.Length;
 
         public int NumPositionsToMoveWhenOutOfScreen
         {
@@ -106,39 +106,31 @@ namespace QuakeConsole.Input
         public void Append(string value)
         {
             if (string.IsNullOrEmpty(value)) return;
-            MultiLineInput.ActiveLine.Buffer.Insert(Caret.Index, value);
+            MultiLineInput.ActiveLine.Insert(Caret.Index, value);
             Caret.MoveBy(value.Length);
         }
         
         public void Remove(int startIndex, int length)
         {
             Caret.Index = startIndex;
-            MultiLineInput.ActiveLine.Buffer.Remove(startIndex, length);
+            MultiLineInput.ActiveLine.Remove(startIndex, length);
         }
         
         public string Value
         {
-            get { return MultiLineInput.ActiveLine.Buffer.ToString(); } // Does not allocate if value is cached.
+            get { return MultiLineInput.ActiveLine.Value; } // Does not allocate if value is cached.
             set
             {
                 Clear();
                 if (value != null)
-                    MultiLineInput.ActiveLine.Buffer.Append(value);
-                Caret.Index = MultiLineInput.ActiveLine.Buffer.Length;                
+                    MultiLineInput.ActiveLine.Append(value);
+                Caret.Index = MultiLineInput.ActiveLine.Length;                
             }
         }
 
-        public Vector2 MeasureSubstring(int startIndex, int length) => MultiLineInput.ActiveLine.Buffer.MeasureSubstring(startIndex, length);
-
-        public string Substring(int startIndex, int length)
-        {            
-            return MultiLineInput.ActiveLine.Buffer.Substring(startIndex, length);
-        }
-
-        public string Substring(int startIndex)
-        {            
-            return MultiLineInput.ActiveLine.Buffer.Substring(startIndex);
-        }
+        public Vector2 MeasureSubstring(int startIndex, int length) => MultiLineInput.ActiveLine.MeasureSubstring(startIndex, length);
+        public string Substring(int startIndex, int length) => MultiLineInput.ActiveLine.Substring(startIndex, length);
+        public string Substring(int startIndex) => MultiLineInput.ActiveLine.Substring(startIndex);
 
         public void Clear()
         {
@@ -149,8 +141,8 @@ namespace QuakeConsole.Input
 
         public char this[int i]
         {
-            get { return MultiLineInput.ActiveLine.Buffer[i]; }
-            set { MultiLineInput.ActiveLine.Buffer[i] = value; }
+            get { return MultiLineInput.ActiveLine[i]; }
+            set { MultiLineInput.ActiveLine[i] = value; }
         }                
 
         public void Update(float deltaSeconds)
@@ -223,7 +215,7 @@ namespace QuakeConsole.Input
             float rowOffset = MultiLineInput.InputLines.Count - MultiLineInput.ActiveLineIndex;
 
             Vector2 position = new Vector2(
-                Console.Padding + InputPrefixSize.X + MultiLineInput.ActiveLine.Buffer.MeasureSubstring(
+                Console.Padding + InputPrefixSize.X + MultiLineInput.ActiveLine.MeasureSubstring(
                     MultiLineInput.ActiveLine.VisibleStartIndex, startIndex - MultiLineInput.ActiveLine.VisibleStartIndex).X,
                 Console.WindowArea.Y + Console.WindowArea.Height - Console.Padding - Console.FontSize.Y * rowOffset);
             Console.SpriteBatch.DrawString(Console.Font, value, position, Console.FontColor);

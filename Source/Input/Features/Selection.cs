@@ -74,7 +74,6 @@ namespace QuakeConsole.Input.Features
 
         public bool HasSelection => _selectionActive && SelectionLength > 0;
         public int SelectionStart { get; private set; }
-        public int SelectionStartLineIndex { get; private set; }
         public int SelectionLength { get; private set; }
         public string SelectionValue => _input.Substring(SelectionStart, SelectionLength); // TODO: fix
         public Color Color { get; set; }
@@ -141,7 +140,7 @@ namespace QuakeConsole.Input.Features
                 }
                 else if (i == _selectionLineStartIndex)
                 {
-                    len = _input.MultiLineInput.InputLines[i].Buffer.Length - SelectionStart;
+                    len = _input.MultiLineInput.InputLines[i].Length - SelectionStart;
                 }
                 else if (i == _selectionLineEndIndex)
                 {
@@ -149,7 +148,7 @@ namespace QuakeConsole.Input.Features
                 }
                 else
                 {
-                    len = _input.MultiLineInput.InputLines[i].Buffer.Length;
+                    len = _input.MultiLineInput.InputLines[i].Length;
                 }
 
                 int startIndex = Math.Max(start - line.VisibleStartIndex, 0);
@@ -159,8 +158,8 @@ namespace QuakeConsole.Input.Features
                     _input.Console.Padding + _input.Console.ConsoleInput.InputPrefixSize.X,
                     _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y * (_input.MultiLineInput.InputLines.Count - i));
 
-                float startX = line.Buffer.MeasureSubstring(0, startIndex).X;
-                float width = line.Buffer.MeasureSubstring(start, length).X;
+                float startX = line.MeasureSubstring(0, startIndex).X;
+                float width = line.MeasureSubstring(start, length).X;
                 var destRectangle = new RectangleF(
                     offset.X + startX,
                     offset.Y,
@@ -208,7 +207,7 @@ namespace QuakeConsole.Input.Features
                 {
                     if (i == _selectionLineStartIndex)
                     {
-                        SelectionLength += _input.MultiLineInput.InputLines[i].Buffer.Length - _selectionLineStartIndex - 1;
+                        SelectionLength += _input.MultiLineInput.InputLines[i].Length - _selectionLineStartIndex - 1;
                     }
                     else if (i == _selectionLineEndIndex)
                     {
@@ -216,7 +215,7 @@ namespace QuakeConsole.Input.Features
                     }
                     else
                     {
-                        SelectionLength += _input.MultiLineInput.InputLines[i].Buffer.Length;
+                        SelectionLength += _input.MultiLineInput.InputLines[i].Length;
                     }
                 }
             }

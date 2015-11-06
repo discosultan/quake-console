@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.Xna.Framework;
 using QuakeConsole.Utilities;
 #if MONOGAME
 using MathUtil = Microsoft.Xna.Framework.MathHelper;
@@ -8,6 +9,7 @@ namespace QuakeConsole.Input
 {
     internal class InputEntry
     {
+        private readonly SpriteFontStringBuilder _buffer = new SpriteFontStringBuilder();
         private readonly ConsoleInput _input;
 
         private bool _dirty = true;
@@ -19,30 +21,43 @@ namespace QuakeConsole.Input
             input.Console.FontChanged += (s, e) =>
             {
                 SetDirty();
-                Buffer.Font = _input.Console.Font;
+                _buffer.Font = _input.Console.Font;
             };            
             input.Console.WindowAreaChanged += (s, e) => SetDirty();
             input.Caret.Moved += (s, e) => SetDirty(); // TODO: refactor out.
 
-            Buffer.Font = _input.Console.Font;
+            _buffer.Font = _input.Console.Font;
         }
 
-        public SpriteFontStringBuilder Buffer { get; } = new SpriteFontStringBuilder();
+        public int Length => _buffer.Length;
 
         public string Value
         {
-            get { return Buffer.ToString(); } // Does not allocate if value is cached.
+            get { return _buffer.ToString(); } // Does not allocate if value is cached.
             set
             {
                 Clear();
                 if (value != null)
-                    Buffer.Append(value);
+                    _buffer.Append(value);
+            }
+        }
+
+        public string VisibleValue
+        {
+            get
+            {
+                if (_dirty)
+                {
+                    CalculateStartAndEndIndices();
+                    _dirty = false;
+                }
+                return _buffer.Substring(_visibleStartIndex, VisibleLength);
             }
         }
 
         public void Clear()
         {
-            Buffer.Clear();
+            _buffer.Clear();
             SetDirty();
         }
 
@@ -75,7 +90,50 @@ namespace QuakeConsole.Input
             }
         }
 
-        private void SetDirty() => _dirty = true;
+        private void SetDirty() => _dirty = true;        
+
+        public void Append(string value)
+        {
+            _buffer.Append(value);
+            SetDirty();
+        }
+
+        public void Insert(int index, string value)
+        {
+            if (string.IsNullOrEmpty(value)) return;
+            _buffer.Insert(index, value);
+            SetDirty();
+        }
+
+        public void Remove(int startIndex) => Remove(startIndex, Length - startIndex);        
+
+        public void Remove(int startIndex, int length)
+        {
+            _buffer.Remove(startIndex, length);
+            SetDirty();
+        }
+
+        public Vector2 MeasureSubstring(int startIndex, int length) => _buffer.MeasureSubstring(startIndex, length);
+
+        public string Substring(int startIndex, int length) => _buffer.Substring(startIndex, length);
+
+        public string Substring(int startIndex) => _buffer.Substring(startIndex);
+        
+
+        public char this[int i]
+        {
+            get { return _buffer[i]; }
+            set
+            {
+                _buffer[i] = value;
+                SetDirty();
+            }
+        }
+
+        public override string ToString()
+        {
+            return _buffer.ToString();
+        }
 
         private void CalculateStartAndEndIndices()
         {
@@ -83,21 +141,21 @@ namespace QuakeConsole.Input
 
             float windowWidth = console.WindowArea.Width - console.Padding * 2 - _input.InputPrefixSize.X;
 
-            if (_input.CaretIndex > _input.Length - 1)
+            if (_input.CaretIndex > Length - 1)
                 windowWidth -= _input.Caret.Width;
 
             while (_input.CaretIndex <= _visibleStartIndex && _visibleStartIndex > 0)
                 _visibleStartIndex = Math.Max(_visibleStartIndex - _input.NumPositionsToMoveWhenOutOfScreen, 0);
 
-            // TODO: ensure _visibleLength not less than 0.
-            _visibleLength = MathUtil.Min(_visibleLength, _input.Length - _visibleStartIndex - 1);
+            //_visibleLength = MathUtil.Clamp(_visibleLength, _input.Caret.Index, _input.Length);
 
             float widthProgress = 0f;
+            _visibleLength = 0;
             int indexer = _visibleStartIndex;
             int targetIndex = _input.CaretIndex;
-            while (indexer < _input.Length)
+            while (indexer < Length)
             {
-                char c = _input[indexer++];
+                char c = this[indexer++];
 
                 float charWidth;
                 if (!console.CharWidthMap.TryGetValue(c, out charWidth))
@@ -110,24 +168,21 @@ namespace QuakeConsole.Input
 
                 if (widthProgress > windowWidth)
                 {
-                    if (targetIndex >= _visibleStartIndex && targetIndex - _visibleStartIndex < _visibleLength || indexer - 1 == _visibleStartIndex) break;
+                    if (targetIndex >= _visibleStartIndex && targetIndex - _visibleStartIndex < _visibleLength || indexer - 1 == _visibleStartIndex)
+                        break;
 
                     if (targetIndex >= _visibleStartIndex)
                     {
                         _visibleStartIndex += _input.NumPositionsToMoveWhenOutOfScreen;
-                        _visibleStartIndex = Math.Min(_visibleStartIndex, _input.Length - 1);
+                        _visibleStartIndex = Math.Min(_visibleStartIndex, Length - 1);
                     }
                     CalculateStartAndEndIndices();
                     break;
                 }
 
-                _visibleLength = indexer - _visibleStartIndex;
+                _visibleLength++;
+                //_visibleLength = indexer - _visibleStartIndex;
             }
-        }
-
-        public override string ToString()
-        {
-            return Buffer.ToString();
         }
     }
 }

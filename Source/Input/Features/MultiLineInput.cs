@@ -66,8 +66,8 @@ namespace QuakeConsole.Input.Features
             InputEntry lineToRemove = ActiveLine;
             InputLines.RemoveAt(ActiveLineIndex);            
             SetActiveLineIndex(ActiveLineIndex - 1, ConsoleAction.None);
-            _input.Caret.Index = ActiveLine.Buffer.Length;
-            ActiveLine.Buffer.Append(lineToRemove.Buffer);            
+            _input.Caret.Index = ActiveLine.Length;
+            ActiveLine.Append(lineToRemove.Value);            
             _inputEntryPool.Release(lineToRemove);
         }
 
@@ -80,7 +80,7 @@ namespace QuakeConsole.Input.Features
 
             InputEntry entryToRemove = InputLines[nextIndex];
             // Move any text from next line to current line.
-            ActiveLine.Buffer.Append(entryToRemove.Value);
+            ActiveLine.Append(entryToRemove.Value);
             InputLines.RemoveAt(nextIndex);
             _inputEntryPool.Release(entryToRemove);
         }
@@ -89,14 +89,14 @@ namespace QuakeConsole.Input.Features
         {
             if (value == null) return;
 
-            string stringToMoveToNextLine = ActiveLine.Buffer.Substring(_input.Caret.Index);
+            string stringToMoveToNextLine = ActiveLine.Substring(_input.Caret.Index);
 
             InputEntry entry = _inputEntryPool.Fetch();
             entry.Value = value;
             InputLines.Add(entry);            
             SetActiveLineIndex(ActiveLineIndex + 1, ConsoleAction.NewLine);
             _input.Caret.MoveBy(int.MaxValue);
-            entry.Buffer.Append(stringToMoveToNextLine);            
+            entry.Append(stringToMoveToNextLine);            
         }
 
         public void OnAction(ConsoleAction action)
@@ -112,15 +112,15 @@ namespace QuakeConsole.Input.Features
                     // Push everything after caret to newline.
                     //AddNewLine(previousActiveLine.Buffer.Substring(_input.CaretIndex));
                     // Leave everything before caret to existing line.                    
-                    previousActiveLine.Buffer.Remove(previousCaretIndex);                                                            
+                    previousActiveLine.Remove(previousCaretIndex);                                                            
                     break;
                 case ConsoleAction.MovePreviousLine:
                     SetActiveLineIndex(Math.Max(ActiveLineIndex - 1, 0), ConsoleAction.MovePreviousLine);                    
-                    _input.Caret.Index = Math.Min(_input.Caret.Index, ActiveLine.Buffer.Length);
+                    _input.Caret.Index = Math.Min(_input.Caret.Index, ActiveLine.Length);
                     break;
                 case ConsoleAction.MoveNextLine:
                     SetActiveLineIndex(Math.Min(ActiveLineIndex + 1, InputLines.Count - 1), ConsoleAction.MovePreviousLine);                    
-                    _input.Caret.Index = Math.Min(_input.Caret.Index, ActiveLine.Buffer.Length);
+                    _input.Caret.Index = Math.Min(_input.Caret.Index, ActiveLine.Length);
                     break;
             }
         }
@@ -159,7 +159,7 @@ namespace QuakeConsole.Input.Features
             }
             console.SpriteBatch.DrawString(
                 console.Font,
-                entry.Value,
+                entry.VisibleValue,
                 tempViewPos,
                 console.FontColor);
             viewPosition.Y -= console.FontSize.Y;
