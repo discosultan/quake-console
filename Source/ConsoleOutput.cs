@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework;
 namespace QuakeConsole
 {
     /// <summary>
-    /// Output part of the <see cref="Console"/>. Command execution info will be appended here.
+    /// Output part of the <see cref="Console"/>. Command results will be appended here.
     /// </summary>
     internal class ConsoleOutput : IConsoleOutput
     {

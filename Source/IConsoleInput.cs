@@ -1,5 +1,8 @@
 namespace QuakeConsole
 {
+    /// <summary>
+    /// Input part of the <see cref="Console"/>. User input, historical commands and autocompletion values will be appended here.
+    /// </summary>
     public interface IConsoleInput
     {
         /// <summary>

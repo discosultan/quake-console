@@ -143,10 +143,25 @@ namespace QuakeConsole
     [Flags]
     public enum ConsoleClearFlags
     {
+        /// <summary>
+        /// Clears nothing.
+        /// </summary>
         None = 0,
+        /// <summary>
+        /// Clears the output section of the console.
+        /// </summary>
         OutputBuffer = 1,
+        /// <summary>
+        /// Clears the user input section of the console.
+        /// </summary>
         InputBuffer = 2,
+        /// <summary>
+        /// Clears the history of user input.
+        /// </summary>
         InputHistory = 4,
+        /// <summary>
+        /// Clears everything.
+        /// </summary>
         All = OutputBuffer | InputBuffer | InputHistory
     }
 

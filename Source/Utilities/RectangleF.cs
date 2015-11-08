@@ -5,7 +5,7 @@ namespace QuakeConsole.Utilities
 {
     // Modified conversion to Rectangle from explicit to implicit.
     // Ref: https://github.com/SiliconStudio/paradox/blob/master/sources/common/core/SiliconStudio.Core.Mathematics/RectangleF.cs
-    public struct RectangleF
+    internal struct RectangleF
     {
         /// <summary>
         /// An empty rectangle

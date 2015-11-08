@@ -1,5 +1,8 @@
 ﻿namespace QuakeConsole
 {
+    /// <summary>
+    /// Output part of the <see cref="Console"/>. Command results will be appended here.
+    /// </summary>
     public interface IConsoleOutput
     {
         /// <summary>
