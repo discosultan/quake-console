@@ -39,6 +39,32 @@ namespace QuakeConsole.Utilities
             forwardValues.Add(forwardValue);
         }
 
+        public bool Remove(TForward forwardValue)
+        {
+            List<TBackward> backwards;
+            if (_forward.TryGetValue(forwardValue, out backwards))
+            {
+                bool hasItems = backwards.Count > 0;
+                backwards.ForEach(x => _backward[x].Remove(forwardValue));
+                backwards.Clear();
+                return hasItems;
+            }
+            return false;
+        }
+
+        public bool Remove(TBackward backwardValue)
+        {
+            List<TForward> forwards;
+            if (_backward.TryGetValue(backwardValue, out forwards))
+            {
+                bool hasItems = forwards.Count > 0;
+                forwards.ForEach(x => _forward[x].Remove(backwardValue));
+                forwards.Clear();
+                return hasItems;
+            }
+            return false;
+        }
+
         public bool ForwardTryGetValue(TForward value, out TBackward result)
         {
             List<TBackward> values;

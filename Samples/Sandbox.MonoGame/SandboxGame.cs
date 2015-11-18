@@ -52,7 +52,9 @@ namespace Sandbox
                 BottomBorderThickness = 4.0f,
                 BottomBorderColor = Color.Red,
                 LogInput = cmd => Debug.WriteLine(cmd) // Logs input commands to VS output window.
-            };            
+            };
+            _console.ActionMappings.Remove(Keys.Tab);
+            _console.ActionMappings.Add(Keys.Tab, ConsoleAction.AutocompleteForward);
             Components.Add(_console);
 
             _camera = new CameraControllerComponent(this);

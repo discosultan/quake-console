@@ -73,14 +73,16 @@ namespace QuakeConsole
         }
 
         /// <summary>
-        /// Gets or sets the dictionary that is used to map keyboard keys to corresponding symbols
+        /// Gets the dictionary that is used to map keyboard keys to corresponding symbols
         /// shown in the <see cref="Console"/>.
         /// </summary>
-        public Dictionary<Keys, SymbolPair> KeyMappings
-        {
-            get { return _console.SymbolMappings; }
-            set { _console.SymbolMappings = value; }
-        }
+        public Dictionary<Keys, Symbol> CharacterMappings => _console.SymbolMappings;
+
+        /// <summary>
+        /// Gets the dictionary that is used to map keyboard keys to corresponding console
+        /// actions (such as ExecuteCommand or ToggleUppercase).
+        /// </summary>
+        public ConsoleActionMap ActionMappings => _console.ActionMappings;       
 
         /// <summary>
         /// Gets or sets the font used to render console text.
