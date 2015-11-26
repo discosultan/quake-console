@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 #if MONOGAME
-
+using Microsoft.Xna.Framework.Input;
 #endif
 
 namespace QuakeConsole.Input
@@ -40,10 +37,10 @@ namespace QuakeConsole.Input
             { Keys.RightControl, Keys.V, ConsoleAction.Paste },
             { Keys.LeftShift, Keys.Enter, ConsoleAction.NewLine },
             { Keys.RightShift, Keys.Enter, ConsoleAction.NewLine },
-            { Keys.LeftShift, Keys.Up, ConsoleAction.MovePreviousLine },
-            { Keys.RightShift, Keys.Up, ConsoleAction.MovePreviousLine },
-            { Keys.LeftShift, Keys.Down, ConsoleAction.MoveNextLine },
-            { Keys.RightShift, Keys.Down, ConsoleAction.MoveNextLine },
+            //{ Keys.LeftShift, Keys.Up, ConsoleAction.MovePreviousLine },
+            //{ Keys.RightShift, Keys.Up, ConsoleAction.MovePreviousLine },
+            //{ Keys.LeftShift, Keys.Down, ConsoleAction.MoveNextLine },
+            //{ Keys.RightShift, Keys.Down, ConsoleAction.MoveNextLine },
             { Keys.LeftControl, Keys.Space, ConsoleAction.AutocompleteForward },
             { Keys.RightControl, Keys.Space, ConsoleAction.AutocompleteForward },
             { Keys.LeftControl, Keys.LeftShift, Keys.Space, ConsoleAction.AutocompleteBackward },
@@ -54,7 +51,7 @@ namespace QuakeConsole.Input
             { Keys.LeftShift, Keys.Tab, ConsoleAction.RemoveTab },
             { Keys.RightShift, Keys.Tab, ConsoleAction.RemoveTab },
             { Keys.CapsLock, ConsoleAction.CapsLock },
-            { Keys.NumLock, ConsoleAction.NumLock },
+            //{ Keys.NumLock, ConsoleAction.NumLock },
             { Keys.LeftShift, Keys.None, ConsoleAction.SelectionModifier }, // ?
             { Keys.RightShift, Keys.None, ConsoleAction.SelectionModifier }
         };
@@ -144,7 +141,7 @@ namespace QuakeConsole.Input
         };         
     }
 
-    internal enum ConsoleAction : byte
+    public enum ConsoleAction : byte
     {
         None,
         DeletePreviousChar,
@@ -152,11 +149,11 @@ namespace QuakeConsole.Input
         AutocompleteForward,
         AutocompleteBackward,
         ExecuteCommand,
-        MovePreviousLine,
-        MoveNextLine,
+        //MovePreviousLine,
+        //MoveNextLine,
         NewLine,        
         CapsLock,
-        NumLock, // TODO: implement
+        //NumLock, // TODO: implement
         Space,
         MoveLeft,
         MoveLeftWord,
@@ -173,36 +170,5 @@ namespace QuakeConsole.Input
         RemoveTab,
         UppercaseModifier,
         SelectionModifier        
-    }
-
-    internal enum ConsoleState
-    {
-        Closed,
-        Closing,
-        Open,
-        Opening
-    }
-
-    internal class ConsoleSettings
-    {
-        public Color BackgroundColor { get; set; } = new Color(0.2f, 0.2f, 0.2f, 0.5f);
-        public Color FontColor { get; set; } = new Color(1.0f, 1.0f, 0.0f, 1.0f);
-        public float TimeToToggleOpenClose { get; set; } = 0.25f;
-        public float TimeToTriggerRepeatingInput { get; set; } = 0.4f;
-        public float TimeToCooldownRepeatingInput { get; set; } = 0.04f;
-        public float HeightRatio { get; set; } = 0.4f;
-        public string InputPrefix { get; set; } = "]";
-        public int NumPositionsToMoveWhenOutOfScreen { get; set; } = 4;
-        public Color InputPrefixColor { get; set; } = Color.Yellow;
-        public float Padding { get; set; } = 2.0f;
-        public string CaretSymbol { get; set; } = "_";
-        public float CaretBlinkingIntervalSeconds { get; set; } = 0.4f;        
-        public Color BottomBorderColor { get; set; } = Color.Red;
-        public float BottomBorderThickness { get; set; } = 0.0f;
-        public Texture2D BackgroundTexture { get; set; }
-        public Matrix BackgroundTextureTransform { get; set; } = Matrix.Identity;
-        public Color SelectionColor { get; set; } = new Color(0.5f, 0.5f, 0.5f, 1.0f);
-        public string TabSymbol { get; set; } = "    ";
-        public bool TextSelectionEnabled { get; set; } = true;
     }
 }

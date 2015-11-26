@@ -78,7 +78,12 @@ namespace QuakeConsole.Input
         public void Draw()
         {
             if (_drawCaret)
-                _input.DrawStringOnActiveRow(Symbol, Index);                
+            {
+                Vector2 position = new Vector2(
+                    _input.Console.Padding + _input.InputPrefixSize.X + _input.MeasureSubstring(_input.VisibleStartIndex, Index - _input.VisibleStartIndex).X,
+                    _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y);
+                _input.Console.SpriteBatch.DrawString(_input.Console.Font, Symbol, position, _input.Console.FontColor);
+            }
         }
 
         public void SetSettings(ConsoleSettings settings)

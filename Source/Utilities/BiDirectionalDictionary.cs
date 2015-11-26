@@ -7,16 +7,10 @@ namespace QuakeConsole.Utilities
     /// <remarks>
     /// <see cref="IEnumerable"/> is implemented only to allow collection initializer syntax.
     /// </remarks>
-    internal class BiDirectionalDictionary<TForward, TBackward> : IEnumerable
+    internal class BiDirectionalMultiValueDictionary<TForward, TBackward> : IEnumerable
     {
-        private readonly Dictionary<TForward, List<TBackward>> _forward;
-        private readonly Dictionary<TBackward, List<TForward>> _backward;
-
-        public BiDirectionalDictionary()
-        {            
-            _forward = new Dictionary<TForward, List<TBackward>>();
-            _backward = new Dictionary<TBackward, List<TForward>>();
-        }
+        private readonly Dictionary<TForward, List<TBackward>> _forward = new Dictionary<TForward, List<TBackward>>();
+        private readonly Dictionary<TBackward, List<TForward>> _backward = new Dictionary<TBackward, List<TForward>>();
 
         public void Add(TForward forwardValue, TBackward backwardValue)
         {
@@ -37,6 +31,32 @@ namespace QuakeConsole.Utilities
                 _backward.Add(backwardValue, forwardValues);
             }
             forwardValues.Add(forwardValue);
+        }
+
+        public bool Remove(TForward forwardValue)
+        {
+            List<TBackward> backwards;
+            if (_forward.TryGetValue(forwardValue, out backwards))
+            {
+                bool hasItems = backwards.Count > 0;
+                backwards.ForEach(x => _backward[x].Remove(forwardValue));
+                backwards.Clear();
+                return hasItems;
+            }
+            return false;
+        }
+
+        public bool Remove(TBackward backwardValue)
+        {
+            List<TForward> forwards;
+            if (_backward.TryGetValue(backwardValue, out forwards))
+            {
+                bool hasItems = forwards.Count > 0;
+                forwards.ForEach(x => _forward[x].Remove(backwardValue));
+                forwards.Clear();
+                return hasItems;
+            }
+            return false;
         }
 
         public bool ForwardTryGetValue(TForward value, out TBackward result)

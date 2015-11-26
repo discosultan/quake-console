@@ -1,19 +1,26 @@
 ﻿using System.Linq;
-using Microsoft.Xna.Framework;
-using QuakeConsole.Input;
 using QuakeConsole.Utilities;
+using System.Collections.Generic;
+using System.Text;
+using System;
+#if MONOGAME
+using Microsoft.Xna.Framework;
+#endif
 
 namespace QuakeConsole.Output
 {
     /// <summary>
-    /// Output part of the <see cref="Console"/>. Command execution info will be appended here.
+    /// Output part of the <see cref="Console"/>. Command execution info and results will be appended here.
     /// </summary>
     internal class ConsoleOutput : IConsoleOutput
-    {                
+    {
+        private readonly StringBuilder _stringBuilder = new StringBuilder();
         private readonly CircularArray<OutputEntry> _entries = new CircularArray<OutputEntry>();
+        private readonly List<OutputEntry> _commandEntries = new List<OutputEntry>();
 
         private Pool<OutputEntry> _entryPool;
-        
+
+        private int _maxNumRows;
         private int _numRows;
         private bool _removeOverflownEntries;
 
@@ -24,20 +31,20 @@ namespace QuakeConsole.Output
             
             Console.PaddingChanged += (s, e) =>
             {
-                CalculateNumberOfLines();
+                CalculateRows();
                 RemoveOverflownBufferEntriesIfAllowed();
             };
             Console.FontChanged += (s, e) =>
             {
-                CalculateNumberOfLines();
+                CalculateRows();
                 RemoveOverflownBufferEntriesIfAllowed();
             };
             Console.WindowAreaChanged += (s, e) =>
             {
-                CalculateNumberOfLines();
+                CalculateRows();
                 RemoveOverflownBufferEntriesIfAllowed();
             };
-            CalculateNumberOfLines();
+            CalculateRows();
         }
         
         public bool RemoveOverflownEntries 
@@ -77,19 +84,48 @@ namespace QuakeConsole.Output
             _entries.Clear();
         }
 
+        public void AddCommandEntry(string value)
+        {
+            if (value == null) return;
+
+            var entry = _entryPool.Fetch();
+            entry.Value = value;
+            _numRows++;
+            //entry.CalculateLines(_console.WindowArea.Width - _console.Padding * 2, true);
+            _commandEntries.Add(entry);
+        }
+
+        public string DequeueCommandEntry()
+        {
+            _stringBuilder.Clear();
+            for (int i = 0; i < _commandEntries.Count; i++)
+            {
+                _stringBuilder.Append(_commandEntries[i].Value);
+                //if (i != _commandEntries.Count - 1)
+                _stringBuilder.Append("\n");
+            }
+            _commandEntries.Clear();
+            return _stringBuilder.ToString();
+        }
+
         public void Draw()
         {
-            int indexOffset = Console.LineIndexAfterInput + 1; 
-
             // Draw from bottom to top.
             var viewPosition = new Vector2(
-                Console.Padding, 
-                Console.WindowArea.Y + Console.WindowArea.Height - Console.Padding - Console.FontSize.Y * indexOffset);
+                Console.Padding,
+                Console.WindowArea.Y + Console.WindowArea.Height - Console.Padding - Console.ConsoleInput.InputPrefixSize.Y - Console.FontSize.Y);
 
             int rowCounter = 0;
+
+            for (int i = _commandEntries.Count - 1; i >= 0; i--)
+            {
+                if (rowCounter >= _maxNumRows) return;
+                DrawRow(_commandEntries[i], ref viewPosition, ref rowCounter, true);
+            }
+
             for (int i = _entries.Length - 1; i >= 0; i--)
             {
-                if (rowCounter >= Console.NumberOfAvailableLinesAfterInput) break;
+                if (rowCounter >= _maxNumRows) return;
                 DrawRow(_entries[i], ref viewPosition, ref rowCounter, false);
             }
         }
@@ -99,7 +135,7 @@ namespace QuakeConsole.Output
         }
 
         private void DrawRow(OutputEntry entry, ref Vector2 viewPosition, ref int rowCounter, bool drawPrefix)
-        {            
+        {
             for (int j = entry.Lines.Count - 1; j >= 0; j--)
             {
                 Vector2 tempViewPos = viewPosition;
@@ -115,7 +151,7 @@ namespace QuakeConsole.Output
                 Console.SpriteBatch.DrawString(
                     Console.Font,
                     entry.Lines[j],
-                    tempViewPos, 
+                    tempViewPos,
                     Console.FontColor);
                 viewPosition.Y -= Console.FontSize.Y;
                 rowCounter++;
@@ -126,13 +162,12 @@ namespace QuakeConsole.Output
         {
             if (!RemoveOverflownEntries) return;
 
-            int maxNumRows = Console.NumberOfAvailableLinesAfterInput;
-            while (_numRows > maxNumRows)
+            while (_numRows > _maxNumRows)
             {
                 OutputEntry entry = _entries.Peek();
 
                 // Remove entry only if it is completely hidden from view.
-                if (_numRows - entry.Lines.Count >= maxNumRows)
+                if (_numRows - entry.Lines.Count >= _maxNumRows)
                 {
                     _numRows -= entry.Lines.Count;
                     _entries.Dequeue();
@@ -145,9 +180,20 @@ namespace QuakeConsole.Output
             }
         }
 
-        private void CalculateNumberOfLines()
+        private void CalculateRows()
         {
-            _numRows = _entries.Sum(entry => entry.CalculateLines(Console.WindowArea.Width - Console.Padding * 2, false));
+            // Take top padding into account and hide any row which is only partly visible.
+            //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / _fontSize.Y) - 1, 0);            
+
+            // Disregard top padding and allow any row which is only partly visible.
+            _maxNumRows = Math.Max((int)Math.Ceiling(((Console.WindowArea.Height - Console.Padding) / Console.FontSize.Y)) - 1, 0);
+
+            _numRows = _commandEntries.Count + /*GetNumRows(_commandEntries) +*/ GetNumRows(_entries);
+        }
+
+        private int GetNumRows(IEnumerable<OutputEntry> collection)
+        {
+            return collection.Sum(entry => entry.CalculateLines(Console.WindowArea.Width - Console.Padding * 2, false));
         }
     }
 }

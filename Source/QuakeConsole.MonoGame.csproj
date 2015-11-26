@@ -64,12 +64,10 @@
     <Compile Include="Input\Features\CommandExecution.cs" />
     <Compile Include="Input\Features\CaseSensitivity.cs" />
     <Compile Include="Input\Features\Deletion.cs" />
-    <Compile Include="Input\Features\MultiLineInput.cs" />
     <Compile Include="Input\Features\Selection.cs" />
     <Compile Include="Input\Features\Tabbing.cs" />
     <Compile Include="Input\Features\Movement.cs" />
     <Compile Include="Input\Features\CopyPasting.cs" />
-    <Compile Include="Input\InputEntry.cs" />
     <Compile Include="TexturedBackground.cs" />
     <Compile Include="Input\Caret.cs" />
     <Compile Include="ConsoleComponent.cs" />
@@ -112,8 +110,12 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(SolutionDir)Tools\2mgfx $(ProjectDir)Content\Background.fx $(ProjectDir)Content\Compiled\Background.dx11.mgfxo /Profile:DirectX_11 /Defines:SM4
-$(SolutionDir)Tools\2mgfx $(ProjectDir)Content\Background.fx $(ProjectDir)Content\Compiled\Background.ogl.mgfxo /Profile:OpenGL</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <PreBuildEvent>$(SolutionDir)Tools\2mgfx $(ProjectDir)Content\Background.fx $(ProjectDir)Content\Compiled\Background.dx11.mgfxo /Profile:DirectX_11
+$(SolutionDir)Tools\2mgfx $(ProjectDir)Content\Background.fx $(ProjectDir)Content\Compiled\Background.ogl.mgfxo /Profile:OpenGL</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

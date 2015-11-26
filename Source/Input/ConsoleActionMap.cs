@@ -9,26 +9,32 @@ namespace QuakeConsole.Input
     /// <remarks>
     /// <see cref="IEnumerable" /> is implemented only to allow collection initializer syntax.
     /// </remarks>
-    internal class ConsoleActionMap : IEnumerable
+    public class ConsoleActionMap : IEnumerable
     {
-        private readonly BiDirectionalDictionary<Int3, ConsoleAction> _map = new BiDirectionalDictionary<Int3, ConsoleAction>();
+        private readonly BiDirectionalMultiValueDictionary<Int3, ConsoleAction> _map = new BiDirectionalMultiValueDictionary<Int3, ConsoleAction>();
 
-        public void Add(Keys modifier1, Keys modifier2, Keys key, ConsoleAction action)
-        {
+        public void Add(Keys modifier1, Keys modifier2, Keys key, ConsoleAction action) =>
             _map.Add(new Int3((int)modifier1, (int)modifier2, (int)key), action);
-        }
 
-        public void Add(Keys modifier, Keys key, ConsoleAction action)
-        {
-            _map.Add(new Int3((int)Keys.None, (int) modifier, (int) key), action);
-        }
+        public void Add(Keys modifier, Keys key, ConsoleAction action) =>
+            _map.Add(new Int3((int)Keys.None, (int)modifier, (int)key), action);
 
-        public void Add(Keys key, ConsoleAction action)
-        {
-            _map.Add(new Int3((int)Keys.None, (int) Keys.None, (int) key), action);
-        }
+        public void Add(Keys key, ConsoleAction action) =>
+            _map.Add(new Int3((int)Keys.None, (int)Keys.None, (int)key), action);
 
-        public bool AreModifiersAppliedForAction(ConsoleAction action, InputState input)
+        public void Remove(Keys key) =>
+            _map.Remove(new Int3((int)Keys.None, (int)Keys.None, (int)key));
+
+        public void Remove(Keys modifier, Keys key) =>
+            _map.Remove(new Int3((int)Keys.None, (int)modifier, (int)key));
+
+        public void Remove(Keys modifier1, Keys modifier2, Keys key) =>
+            _map.Remove(new Int3((int)modifier1, (int)modifier2, (int)key));
+
+        public void Remove(ConsoleAction action) =>
+            _map.Remove(action);
+
+        internal bool AreModifiersAppliedForAction(ConsoleAction action, InputState input)
         {
             bool modifiersAccepted = false;
             List<Int3> requiredModifiers;
@@ -47,7 +53,7 @@ namespace QuakeConsole.Input
             return modifiersAccepted;
         }
 
-        public bool TryGetAction(InputState input, out ConsoleAction action)
+        internal bool TryGetAction(InputState input, out ConsoleAction action)
         {                        
             foreach (Keys key in input.PressedKeys)
             {

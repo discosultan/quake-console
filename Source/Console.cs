@@ -61,7 +61,6 @@ namespace QuakeConsole
                 _font = value;                
                 CharWidthMap.Clear();
                 MeasureFontSize();
-                CalculateMaxNumberOfVisibleLines();
                 FontChanged?.Invoke(this, EventArgs.Empty);               
             }
         }
@@ -114,7 +113,6 @@ namespace QuakeConsole
                         value,
                         0,
                         GetMaxAllowedPadding());
-                    CalculateMaxNumberOfVisibleLines();
                     PaddingChanged?.Invoke(this, EventArgs.Empty);
                 }
                 else
@@ -143,14 +141,9 @@ namespace QuakeConsole
                 value.Width = Math.Max(value.Width, 0);
                 value.Height = Math.Max(value.Height, 0);
                 _windowArea = value;
-                CalculateMaxNumberOfVisibleLines();
                 WindowAreaChanged?.Invoke(this, EventArgs.Empty);
             }
         }
-
-        public int LineIndexAfterInput => ConsoleInput.MultiLineInput.InputLines.Count;
-        public int NumberOfAvailableLinesAfterInput => TotalNumberOfVisibleLines - ConsoleInput.MultiLineInput.InputLines.Count;
-        public int TotalNumberOfVisibleLines { get; private set; }
 
         public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager,
             SpriteFont font, ICommandInterpreter commandInterpreter)
@@ -176,7 +169,6 @@ namespace QuakeConsole
 
             MeasureFontSize();
             SetWindowWidthAndHeight();
-            CalculateMaxNumberOfVisibleLines();
 
             ConsoleInput.LoadContent(this);
             ConsoleOutput.LoadContent(this);
@@ -355,15 +347,6 @@ namespace QuakeConsole
             ConsoleInput.SetDefaults(settings);
             ConsoleOutput.SetDefaults(settings);
         }
-
-        private void CalculateMaxNumberOfVisibleLines()
-        {            
-            // Take top padding into account and hide any row which is only partly visible.
-            //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / Console.FontSize.Y) - 1, 0);            
-
-            // Disregard top padding and allow any row which is only partly visible.
-            TotalNumberOfVisibleLines = Math.Max((int)Math.Ceiling((WindowArea.Height - Padding) / FontSize.Y), 0);
-        }
     }
 
     /// <summary>
@@ -392,5 +375,36 @@ namespace QuakeConsole
         /// Clears everything.
         /// </summary>
         All = OutputBuffer | InputBuffer | InputHistory
+    }
+
+    internal enum ConsoleState
+    {
+        Closed,
+        Closing,
+        Open,
+        Opening
+    }
+
+    internal class ConsoleSettings
+    {
+        public Color BackgroundColor { get; set; } = new Color(0.2f, 0.2f, 0.2f, 0.5f);
+        public Color FontColor { get; set; } = new Color(1.0f, 1.0f, 0.0f, 1.0f);
+        public float TimeToToggleOpenClose { get; set; } = 0.25f;
+        public float TimeToTriggerRepeatingInput { get; set; } = 0.4f;
+        public float TimeToCooldownRepeatingInput { get; set; } = 0.04f;
+        public float HeightRatio { get; set; } = 0.4f;
+        public string InputPrefix { get; set; } = "]";
+        public int NumPositionsToMoveWhenOutOfScreen { get; set; } = 4;
+        public Color InputPrefixColor { get; set; } = Color.Yellow;
+        public float Padding { get; set; } = 2.0f;
+        public string CaretSymbol { get; set; } = "_";
+        public float CaretBlinkingIntervalSeconds { get; set; } = 0.4f;
+        public Color BottomBorderColor { get; set; } = Color.Red;
+        public float BottomBorderThickness { get; set; } = 0.0f;
+        public Texture2D BackgroundTexture { get; set; }
+        public Matrix BackgroundTextureTransform { get; set; } = Matrix.Identity;
+        public Color SelectionColor { get; set; } = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+        public string TabSymbol { get; set; } = "    ";
+        public bool TextSelectionEnabled { get; set; } = true;
     }
 }

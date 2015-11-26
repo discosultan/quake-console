@@ -30,6 +30,8 @@ namespace QuakeConsole.Input.Features
                         Clipboard.SetText(_input.Selection.SelectionValue, TextDataFormat.Text);                    
                     break;
                 case ConsoleAction.Paste:
+                    // TODO: move value before caret to first command entry and leave value after caret to current input row.
+
                     string clipboardVal = Clipboard.GetText(TextDataFormat.Text);
                     clipboardVal = clipboardVal.Replace("\t", _input.Console.TabSymbol);
                     _singleElementArray[0] = _input.Console.NewlineSymbol;
@@ -38,7 +40,7 @@ namespace QuakeConsole.Input.Features
                     {
                         //_input.Clear();
                         for (int i = 0; i < newlineSplits.Length - 1; i++)
-                            _input.MultiLineInput.AddNewLine(newlineSplits[i]);
+                            _input.Console.ConsoleOutput.AddCommandEntry(newlineSplits[i]);
                     }
                     _input.Append(newlineSplits[newlineSplits.Length - 1]);
                     break;

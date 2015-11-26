@@ -17,23 +17,31 @@ namespace QuakeConsole.Input.Features
         {
             if (!Enabled) return;
             
-            ConsoleOutput ouput = _input.Console.ConsoleOutput;
+            ConsoleOutput output = _input.Console.ConsoleOutput;
 
             switch (action)
             {
                 case ConsoleAction.ExecuteCommand:
-                    string cmd = _input.MultiLineInput.GetInput();
-                    _input.MultiLineInput.Clear();
+                    string cmd = _input.Value;
                     // Replace our tab symbols with actual tab characters.
                     cmd = cmd.Replace(_input.Console.TabSymbol, "\t");
                     // Log the command to be executed if logger is set.
                     LogInput?.Invoke(cmd);
                     // Execute command.
-                    _input.Console.Interpreter.Execute(ouput, cmd);
-                    _input.Clear();
-                    _input.Caret.MoveBy(int.MinValue);
+                    _input.Console.Interpreter.Execute(output, cmd);
+                    ResetInput();
+                    break;
+                case ConsoleAction.NewLine:
+                    output.AddCommandEntry(_input.Value);
+                    ResetInput();
                     break;
             }
+        }
+
+        private void ResetInput()
+        {
+            _input.Clear();
+            _input.Caret.MoveBy(int.MinValue);
         }
     }
 }
