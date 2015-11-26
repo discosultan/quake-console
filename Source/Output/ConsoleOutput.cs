@@ -59,6 +59,8 @@ namespace QuakeConsole.Output
 
         public Console Console { get; private set; }
 
+        internal bool HasCommandEntry => _commandEntries.Count > 0;
+
         /// <summary>
         /// Appends a message to the buffer.
         /// </summary>
@@ -82,6 +84,9 @@ namespace QuakeConsole.Output
             foreach (OutputEntry entry in _entries)
                 _entryPool.Release(entry);
             _entries.Clear();
+            foreach (OutputEntry entry in _commandEntries)
+                _entryPool.Release(entry);
+            _commandEntries.Clear();
         }
 
         public void AddCommandEntry(string value)
@@ -100,12 +105,18 @@ namespace QuakeConsole.Output
             _stringBuilder.Clear();
             for (int i = 0; i < _commandEntries.Count; i++)
             {
-                _stringBuilder.Append(_commandEntries[i].Value);
+                OutputEntry entry = _commandEntries[i];
+                _stringBuilder.Append(entry.Value);
                 //if (i != _commandEntries.Count - 1)
-                _stringBuilder.Append("\n");
+                _stringBuilder.Append(Console.NewlineSymbol);
+                _entryPool.Release(entry);
             }
             _commandEntries.Clear();
             return _stringBuilder.ToString();
+        }
+
+        public void SetDefaults(ConsoleSettings settings)
+        {
         }
 
         public void Draw()
@@ -128,11 +139,7 @@ namespace QuakeConsole.Output
                 if (rowCounter >= _maxNumRows) return;
                 DrawRow(_entries[i], ref viewPosition, ref rowCounter, false);
             }
-        }
-
-        public void SetDefaults(ConsoleSettings settings)
-        {
-        }
+        }        
 
         private void DrawRow(OutputEntry entry, ref Vector2 viewPosition, ref int rowCounter, bool drawPrefix)
         {

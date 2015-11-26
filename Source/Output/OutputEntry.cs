@@ -37,6 +37,8 @@ namespace QuakeConsole.Output
             return Lines.Count;
         }
 
+        public override string ToString() => Value;        
+
         private void CalculateLinesPart(string value, float bufferAreaWidth, bool countPrefix)
         {
             float lineWidthProgress = 0;

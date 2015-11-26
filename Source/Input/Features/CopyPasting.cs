@@ -30,17 +30,21 @@ namespace QuakeConsole.Input.Features
                         Clipboard.SetText(_input.Selection.SelectionValue, TextDataFormat.Text);                    
                     break;
                 case ConsoleAction.Paste:
-                    // TODO: move value before caret to first command entry and leave value after caret to current input row.
-
-                    string clipboardVal = Clipboard.GetText(TextDataFormat.Text);
+                    string clipboardVal = Clipboard.GetText(TextDataFormat.Text).Replace("\n", _input.Console.NewlineSymbol);
                     clipboardVal = clipboardVal.Replace("\t", _input.Console.TabSymbol);
                     _singleElementArray[0] = _input.Console.NewlineSymbol;
                     string[] newlineSplits = clipboardVal.Split(_singleElementArray, StringSplitOptions.None);
                     if (newlineSplits.Length > 1)
-                    {
-                        //_input.Clear();
+                    {                                                
                         for (int i = 0; i < newlineSplits.Length - 1; i++)
-                            _input.Console.ConsoleOutput.AddCommandEntry(newlineSplits[i]);
+                        {
+                            string entry = newlineSplits[i];
+                            if (i == 0)
+                                entry = _input.Substring(0, _input.Caret.Index) + entry;
+
+                            _input.Console.ConsoleOutput.AddCommandEntry(entry);
+                        }
+                        _input.Remove(0, _input.Caret.Index);
                     }
                     _input.Append(newlineSplits[newlineSplits.Length - 1]);
                     break;

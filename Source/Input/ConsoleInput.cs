@@ -4,13 +4,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using QuakeConsole.Input.Features;
 using QuakeConsole.Utilities;
-using System.Text;
 
 namespace QuakeConsole.Input
 {
     internal partial class ConsoleInput : IConsoleInput
     {
-        public event EventHandler Cleared;
+        public event EventHandler InputChanged;
         public event EventHandler PrefixChanged;
 
         private readonly SpriteFontStringBuilder _inputBuffer = new SpriteFontStringBuilder();
@@ -90,10 +89,12 @@ namespace QuakeConsole.Input
             Console.FontChanged += (s, e) =>
             {
                 CalculateInputPrefixWidth();
-                _dirty = true;
-            };            
-            Console.WindowAreaChanged += (s, e) => _dirty = true;
-            Caret.Moved += (s, e) => _dirty = true;
+                _inputBuffer.Font = console.Font;
+                SetDirty();
+            };
+            _inputBuffer.Font = console.Font;
+            Console.WindowAreaChanged += (s, e) => SetDirty();
+            Caret.Moved += (s, e) => SetDirty();
 
             CalculateInputPrefixWidth();
 
@@ -116,13 +117,17 @@ namespace QuakeConsole.Input
         {
             if (string.IsNullOrEmpty(value)) return;
             _inputBuffer.Insert(Caret.Index, value);
-            Caret.MoveBy(value.Length);
+            Caret.MoveBy(value.Length);            
+            SetDirty();
+            InputChanged?.Invoke(this, EventArgs.Empty);
         }
         
         public void Remove(int startIndex, int length)
         {
             Caret.Index = startIndex;
             _inputBuffer.Remove(startIndex, length);
+            SetDirty();
+            InputChanged?.Invoke(this, EventArgs.Empty);
         }
         
         public string Value
@@ -133,7 +138,9 @@ namespace QuakeConsole.Input
                 Clear();
                 if (value != null)
                     _inputBuffer.Append(value);
-                Caret.Index = _inputBuffer.Length;                
+                Caret.Index = _inputBuffer.Length;
+                SetDirty();
+                InputChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -144,8 +151,9 @@ namespace QuakeConsole.Input
         public void Clear()
         {
             _inputBuffer.Clear();
-            Caret.MoveBy(int.MinValue);
-            Cleared?.Invoke(this, EventArgs.Empty);
+            Caret.MoveBy(int.MinValue);            
+            SetDirty();
+            InputChanged?.Invoke(this, EventArgs.Empty);
         }        
 
         public char this[int i] {
@@ -153,7 +161,8 @@ namespace QuakeConsole.Input
             set
             {
                 _inputBuffer[i] = value;
-                _dirty = true;
+                SetDirty();
+                InputChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -202,7 +211,6 @@ namespace QuakeConsole.Input
             Deletion.OnAction(action);
             CommandExecution.OnAction(action);
             CaseSenitivity.OnAction(action);
-            Selection.OnAction(action);
             RepeatingInput.OnAction(action);
         }
 
@@ -215,12 +223,13 @@ namespace QuakeConsole.Input
 
             InputHistory.OnSymbol(symbol);
             Autocompletion.OnSymbol(symbol);
-            Selection.OnSymbol(symbol);
             RepeatingInput.OnSymbol(symbol);
         }
 
         public void Draw()
         {
+            Selection.Draw();
+
             // Draw input prefix.
             var inputPosition = new Vector2(Console.Padding, Console.WindowArea.Y + Console.WindowArea.Height - Console.Padding - Console.FontSize.Y);
             Console.SpriteBatch.DrawString(
@@ -232,8 +241,7 @@ namespace QuakeConsole.Input
             inputPosition.X += InputPrefixSize.X;
             if (_inputBuffer.Length > 0)                
                 Console.SpriteBatch.DrawString(Console.Font, _inputBuffer.Substring(VisibleStartIndex, VisibleLength), inputPosition, Console.FontColor);
-
-            Selection.Draw();            
+            
             Caret.Draw();            
         }
         
@@ -303,5 +311,7 @@ namespace QuakeConsole.Input
                 VisibleLength++;
             }
         }
+
+        private void SetDirty() => _dirty = true;
     }
 }
