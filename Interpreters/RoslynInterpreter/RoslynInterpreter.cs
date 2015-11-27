@@ -3,12 +3,26 @@ using Microsoft.CodeAnalysis.Scripting;
 using QuakeConsole.Input;
 using QuakeConsole.Output;
 using System;
+using System.Threading.Tasks;
 
 namespace QuakeConsole
 {
     public class RoslynInterpreter : ICommandInterpreter
     {
         private Script _previousInput;
+        private Task _warmupTask;
+
+        public RoslynInterpreter()
+        {
+            _warmupTask = Task.Factory.StartNew(() => 
+            {
+                // Assignment and literal evaluation to warm up the scripting context.
+                // Without warmup, there is a considerable delay on first command evaluation since scripts
+                // are being run synchronously.
+                CSharpScript.EvaluateAsync("int x = 1; 1");
+                _previousInput = CSharpScript.Create(null);
+            });
+        }
 
         /// <summary>
         /// Gets or sets if the user entered command should be shown in the output.
@@ -16,8 +30,7 @@ namespace QuakeConsole
         public bool EchoEnabled { get; set; } = true;
 
         public void Autocomplete(IConsoleInput input, bool forward)
-        {
-            input.Value = "your mother";
+        {            
         }
 
         public void Execute(IConsoleOutput output, string command)
@@ -26,13 +39,10 @@ namespace QuakeConsole
                 output.Append(command);
 
             try
-            {
-                Script script;
-                if (_previousInput == null)
-                    script = CSharpScript.Create(command);
-                else
-                    script = _previousInput.ContinueWith(command);
-
+            {                
+                _warmupTask.Wait();
+                
+                Script script = _previousInput.ContinueWith(command);
                 ScriptState endState = script.RunAsync().Result;
                 _previousInput = endState.Script;
 
