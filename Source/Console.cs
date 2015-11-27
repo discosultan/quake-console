@@ -23,7 +23,7 @@ namespace QuakeConsole
         private readonly Timer _transitionTimer = new Timer { AutoReset = false };
 
         private ICommandInterpreter _commandInterpreter;
-        private GraphicsDeviceManager _graphicsDeviceManager;        
+        private GraphicsDeviceManager _graphicsDeviceManager;
                 
         private SpriteFont _font;
         private RectangleF _windowArea;        

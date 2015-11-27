@@ -24,6 +24,7 @@ namespace Sandbox
         private readonly ConsoleComponent _console;
         private readonly PythonInterpreter _pythonInterpreter = new PythonInterpreter();
         private readonly ManualInterpreter _manualInterpreter = new ManualInterpreter();
+        private readonly RoslynInterpreter _roslynInterpreter = new RoslynInterpreter();
         private readonly CameraControllerComponent _camera;
 
         private SpriteBatch _spriteBatch;
@@ -94,7 +95,7 @@ namespace Sandbox
             _cube = new Cube(GraphicsDevice, _effect);
 
             // Set console's font and interpreter.
-            _console.LoadContent(_arial, _pythonInterpreter);            
+            _console.LoadContent(_arial, _roslynInterpreter);            
             _console.BackgroundTexture = Content.Load<Texture2D>("console");            
 
             // Register variables and types of interest with the Python interpreter.
@@ -102,6 +103,7 @@ namespace Sandbox
             _pythonInterpreter.AddVariable("console", _console);
             _pythonInterpreter.AddVariable("pythonInterpreter", _pythonInterpreter);
             _pythonInterpreter.AddVariable("manualInterpreter", _manualInterpreter);
+            _pythonInterpreter.AddVariable("roslynInterpreter", _roslynInterpreter);
             _pythonInterpreter.AddType(typeof (Utilities));
 
             // Register commands with the manual interpreter.
@@ -109,6 +111,11 @@ namespace Sandbox
             {
                 _console.Interpreter = _pythonInterpreter;
                 return "Console interpreter switched to Python";
+            });
+            _manualInterpreter.RegisterCommand("Set-Console-Interpreter-Roslyn", _ =>
+            {
+                _console.Interpreter = _roslynInterpreter;
+                return "Console interpreter switched to Roslyn";
             });
             _manualInterpreter.RegisterCommand("Set-Cube-Position", args => _cube.Position = args.ToVector3());
             _manualInterpreter.RegisterCommand("Set-Cube-Scale", args => _cube.Scale = args.ToVector3());

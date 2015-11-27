@@ -20,8 +20,9 @@ Quake-style console is an in-game command-line interface with swappable command 
 
 The following is required to successfully compile the QuakeConsole MonoGame solution:
 
-- Visual studio 2015+ (due to C# 6 syntax)
-- [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109) (to compile effect shaders)
+- Visual studio 2015+ (for C# 6 syntax)
+- .NET Framework 4.6+ (for Roslyn interpreter)
+- [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109) (for effect shaders compilation)
 
 
 <h2 id="setup2">Using QuakeConsole</h2>
@@ -32,7 +33,7 @@ The following is required to successfully compile the QuakeConsole MonoGame solu
 Install the console assembly through NuGet:
 
 ```powershell
-Install-Package QuakeConsole.MonoGame.WindowsDX -Pre
+PM> Install-Package QuakeConsole.MonoGame.WindowsDX -Pre
 ```
 
 The console itself is a typical `DrawableGameComponent`. The following steps will go through setting it up in a game.
@@ -85,7 +86,7 @@ Python interpreter can be used to interpret user input as Python code. It is ext
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre
+PM> Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
@@ -112,7 +113,7 @@ Manual interpreter can be used to define commands and their corresponding action
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-Install-Package QuakeConsole.ManualInterpreter.MonoGame.WindowsDX -Pre
+PM> Install-Package QuakeConsole.ManualInterpreter.MonoGame.WindowsDX -Pre
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
