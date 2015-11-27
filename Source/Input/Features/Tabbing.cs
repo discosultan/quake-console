@@ -6,14 +6,10 @@ namespace QuakeConsole.Input.Features
     {
         private ConsoleInput _input;
 
-        public bool Enabled { get; set; } = true;        
-
         public void LoadContent(ConsoleInput input) => _input = input;
 
         public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return;            
-
             switch (action)
             {
                 case ConsoleAction.Tab:
@@ -42,7 +38,6 @@ namespace QuakeConsole.Input.Features
             int numToRemove = counter;
             if (isTab)
                 _input.Remove(Math.Max(0, _input.Caret.Index - tabSymbol.Length), numToRemove);
-            _input.Caret.MoveBy(-tabSymbol.Length);
         }
     }
 }

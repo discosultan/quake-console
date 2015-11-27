@@ -4,16 +4,12 @@
     {
         private ConsoleInput _input;
 
-        public bool Enabled { get; set; } = true;
-
         public string LastAutocompleteEntry { get; set; }
 
         public void LoadContent(ConsoleInput console) => _input = console;
 
         public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return;
-            
             switch (action)
             {
                 case ConsoleAction.AutocompleteForward:
@@ -27,18 +23,18 @@
                 case ConsoleAction.Cut:
                 case ConsoleAction.Tab:
                 case ConsoleAction.NewLine:
-                    ResetAutocompleteEntry();                    
+                    ResetAutocompleteEntry();
                     break;
-                case ConsoleAction.DeletePreviousChar:                
+                case ConsoleAction.DeletePreviousChar:
                     if (_input.Length > 0 && _input.Caret.Index > 0)
-                        ResetAutocompleteEntry();                    
+                        ResetAutocompleteEntry();
                     break;
                 case ConsoleAction.DeleteCurrentChar:
                     if (_input.Length > _input.Caret.Index)
                         ResetAutocompleteEntry();
                     break;
                     // TODO: Reset on line switch.
-            }            
+            }
         }
 
         public void OnSymbol(Symbol symbol)

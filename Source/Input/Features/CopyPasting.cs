@@ -8,14 +8,10 @@ namespace QuakeConsole.Input.Features
         private ConsoleInput _input;
         private readonly string[] _singleElementArray = new string[1];
 
-        public bool Enabled { get; set; } = true;
-
         public void LoadContent(ConsoleInput input) => _input = input;
 
         public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return;
-
             switch (action)
             {
                 case ConsoleAction.Cut:

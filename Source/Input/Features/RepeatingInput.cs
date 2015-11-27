@@ -14,7 +14,12 @@ namespace QuakeConsole.Input.Features
 
         private ConsoleInput _input;
 
-        public void LoadContent(ConsoleInput input) => _input = input;
+        public void LoadContent(ConsoleInput input)
+        {
+            _input = input;
+            _input.InputChanged += (s, e) => CheckRepeatingProcess();
+            _input.Caret.Moved += (s, e) => CheckRepeatingProcess();
+        }
 
         public bool Enabled { get; set; } = true;
 
@@ -52,16 +57,6 @@ namespace QuakeConsole.Input.Features
                 if (_repeatedPressIntervalTimer.Finished)
                     _input.ProcessInput(_inputToRepeat);                    
             }
-        }
-
-        public void OnSymbol(Symbol symbol)
-        {
-            CheckRepeatingProcess();
-        }
-
-        public void OnAction(ConsoleAction action)
-        {
-            CheckRepeatingProcess();
         }
 
         private void CheckRepeatingProcess()

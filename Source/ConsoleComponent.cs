@@ -15,33 +15,11 @@ namespace QuakeConsole
     {
         private readonly Console _console = new Console();
 
+        private bool _initialized;
+
         /// <inheritdoc />        
         public ConsoleComponent(Game game) : base(game)
         { }
-
-        /// <summary>
-        /// Loads graphics resources and optionally interpreter for the console.
-        /// </summary>
-        /// <param name="font">Font used to render console text.</param>
-        /// <param name="commandInterpreter">
-        /// Interpreter that evaluates and operates on user input commands.
-        /// Pass NULL to use a stub command interpreter instead (useful for testing out shell itself).
-        /// </param>
-        public void LoadContent(SpriteFont font, ICommandInterpreter commandInterpreter = null)
-        {
-            _console.LoadContent(
-                GraphicsDevice,
-                (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
-                font,
-                commandInterpreter);
-        }
-
-        /// <inheritdoc />        
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-                _console.Dispose();
-        }
 
         /// <summary>
         /// Gets if the console is currently reading keyboard input.
@@ -287,21 +265,9 @@ namespace QuakeConsole
         }
 
         /// <summary>
-        /// Gets or sets if selecting text is allowed in the console window.
-        /// </summary>
-        public bool TextSelectionEnabled
-        {
-            get { return _console.ConsoleInput.Selection.Enabled; }
-            set { _console.ConsoleInput.Selection.Enabled = value; }
-        }
-
-        /// <summary>
         /// Opens the console windows if it is closed. Closes it if it is opened.
         /// </summary>
-        public void ToggleOpenClose()
-        {
-            _console.ToggleOpenClose();
-        }
+        public void ToggleOpenClose() => _console.ToggleOpenClose();        
 
         /// <summary>
         /// Clears the subparts of the <see cref="Console"/>.
@@ -325,18 +291,55 @@ namespace QuakeConsole
         /// </summary>
         public IConsoleOutput Output => _console.ConsoleOutput;
 
+        /// <summary>
+        /// Loads graphics resources and optionally interpreter for the console.
+        /// </summary>
+        /// <param name="font">Font used to render console text.</param>
+        /// <param name="commandInterpreter">
+        /// Interpreter that evaluates and operates on user input commands.
+        /// Pass NULL to use a stub command interpreter instead (useful for testing out shell itself).
+        /// </param>
+        public void LoadContent(SpriteFont font, ICommandInterpreter commandInterpreter = null)
+        {
+            _console.LoadContent(
+                GraphicsDevice,
+                (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
+                font,
+                commandInterpreter);
+            _initialized = true;
+        }        
+
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
         {
             if (Enabled)
-                _console.Update((float) gameTime.ElapsedGameTime.TotalSeconds);
+            {
+                EnsureInitialized();
+                _console.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+            }
         }
 
         /// <inheritdoc/>
         public override void Draw(GameTime gameTime)
-        {            
+        {
             if (Visible)
+            {
+                EnsureInitialized();
                 _console.Draw();
+            }
+        }
+
+        /// <inheritdoc />        
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                _console.Dispose();
+        }
+
+        private void EnsureInitialized()
+        {
+            if (!_initialized)
+                throw new InvalidOperationException($"{nameof(ConsoleComponent)} must be initialized by calling {nameof(LoadContent)}.");
         }
     }
 }

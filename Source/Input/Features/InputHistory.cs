@@ -13,14 +13,13 @@ namespace QuakeConsole.Input.Features
 
         private ConsoleInput _input;
 
-        public bool Enabled { get; set; } = true;
-
-        public void LoadContent(ConsoleInput input) => _input = input;
+        public void LoadContent(ConsoleInput input)
+        {
+            _input = input;            
+        }
 
         public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return;
-
             string cmd = _input.Value;
 
             switch (action)
@@ -56,6 +55,7 @@ namespace QuakeConsole.Input.Features
                     ManageHistory();
                     break;
                 case ConsoleAction.AutocompleteForward:
+                case ConsoleAction.AutocompleteBackward:
                     _inputHistoryIndexer = int.MaxValue;                    
                     break;
             }
@@ -63,14 +63,19 @@ namespace QuakeConsole.Input.Features
 
         public void OnSymbol(Symbol symbol)
         {
-            _inputHistoryIndexer = int.MaxValue;
+            ResetHistoryIndexer();
         }
 
         public void Clear()
         {
             _inputHistory.Clear();
-            _inputHistoryIndexer = int.MaxValue;
+            ResetHistoryIndexer();
             _inputHistoryDoNotDecrement = false;
+        }
+
+        private void ResetHistoryIndexer()
+        {
+            _inputHistoryIndexer = int.MaxValue;
         }
 
         private void ManageHistory()

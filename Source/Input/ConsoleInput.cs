@@ -116,6 +116,7 @@ namespace QuakeConsole.Input
         public void Append(string value)
         {
             if (string.IsNullOrEmpty(value)) return;
+
             _inputBuffer.Insert(Caret.Index, value);
             Caret.MoveBy(value.Length);            
             SetDirty();
@@ -124,6 +125,8 @@ namespace QuakeConsole.Input
         
         public void Remove(int startIndex, int length)
         {
+            if (length <= 0) return;
+
             Caret.Index = startIndex;
             _inputBuffer.Remove(startIndex, length);
             SetDirty();
@@ -135,12 +138,15 @@ namespace QuakeConsole.Input
             get { return _inputBuffer.ToString(); } // Does not allocate if value is cached.
             set
             {
-                Clear();
-                if (value != null)
-                    _inputBuffer.Append(value);
-                Caret.Index = _inputBuffer.Length;
-                SetDirty();
-                InputChanged?.Invoke(this, EventArgs.Empty);
+                if (Value != value)
+                {
+                    Clear();
+                    if (value != null)
+                        _inputBuffer.Append(value);
+                    Caret.Index = _inputBuffer.Length;
+                    SetDirty();
+                    InputChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -150,6 +156,8 @@ namespace QuakeConsole.Input
 
         public void Clear()
         {
+            if (_inputBuffer.Length == 0) return;
+
             _inputBuffer.Clear();
             Caret.MoveBy(int.MinValue);            
             SetDirty();
@@ -160,9 +168,12 @@ namespace QuakeConsole.Input
             get { return _inputBuffer[i]; }
             set
             {
-                _inputBuffer[i] = value;
-                SetDirty();
-                InputChanged?.Invoke(this, EventArgs.Empty);
+                if (_inputBuffer[i] != value)
+                {
+                    _inputBuffer[i] = value;
+                    SetDirty();
+                    InputChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -211,7 +222,6 @@ namespace QuakeConsole.Input
             Deletion.OnAction(action);
             CommandExecution.OnAction(action);
             CaseSenitivity.OnAction(action);
-            RepeatingInput.OnAction(action);
         }
 
         public void ProcessSymbol(Symbol symbol)
@@ -222,8 +232,6 @@ namespace QuakeConsole.Input
             Append(CaseSenitivity.ProcessSymbol(symbol));
 
             InputHistory.OnSymbol(symbol);
-            Autocompletion.OnSymbol(symbol);
-            RepeatingInput.OnSymbol(symbol);
         }
 
         public void Draw()
@@ -253,7 +261,6 @@ namespace QuakeConsole.Input
             RepeatingInput.RepeatingInputCooldown = settings.TimeToCooldownRepeatingInput;
             RepeatingInput.TimeUntilRepeatingInput = settings.TimeToTriggerRepeatingInput;
             Selection.Color = settings.SelectionColor;
-            Selection.Enabled = settings.TextSelectionEnabled;
 
             Caret.SetSettings(settings);
         }

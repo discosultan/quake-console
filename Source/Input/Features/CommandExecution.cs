@@ -7,16 +7,12 @@ namespace QuakeConsole.Input.Features
     {
         private ConsoleInput _input;
 
-        public bool Enabled { get; set; } = true;
-
         public Action<string> LogInput { get; set; }
 
         public void LoadContent(ConsoleInput input) => _input = input;
 
         public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return;
-            
             ConsoleOutput output = _input.Console.ConsoleOutput;
 
             switch (action)
@@ -33,19 +29,13 @@ namespace QuakeConsole.Input.Features
                     LogInput?.Invoke(executedCmd);
                     // Execute command.
                     _input.Console.Interpreter.Execute(output, executedCmd);
-                    ResetInput();
+                    _input.Clear();
                     break;
                 case ConsoleAction.NewLine:
                     output.AddCommandEntry(_input.Value);
-                    ResetInput();
+                    _input.Clear();
                     break;
             }
-        }
-
-        private void ResetInput()
-        {
-            _input.Clear();
-            _input.Caret.MoveBy(int.MinValue);
         }
     }
 }

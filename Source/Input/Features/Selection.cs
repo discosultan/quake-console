@@ -12,21 +12,9 @@ namespace QuakeConsole.Input.Features
         private int _selectionIndex2;
 
         private int _previousCaretIndex;
-        private bool _selectionActive;
+        private bool _selectionActive;               
 
-        private bool _enabled = true;
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {                
-                _enabled = value;
-                if (!_enabled)
-                    Clear();
-            }
-        }                
-
-        public bool HasSelection => Enabled && _selectionActive && SelectionLength > 0;
+        public bool HasSelection => _selectionActive && SelectionLength > 0;
         public int SelectionStart { get; private set; }
         public int SelectionLength { get; private set; }
         public string SelectionValue => _input.Substring(SelectionStart, SelectionLength); // TODO: fix

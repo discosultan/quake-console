@@ -4,14 +4,10 @@
     {
         private ConsoleInput _input;
 
-        public bool Enabled { get; set; } = true;
-
         public void LoadContent(ConsoleInput input) => _input = input;
 
         public void OnAction(ConsoleAction action)
         {
-            if (!Enabled) return;
-
             switch (action)
             {
                 case ConsoleAction.MoveLeft:
