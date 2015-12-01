@@ -121,6 +121,9 @@ namespace Sandbox
             _manualInterpreter.RegisterCommand("Set-Cube-Scale", args => _cube.Scale = args.ToVector3());
             _manualInterpreter.RegisterCommand("Set-Cube-Rotation", args => _cube.Rotation = args.ToVector3());
             _manualInterpreter.RegisterCommand("Set-Cube-RotationSpeed", args => _cube.RotationSpeed = args.ToVector3());
+
+            // Register variables with the roslyn interpreter.
+            _roslynInterpreter.AddVariable("tere", 5);
         }
 
         /// <summary>
