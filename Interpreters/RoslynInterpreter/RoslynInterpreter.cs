@@ -4,23 +4,25 @@ using QuakeConsole.Input;
 using QuakeConsole.Output;
 using System;
 using System.Dynamic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace QuakeConsole
 {
-    // Required due to bug: https://github.com/dotnet/roslyn/issues/3194
-    public class Dummy
+    // Required due to missing support for ExpandoObject as global on Roslyn side: https://github.com/dotnet/roslyn/issues/3194
+    public class ExpandoWrapper
     {
-        public ExpandoObject x;
+        public dynamic globals;
     }
 
     public class RoslynInterpreter : ICommandInterpreter
-    {
+    {        
         private const int DefaultRecursionLevel = 3;
 
         private readonly TypeLoader _typeLoader;
-        
-        private Task _warmupTask;        
+        private readonly AutoResetEvent _signal = new AutoResetEvent(true);
+
+        private Task _warmupTask;
         private Script _previousInput;        
 
         /// <summary>
@@ -37,34 +39,42 @@ namespace QuakeConsole
         /// </summary>
         public bool EchoEnabled { get; set; } = true;
 
-        internal dynamic Globals { get; private set; }
+        internal ExpandoWrapper Globals { get; } = new ExpandoWrapper();
 
         public void Autocomplete(IConsoleInput input, bool forward)
         {            
-        }        
+        }
 
         public void Execute(IConsoleOutput output, string command)
-        {            
+        {
             if (EchoEnabled)
                 output.Append(command);
 
-            try
-            {
-                if (!_warmupTask.IsCompleted)
-                    _warmupTask.Wait();
 
-                Script script = _previousInput.ContinueWith(command);
-                ScriptState endState = script.RunAsync(new Dummy { x = Globals }).Result;                
-                _previousInput = endState.Script;
+            if (!_warmupTask.IsCompleted)
+                _warmupTask.Wait();
 
-                if (endState.ReturnValue != null)
-                    output.Append(endState.ReturnValue.ToString());
-            }
-            catch (CompilationErrorException e)
+            Script script = _previousInput.ContinueWith(command);
+            Task.Run(async () =>
             {
-                output.Append(string.Join(Environment.NewLine, e.Diagnostics));
-            }
-        }
+                try
+                {
+                    _signal.WaitOne(); // TODO: timeout
+                    ScriptState endState = await script.RunAsync(Globals);
+                    if (endState.ReturnValue != null)
+                        output.Append(endState.ReturnValue.ToString());                    
+                    _previousInput = endState.Script;                    
+                }
+                catch (CompilationErrorException e)
+                {
+                    output.Append(string.Join(Environment.NewLine, e.Diagnostics));
+                }
+                finally
+                {
+                    _signal.Set();
+                }
+            });
+        }        
 
         /// <summary>
         /// Adds a variable to C# script context.
@@ -81,20 +91,19 @@ namespace QuakeConsole
 
         public void Reset()
         {
+            Globals.globals = new ExpandoObject();
             _warmupTask = Task.Run(async () =>
             {
                 // Assignment and literal evaluation to warm up the scripting context.
-                // Without warmup, there is a considerable delay on first command evaluation since scripts
-                // are being run synchronously.                
+                // Without warmup, there is a considerable delay on first command evaluation.                
                 _previousInput = (await CSharpScript.RunAsync(
-                    "int quakeconsole_dummy_value = 1;",
-                    globalsType: typeof(ExpandoObject),
-                    globals: new ExpandoObject()
+                    code: "int quakeconsole_dummy_value = 1;",
+                    globalsType: typeof(ExpandoWrapper),
+                    globals: Globals,
+                    options: ScriptOptions.Default.WithReferences("System.Dynamic", "Microsoft.CSharp")
                 )).Script;
-            });
-
-            //_previousInput = CSharpScript.Create(null, globalsType: typeof(Dummy));
-            Globals = new ExpandoObject();
+                
+            });            
             _typeLoader.Reset();            
         }                
     }

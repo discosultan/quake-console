@@ -22,7 +22,7 @@ namespace QuakeConsole
             if (recursionLevel < 0)
                 throw new ArgumentOutOfRangeException(nameof(recursionLevel), "Recursion level must be positive.");
 
-            ((IDictionary<string, object>) _interpreter.Globals).Add(name, obj);            
+            ((IDictionary<string, object>) _interpreter.Globals.globals).Add(name, obj);            
 
             //_interpreter.Globals.Add(name, obj);
 

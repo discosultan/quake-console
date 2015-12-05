@@ -32,8 +32,7 @@
                 case ConsoleAction.DeleteCurrentChar:
                     if (_input.Length > _input.Caret.Index)
                         ResetAutocompleteEntry();
-                    break;
-                    // TODO: Reset on line switch.
+                    break;                    
             }
         }
 
