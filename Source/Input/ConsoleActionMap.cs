@@ -2,10 +2,40 @@
 using System.Collections;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
-using QuakeConsole.Utilities;
 
-namespace QuakeConsole.Input
+namespace QuakeConsole
 {
+    public enum ConsoleAction : byte
+    {
+        None,
+        DeletePreviousChar,
+        DeleteCurrentChar,
+        AutocompleteForward,
+        AutocompleteBackward,
+        ExecuteCommand,
+        //MovePreviousLine,
+        //MoveNextLine,
+        NewLine,
+        CapsLock,
+        //NumLock,
+        Space,
+        MoveLeft,
+        MoveLeftWord,
+        MoveToBeginning,
+        MoveRight,
+        MoveRightWord,
+        MoveToEnd,
+        PreviousCommandInHistory,
+        NextCommandInHistory,
+        Cut,
+        Copy,
+        Paste,
+        Tab,
+        RemoveTab,
+        UppercaseModifier,
+        SelectionModifier
+    }
+
     /// <remarks>
     /// <see cref="IEnumerable" /> is implemented only to allow collection initializer syntax.
     /// </remarks>

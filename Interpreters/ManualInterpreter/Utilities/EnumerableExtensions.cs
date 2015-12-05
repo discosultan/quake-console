@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     internal static class EnumerableExtensions
     {

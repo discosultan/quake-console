@@ -1,7 +1,6 @@
 ﻿using System;
-using QuakeConsole.Output;
 
-namespace QuakeConsole.Input.Features
+namespace QuakeConsole
 {
     internal class CommandExecution
     {

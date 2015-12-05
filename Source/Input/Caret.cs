@@ -1,11 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using QuakeConsole.Utilities;
 #if MONOGAME
 using MathUtil = Microsoft.Xna.Framework.MathHelper;
 #endif
 
-namespace QuakeConsole.Input
+namespace QuakeConsole
 {
     internal class Caret
     {

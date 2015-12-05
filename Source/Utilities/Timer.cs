@@ -2,7 +2,7 @@
 using MathUtil = Microsoft.Xna.Framework.MathHelper;
 #endif
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     internal class Timer
     {

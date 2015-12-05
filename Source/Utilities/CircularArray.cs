@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     /// <summary>
     /// Implements <see cref="IEnumerable{T}"/> for LINQ capabilities.

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     internal static class Utilities
     {

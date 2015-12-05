@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuakeConsole.Input;
-using QuakeConsole.Output;
-using QuakeConsole.Utilities;
 #if MONOGAME
 using Texture = Microsoft.Xna.Framework.Graphics.Texture2D;
 using MathUtil = Microsoft.Xna.Framework.MathHelper;

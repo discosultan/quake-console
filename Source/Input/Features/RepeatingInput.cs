@@ -1,7 +1,6 @@
 ﻿using System;
-using QuakeConsole.Utilities;
 
-namespace QuakeConsole.Input.Features
+namespace QuakeConsole
 {    
     internal class RepeatingInput
     {

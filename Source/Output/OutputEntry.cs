@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using QuakeConsole.Utilities;
 
-namespace QuakeConsole.Output
+namespace QuakeConsole
 {
     internal class OutputEntry
     {

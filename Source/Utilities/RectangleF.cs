@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     // Modified conversion to Rectangle from explicit to implicit.
     // Ref: https://github.com/SiliconStudio/paradox/blob/master/sources/common/core/SiliconStudio.Core.Mathematics/RectangleF.cs

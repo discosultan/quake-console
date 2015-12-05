@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 
-namespace QuakeConsole.Input.Features
+namespace QuakeConsole
 {
     internal class InputHistory
     {

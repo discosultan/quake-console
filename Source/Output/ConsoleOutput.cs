@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using QuakeConsole.Utilities;
 using System.Collections.Generic;
 using System.Text;
 using System;
@@ -7,7 +6,7 @@ using System;
 using Microsoft.Xna.Framework;
 #endif
 
-namespace QuakeConsole.Output
+namespace QuakeConsole
 {
     /// <summary>
     /// Output part of the <see cref="Console"/>. Command execution info and results will be appended here.

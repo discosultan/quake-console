@@ -1,7 +1,5 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
-using QuakeConsole.Input;
-using QuakeConsole.Output;
 using System;
 using System.Dynamic;
 using System.Threading;

@@ -1,8 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using QuakeConsole.Utilities;
 
-namespace QuakeConsole.Input.Features
+namespace QuakeConsole
 {
     internal class Selection
     {

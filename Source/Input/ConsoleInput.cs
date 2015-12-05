@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+#if MONOGAME
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using QuakeConsole.Input.Features;
-using QuakeConsole.Utilities;
+#endif
 
-namespace QuakeConsole.Input
+namespace QuakeConsole
 {
     internal partial class ConsoleInput : IConsoleInput
     {

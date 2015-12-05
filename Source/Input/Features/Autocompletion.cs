@@ -1,4 +1,4 @@
-﻿namespace QuakeConsole.Input.Features
+﻿namespace QuakeConsole
 {
     internal class Autocompletion
     {

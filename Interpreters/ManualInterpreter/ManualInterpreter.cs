@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using QuakeConsole.Input;
-using QuakeConsole.Output;
-using QuakeConsole.Utilities;
 
 namespace QuakeConsole
 {

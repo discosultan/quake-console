@@ -1,4 +1,4 @@
-namespace QuakeConsole.Input
+namespace QuakeConsole
 {
     /// <summary>
     /// A contract for the input part of the <see cref="Console"/>. Defines properties and methods

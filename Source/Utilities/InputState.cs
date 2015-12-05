@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     internal class InputState
     {

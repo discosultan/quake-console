@@ -3,7 +3,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     internal class SpriteFontStringBuilder
     {        

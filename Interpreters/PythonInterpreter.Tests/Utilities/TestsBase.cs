@@ -1,5 +1,4 @@
 ﻿using NUnit.Framework;
-using QuakeConsole.Input;
 
 namespace QuakeConsole.Tests.Utilities
 {    

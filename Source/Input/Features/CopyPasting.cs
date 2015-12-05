@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows;
 
-namespace QuakeConsole.Input.Features
+namespace QuakeConsole
 {
     internal class CopyPasting
     {

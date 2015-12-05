@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     /// <remarks>
     /// <see cref="IEnumerable"/> is implemented only to allow collection initializer syntax.

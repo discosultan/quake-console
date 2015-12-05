@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     internal static class Check
     {

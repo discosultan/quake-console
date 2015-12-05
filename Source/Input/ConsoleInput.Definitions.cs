@@ -3,7 +3,7 @@
 using Microsoft.Xna.Framework.Input;
 #endif
 
-namespace QuakeConsole.Input
+namespace QuakeConsole
 {
     internal partial class ConsoleInput
     {
@@ -139,36 +139,5 @@ namespace QuakeConsole.Input
             //{ Keys.Tab, new SymbolPair("\t", "\t") } // Tab char is not supported in many fonts.
             //{ Keys.Tab, new SymbolPair("    ", "    ") } // Use 4 spaces instead.
         };         
-    }
-
-    public enum ConsoleAction : byte
-    {
-        None,
-        DeletePreviousChar,
-        DeleteCurrentChar,
-        AutocompleteForward,
-        AutocompleteBackward,
-        ExecuteCommand,
-        //MovePreviousLine,
-        //MoveNextLine,
-        NewLine,        
-        CapsLock,
-        //NumLock, // TODO: implement
-        Space,
-        MoveLeft,
-        MoveLeftWord,
-        MoveToBeginning,
-        MoveRight,
-        MoveRightWord,
-        MoveToEnd,        
-        PreviousCommandInHistory,                
-        NextCommandInHistory,            
-        Cut,
-        Copy,
-        Paste,
-        Tab,
-        RemoveTab,
-        UppercaseModifier,
-        SelectionModifier        
     }
 }

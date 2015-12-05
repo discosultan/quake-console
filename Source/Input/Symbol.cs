@@ -1,4 +1,4 @@
-﻿namespace QuakeConsole.Input
+﻿namespace QuakeConsole
 {
     /// <summary>
     /// Represents a pair of lowercase and uppercase symbols.

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace QuakeConsole.Utilities
+namespace QuakeConsole
 {
     internal struct Int3 : IEquatable<Int3>
     {
