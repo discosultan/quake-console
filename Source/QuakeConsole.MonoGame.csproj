@@ -55,10 +55,8 @@
       <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.4.0.459\lib\net40\MonoGame.Framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Input\Features\CommandExecution.cs" />
@@ -86,6 +84,7 @@
     <Compile Include="Input\Symbol.cs" />
     <Compile Include="Utilities\BiDirectionalDictionary.cs" />
     <Compile Include="Input\ConsoleActionMap.cs" />
+    <Compile Include="Utilities\Native.cs" />
     <Compile Include="Utilities\Int3.cs" />
     <Compile Include="Utilities\SpriteFontStringBuilder.cs" />
     <Compile Include="Utilities\Check.cs" />
@@ -103,7 +102,6 @@
     <EmbeddedResource Include="Content\Compiled\Background.ogl.mgfxo" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <None Include="Content\Background.fx" />
   </ItemGroup>

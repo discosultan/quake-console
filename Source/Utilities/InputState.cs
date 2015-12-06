@@ -19,9 +19,9 @@ namespace QuakeConsole
             switch (key)
             {
                 case Keys.CapsLock:
-                    return System.Windows.Input.Keyboard.IsKeyToggled(System.Windows.Input.Key.CapsLock);
+                    return Native.IsKeyToggled(Keys.CapsLock);
                 case Keys.NumLock:
-                    return System.Windows.Input.Keyboard.IsKeyToggled(System.Windows.Input.Key.NumLock);
+                    return Native.IsKeyToggled(Keys.NumLock);
                 default:
                     return false;
             }

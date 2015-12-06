@@ -3,42 +3,42 @@ $consoleId = 'QuakeConsole.MonoGame.WindowsDX'
 $pythonInterpreterId = 'QuakeConsole.PythonInterpreter.MonoGame.WindowsDX'
 $manualInterpreterId = 'QuakeConsole.ManualInterpreter.MonoGame.WindowsDX'
 
-$nuspecSuffix = '.debug.nuspec'
-$nupkgSuffix = '-alpha.nupkg'
-
+$versionNumber = Read-Host 'What is the new version?'
 $versionRegex = '(?<=(' + $consoleId + '" version\="|\<version\>))\d+.\d+.\d+'
-$newVersion = Read-Host 'What is the new version?'
 
-# Define functions.
-Function UpdateVersionInFile($fileName)
+# Working dir needs to be passed down to child jobs.
+$workingDir = Get-Location
+
+$createAndPublishPackage =
 {
-	(Get-Content $fileName) | 
-	Foreach-Object {$_ -replace $versionRegex, $newVersion} |
-	Out-File $fileName
-}
-Function GetNuspecFilename($id)
-{
-	return $id + $nuspecSuffix
-}
-Function GetNupkgFilename($id)
-{
-	return $id + '.' + $newVersion + $nupkgSuffix
+	param ([string]$packageId, [string]$versionRegex, [string]$versionNumber, [string]$workingDir)
+	
+	$nuspecSuffix = '.debug.nuspec'
+	$nupkgSuffix = '-alpha.nupkg'
+	
+	$nuspecFile = $packageId + $nuspecSuffix;
+	$nupkgFile = $packageId + '.' + $versionNumber + $nupkgSuffix
+	
+	Set-Location $workingDir	
+	
+	Write-Host Setting $nuspecFile version number to $versionNumber	
+	(Get-Content $nuspecFile) | Foreach-Object {$_ -replace $versionRegex, $versionNumber} | Out-File $nuspecFile
+	Write-Host Packing $nuspecFile
+	nuget pack $nuspecFile -symbols
+	Write-Host Publishing $nupkgFile	
+	nuget push $nupkgFile
 }
 
-# Replace version numbers in nuspec files.
-Write-Host Replacing version numbers
-UpdateVersionInFile (GetNuspecFilename $consoleId) $versionRegex $newVersion
-UpdateVersionInFile (GetNuspecFilename $pythonInterpreterId) $versionRegex $newVersion
-UpdateVersionInFile (GetNuspecFilename $manualInterpreterId) $versionRegex $newVersion
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $consoleId, $versionRegex, $versionNumber, $workingDir
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $pythonInterpreterId, $versionRegex, $versionNumber, $workingDir
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $manualInterpreterId, $versionRegex, $versionNumber, $workingDir
 
-# Create nuget packages with symbol packages.
-Write-Host Creating packages
-nuget pack (GetNuspecFilename $consoleId) -symbols
-nuget pack (GetNuspecFilename $pythonInterpreterId) -symbols
-nuget pack (GetNuspecFilename $manualInterpreterId) -symbols
+# Wait for all jobs to complete and results ready to be received
+Wait-Job * | Out-Null
 
-# Publish nuget packages to nuget.org and symbol packages to symbolsource.org
-Write-Host Publishing packages
-nuget push (GetNupkgFilename $consoleId)
-nuget push (GetNupkgFilename $pythonInterpreterId)
-nuget push (GetNupkgFilename $manualInterpreterId)
+# Process the results
+foreach($job in Get-Job)
+{    
+	$result = Receive-Job $job
+    Write-Host $result
+}
