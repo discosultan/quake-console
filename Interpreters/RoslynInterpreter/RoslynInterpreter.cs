@@ -15,13 +15,13 @@ namespace QuakeConsole
 
     public class RoslynInterpreter : ICommandInterpreter
     {        
-        private const int DefaultRecursionLevel = 3;
+        private const int DefaultTypeLoaderRecursionLevel = 3;
 
         private readonly TypeLoader _typeLoader;
         private readonly AutoResetEvent _signal = new AutoResetEvent(true);
 
         private Task _warmupTask;
-        private Script _previousInput;        
+        private Script _previousInput;
 
         /// <summary>
         /// Constructs a new instance of <see cref="RoslynInterpreter"/>.
@@ -72,19 +72,19 @@ namespace QuakeConsole
                     _signal.Set();
                 }
             });
-        }        
+        }
 
         /// <summary>
         /// Adds a variable to C# script context.
         /// </summary>
         /// <typeparam name="T">Variable type.</typeparam>
-        /// <param name="name">Name of the variable.</param>
+        /// <param name="name">Name by which the variable is accessible in console.</param>
         /// <param name="obj">Instance of the variable.</param>
         /// <param name="recursionLevel">
         /// Determines if subtypes of passed type will also be automatically added to script context
         /// and if then how many levels deep this applies.
         /// </param>
-        public void AddVariable<T>(string name, T obj, int recursionLevel = DefaultRecursionLevel) =>
+        public void AddVariable<T>(string name, T obj, int recursionLevel = DefaultTypeLoaderRecursionLevel) =>
             _typeLoader.AddVariable(name, obj, recursionLevel);
 
         public void Reset()
