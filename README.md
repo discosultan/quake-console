@@ -13,6 +13,7 @@ Quake-style console is an in-game command-line interface with swappable command 
 - [Using QuakeConsole](#setup2)
 - [Setting up console to use PythonInterpreter](#setup3)
 - [Setting up console to use ManualInterpreter](#setup4)
+- [Setting up console to use RoslynInterpreter](#setup5)
 
 
 <h2 id="setup1">Building source and samples</h2>
@@ -20,9 +21,10 @@ Quake-style console is an in-game command-line interface with swappable command 
 
 The following is required to successfully compile the QuakeConsole MonoGame solution:
 
-- Visual studio 2015+ (for C# 6 syntax)
-- .NET Framework 4.6+ (for Roslyn interpreter)
-- [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109) (for effect shaders compilation)
+- Visual studio 2015+
+- .NET Framework 4.6+
+- [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109)
+- MonoGame 3.4+
 
 
 <h2 id="setup2">Using QuakeConsole</h2>
@@ -80,8 +82,14 @@ Sometimes it is desirable to prevent other game systems from accepting input whi
 
 <h2 id="setup3">Setting up console to use PythonInterpreter</h2>
 
-
 Python interpreter can be used to interpret user input as Python code. It is extremely useful to, for example, manipulate game objects *at runtime*.
+
+### Requirements
+
+- MonoGame.WindowsDX 3.4+
+- .NET Framework 4.0+
+
+### Setup
 
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
@@ -99,7 +107,7 @@ console.Interpreter = Interpreter;
 2) To be able to modify game objects through the console, the objects must be added as variables to the IronPython engine (this creates the connection between the CLR and Python object):
 
 ```cs
-interpreter.AddVariable("name", object);
+interpreter.AddVariable("name", myVariable);
 ```
 
 The object's public members can now be accessed from the console using the passed variable's name (press ctrl + space [by default] to autocomplete input to known variables/types/members).
@@ -107,8 +115,14 @@ The object's public members can now be accessed from the console using the passe
 
 <h2 id="setup4">Setting up console to use ManualInterpreter</h2>
 
-
 Manual interpreter can be used to define commands and their corresponding actions for the console manually. Useful to execute some behavior on command or provide players means to input cheat codes, for example.
+
+### Requirements
+
+- MonoGame.WindowsDX 3.4+
+- .NET Framework 4.0+
+
+### Setup
 
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
@@ -135,6 +149,43 @@ where action is of type `Action<string[]>` or `Func<string[], string>`.
 
 Provides autocompletion for registered command names (ctrl + space by default).
 
+
+<h2 id="setup5">Setting up console to use RoslynInterpreter</h2>
+
+
+Roslyn interpreter can be used to interpret user input as C# code using the [Roslyn scripting API](https://github.com/dotnet/roslyn/wiki/Scripting-API-Samples). It is useful to, for example, manipulate game objects *at runtime*.
+
+### Requirements
+
+- MonoGame.WindowsDX 3.4+
+- .NET Framework 4.6+
+
+### Setup
+
+Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
+
+```powershell
+PM> Install-Package QuakeConsole.RoslynInterpreter.MonoGame.WindowsDX -Pre
+```
+
+1) Create the interpreter and set it as the interpreter for the console:
+
+```cs
+var interpreter = new RoslynInterpreter();
+console.Interpreter = Interpreter;
+```
+
+2) To be able to modify game objects through the console, the objects must be added as variables to the C# scripting context:
+
+```cs
+interpreter.AddVariable("name", myVariable);
+```
+
+The object's public members can now be accessed from the console using the passed variable's name.
+
+> Due to [an issue at Roslyn side](https://github.com/dotnet/roslyn/issues/3194), global variables *must be accessed through a 'globals' wrapper object*: `globals.myAddedVariable`
+
+
 # Assemblies
 
 - **QuakeConsole**: The core project for the console. Contains the behavior associated with handling user input and the visual side of the console's window.
@@ -144,7 +195,8 @@ Provides autocompletion for registered command names (ctrl + space by default).
 - **QuakeConsole.PythonInterpreter**: IronPython interpreter for the console shell. Allows manipulating game objects using Python scripting language. Provides autocompletion for loaded .NET types.
 - **QuakeConsole.PythonInterpreter.Tests**: Unit tests covering the expected execution and autocompletion behavior for Python interpreter.
 - **QuakeConsole.ManualInterpreter**: Interpreter for manually defined commands. Provides autocompletion for command names.
+- **QuakeConsole.RoslynInterpreter**: Interpreter using the [Roslyn scripting API](https://github.com/dotnet/roslyn/wiki/Scripting-API-Samples) to execute console input as C# script.
 
 ## Samples
 
-- **Sandbox**: Simple game which sets up the console and allows to manipulate a cube object using either Python or manual interpreter.
+- **Sandbox**: Simple game which sets up the console and allows to manipulate a cube object using either Python, manual or Roslyn interpreter.

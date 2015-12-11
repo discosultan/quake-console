@@ -13,12 +13,17 @@ namespace QuakeConsole
         public dynamic globals;
     }
 
+    /// <summary>
+    /// Executes <see cref="Console"/> commands in a Roslyn C# scripting context. Supports loading .NET types
+    /// and provides autocomplete for them.
+    /// </summary>
     public class RoslynInterpreter : ICommandInterpreter
     {        
         private const int DefaultTypeLoaderRecursionLevel = 3;
 
         private readonly TypeLoader _typeLoader;
-        private readonly AutoResetEvent _signal = new AutoResetEvent(true);
+        private readonly Autocompleter _autocompleter;
+        private readonly AutoResetEvent _executionSignal = new AutoResetEvent(true);
 
         private Task _warmupTask;
         private Script _previousInput;
@@ -27,8 +32,9 @@ namespace QuakeConsole
         /// Constructs a new instance of <see cref="RoslynInterpreter"/>.
         /// </summary>
         public RoslynInterpreter()
-        {            
+        {
             _typeLoader = new TypeLoader(this);
+            _autocompleter = new Autocompleter(_typeLoader);
             Reset();
         }
 
@@ -37,12 +43,22 @@ namespace QuakeConsole
         /// </summary>
         public bool EchoEnabled { get; set; } = true;
 
-        internal ExpandoWrapper Globals { get; } = new ExpandoWrapper();
-
+        /// <summary>
+        /// Tries to autocomplete the current input value in the <see cref="Console"/> <see cref="ConsoleInput"/>.
+        /// </summary>
+        /// <param name="input">Console input.</param>
+        /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
+        /// <remarks>Disabled due to missing dynamic global support: https://github.com/dotnet/roslyn/issues/3194</remarks>
         public void Autocomplete(IConsoleInput input, bool forward)
         {            
+            //_autocompleter.Autocomplete(input, forward);
         }
 
+        /// <summary>
+        /// Executes a console command as C# script.
+        /// </summary>
+        /// <param name="output">Console output buffer to append any output messages.</param>
+        /// <param name="command">Command to execute.</param>
         public void Execute(IConsoleOutput output, string command)
         {
             if (EchoEnabled)
@@ -52,12 +68,12 @@ namespace QuakeConsole
             if (!_warmupTask.IsCompleted)
                 _warmupTask.Wait();
 
-            Script script = _previousInput.ContinueWith(command);
+            Script script = _previousInput.ContinueWith(command, ScriptOptions);
             Task.Run(async () =>
             {
                 try
                 {
-                    _signal.WaitOne(); // TODO: timeout
+                    _executionSignal.WaitOne(); // TODO: timeout
                     ScriptState endState = await script.RunAsync(Globals);
                     if (endState.ReturnValue != null)
                         output.Append(endState.ReturnValue.ToString());                    
@@ -69,7 +85,7 @@ namespace QuakeConsole
                 }
                 finally
                 {
-                    _signal.Set();
+                    _executionSignal.Set();
                 }
             });
         }
@@ -87,9 +103,20 @@ namespace QuakeConsole
         public void AddVariable<T>(string name, T obj, int recursionLevel = DefaultTypeLoaderRecursionLevel) =>
             _typeLoader.AddVariable(name, obj, recursionLevel);
 
+        /// <summary>
+        /// Removes a variable from the C# script context.
+        /// </summary>
+        /// <param name="name">Name of the variable.</param>
+        /// <returns>True if variable was removed; otherwise false.</returns>
+        public bool RemoveVariable(string name) => _typeLoader.RemoveVariable(name);
+
+        /// <summary>
+        /// Resets the C# script context, clears any references and imports.
+        /// </summary>
         public void Reset()
         {
-            Globals.globals = new ExpandoObject();
+            Globals = new ExpandoWrapper {globals = new ExpandoObject()};
+            ScriptOptions = ScriptOptions.Default.WithReferences("System.Dynamic", "Microsoft.CSharp");
             _warmupTask = Task.Run(async () =>
             {
                 // Assignment and literal evaluation to warm up the scripting context.
@@ -97,12 +124,15 @@ namespace QuakeConsole
                 _previousInput = (await CSharpScript.RunAsync(
                     code: "int quakeconsole_dummy_value = 1;",
                     globalsType: typeof(ExpandoWrapper),
-                    globals: Globals,
-                    options: ScriptOptions.Default.WithReferences("System.Dynamic", "Microsoft.CSharp")
+                    globals: Globals                    
                 )).Script;
                 
             });            
             _typeLoader.Reset();            
-        }                
+        }
+
+        internal ExpandoWrapper Globals { get; private set; }
+
+        internal ScriptOptions ScriptOptions { get; set; }
     }
 }

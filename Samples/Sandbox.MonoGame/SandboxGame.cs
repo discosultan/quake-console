@@ -67,7 +67,7 @@ namespace Sandbox
             // Import threading module and Timer function.
             _pythonInterpreter.RunScript("import threading");
             _pythonInterpreter.RunScript("import random");
-            _pythonInterpreter.RunScript("from threading import Timer");
+            _pythonInterpreter.RunScript("from threading import Timer");            
 
             // There's a bug when trying to change resolution during window resize.
             // https://github.com/mono/MonoGame/issues/3572
@@ -124,6 +124,7 @@ namespace Sandbox
 
             // Register variables with the roslyn interpreter.
             _roslynInterpreter.AddVariable("tere", 5);
+            _roslynInterpreter.AddVariable("cube", _cube);
         }
 
         /// <summary>

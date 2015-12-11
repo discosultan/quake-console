@@ -5,8 +5,10 @@ using System.Reflection;
 
 namespace QuakeConsole
 {
+    // Following the W.E.T principle with this one (from PythonInterpreter).    
     internal class Autocompleter
     {
+        private const string NewKeyword = "new ";
         private const char AccessorSymbol = '.';
         private const char AssignmentSymbol = '=';
         private const char SpaceSymbol = ' ';
@@ -25,17 +27,17 @@ namespace QuakeConsole
         };
         private static readonly Dictionary<Type, string[]> PredefinedAutocompleteEntries = new Dictionary<Type, string[]>
         {
-            { typeof(bool), new[] { "False", "True" } }
+            { typeof(bool), new[] { "false", "true" } }
         };
 
-        private readonly PythonInterpreter _interpreter;
+        internal readonly Dictionary<Type, string[]> _instancesAndStaticsForTypes = new Dictionary<Type, string[]>();
+        internal readonly List<string> _instancesAndStatics = new List<string>();
 
-        private readonly Dictionary<Type, string[]> _instancesAndStaticsForTypes = new Dictionary<Type, string[]>();
-        private readonly List<string> _instancesAndStatics = new List<string>();
+        private readonly TypeLoader _typeLoader;
 
-        public Autocompleter(PythonInterpreter interpreter)
+        public Autocompleter(TypeLoader typeLoader)
         {
-            _interpreter = interpreter;
+            _typeLoader = typeLoader;
         }
 
         public void Autocomplete(IConsoleInput consoleInput, bool isNextValue)
@@ -83,9 +85,9 @@ namespace QuakeConsole
             if (completionType == AutocompletionType.Regular)
             {
                 if (typeToPrefer == null || !string.IsNullOrWhiteSpace(command))
-                    FindAutocompleteForEntries(consoleInput, InstancesAndStatics, command, startIndex, isNextValue);
+                    FindAutocompleteForEntries(consoleInput, InstancesAndStatics, command, startIndex, isNextValue, completionType);
                 else
-                    FindAutocompleteForEntries(consoleInput, GetAvailableNamesForType(typeToPrefer), command, startIndex, isNextValue);
+                    FindAutocompleteForEntries(consoleInput, GetAvailableNamesForType(typeToPrefer), command, startIndex, isNextValue, completionType);
             }
             else // Accessor or assignment or method.
             {
@@ -100,7 +102,7 @@ namespace QuakeConsole
                 // Provide all autocomplete entries in that scenario.
                 if (lastChainLink == null)
                 {
-                    FindAutocompleteForEntries(consoleInput, InstancesAndStatics, command, startIndex, isNextValue);
+                    FindAutocompleteForEntries(consoleInput, InstancesAndStatics, command, startIndex, isNextValue, completionType);
                     return;
                 }
 
@@ -109,11 +111,11 @@ namespace QuakeConsole
                     case AutocompletionType.Accessor:
                         MemberCollection autocompleteValues;
                         if (lastChainLink.IsInstance)
-                            _interpreter.InstanceMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
+                            _typeLoader.InstanceMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
                         else
-                            _interpreter.StaticMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
+                            _typeLoader.StaticMembers.TryGetValue(lastChainLink.Type, out autocompleteValues);
                         if (autocompleteValues == null) break;
-                        FindAutocompleteForEntries(consoleInput, autocompleteValues.Names, command, startIndex, isNextValue);
+                        FindAutocompleteForEntries(consoleInput, autocompleteValues.Names, command, startIndex, isNextValue, completionType);
                         break;
                     case AutocompletionType.Assignment:
                         FindAutocompleteForEntries(
@@ -121,7 +123,8 @@ namespace QuakeConsole
                             GetAvailableNamesForType(lastChainLink.Type),
                             command,
                             startIndex,
-                            isNextValue);
+                            isNextValue,
+                            completionType);
                         break;
                 }
             }
@@ -137,13 +140,13 @@ namespace QuakeConsole
         {
             get
             {
-                if (_interpreter.InstancesAndStaticsDirty)
+                if (_typeLoader.InstancesAndStaticsDirty)
                 {
                     Reset();
-                    _instancesAndStatics.AddRange(_interpreter.Instances.Select(x => x.Key)
+                    _instancesAndStatics.AddRange(_typeLoader.Instances.Select(x => x.Key)
                         .OrderBy(x => x)
-                        .Union(_interpreter.Statics.Select(x => x.Key).OrderBy(x => x)));
-                    _interpreter.InstancesAndStaticsDirty = false;
+                        .Union(_typeLoader.Statics.OrderBy(x => x.Key).SelectMany(x => new[] { NewKeyword + x.Key, x.Key })));
+                    _typeLoader.InstancesAndStaticsDirty = false;
                 }
                 return _instancesAndStatics;
             }
@@ -178,7 +181,7 @@ namespace QuakeConsole
             int newStartIndex = startIndex;
             int newCommandLength = 0;
             for (int i = startIndex; i < consoleInput.Length; i++)
-            {                
+            {
                 if (consoleInput[i] == FunctionEndSymbol)
                     break;
                 if (consoleInput[i] == FunctionParamSeparatorSymbol)
@@ -197,19 +200,19 @@ namespace QuakeConsole
         }
 
         private string[] GetAvailableNamesForType(Type type)
-        {            
+        {
             string[] results;
             if (!_instancesAndStaticsForTypes.TryGetValue(type, out results))
-            {                                    
-                IEnumerable<string> resultsQuery = _interpreter.Instances.Where(x => type.IsAssignableFrom(x.Value.Type))
-                    .Union(_interpreter.Statics.Where(x => type.IsAssignableFrom(x.Value.Type)))
+            {
+                IEnumerable<string> resultsQuery = _typeLoader.Instances.Where(x => type.IsAssignableFrom(x.Value.Type))
+                    .Union(_typeLoader.Statics.Where(x => type.IsAssignableFrom(x.Value.Type)))
                     .Select(x => x.Key);
 
                 string[] predefined;
                 if (PredefinedAutocompleteEntries.TryGetValue(type, out predefined))
                     resultsQuery = predefined.Union(resultsQuery);
 
-                results = resultsQuery.ToArray();               
+                results = resultsQuery.ToArray();
 
                 _instancesAndStaticsForTypes.Add(type, results);
             }
@@ -226,7 +229,7 @@ namespace QuakeConsole
             // Find start index.
             for (int i = previousIndex; i >= 0; i--)
             {
-                if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]))                    
+                if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]))
                     break;
                 lookupIndex = i;
             }
@@ -271,7 +274,7 @@ namespace QuakeConsole
             {
                 char c = consoleInput[i];
                 if (c == SpaceSymbol) continue;
-                if (c == AccessorSymbol) return AutocompletionType.Accessor;                
+                if (c == AccessorSymbol) return AutocompletionType.Accessor;
                 if (c == AssignmentSymbol)
                 {
                     if (i <= 0) return AutocompletionType.Assignment;
@@ -313,21 +316,21 @@ namespace QuakeConsole
             }
             return _accessorChain;
         }
-        
+
         private Member FindLastChainLinkMember(Stack<string> accessorChain)
         {
             if (accessorChain.Count == 0)
                 return null;
 
             string link = accessorChain.Pop();
-            
+
             bool isArrayIndexer = IsArrayIndexer(link, out link);
 
             Member member;
-            if (_interpreter.Instances.TryGetValue(link, out member))
-                member.IsInstance = true;                
-            else if (_interpreter.Statics.TryGetValue(link, out member))
-                member.IsInstance = false;                
+            if (_typeLoader.Instances.TryGetValue(link, out member))
+                member.IsInstance = true;
+            else if (_typeLoader.Statics.TryGetValue(link, out member))
+                member.IsInstance = false;
             else
                 return null;
 
@@ -343,12 +346,12 @@ namespace QuakeConsole
                 MemberCollection membersCollection;
                 if (member.IsInstance)
                 {
-                    if (!_interpreter.InstanceMembers.TryGetValue(member.Type, out membersCollection))
+                    if (!_typeLoader.InstanceMembers.TryGetValue(member.Type, out membersCollection))
                         return null;
                 }
                 else // static type
                 {
-                    if (!_interpreter.StaticMembers.TryGetValue(member.Type, out membersCollection))
+                    if (!_typeLoader.StaticMembers.TryGetValue(member.Type, out membersCollection))
                         return null;
                 }
 
@@ -359,7 +362,7 @@ namespace QuakeConsole
                     return null;
 
                 if (isArrayIndexer)
-                    member = ResolveIndexerType(member);                
+                    member = ResolveIndexerType(member);
 
                 if (accessorChain.Count == 0)
                     return member;
@@ -394,19 +397,20 @@ namespace QuakeConsole
         private Member ResolveIndexerType(Member member)
         {
             var type = member.Type.GetElementType();
-            if (type != null && _interpreter.Statics.TryGetValue(type.Name, out member))
+            if (type != null && _typeLoader.Statics.TryGetValue(type.Name, out member))
                 member.IsInstance = true;
             return member;
         }
 
-        private static void FindAutocompleteForEntries(IConsoleInput consoleInput, IList<string> autocompleteEntries, string command, int startIndex, bool isNextValue)
+        private static void FindAutocompleteForEntries(IConsoleInput consoleInput, IList<string> autocompleteEntries, 
+            string command, int startIndex, bool isNextValue, AutocompletionType completionType)
         {
-            int index = autocompleteEntries.IndexOf(x => x.Equals(command, PythonInterpreter.StringComparisonMethod));            
+            int index = autocompleteEntries.IndexOf(x => x.Equals(command, StringComparison.Ordinal));
             if (index == -1 || consoleInput.LastAutocompleteEntry == null)
                 consoleInput.LastAutocompleteEntry = command;
 
             string inputEntry = consoleInput.LastAutocompleteEntry;
-            Func<string, bool> predicate = x => x.StartsWith(inputEntry, PythonInterpreter.StringComparisonMethod);
+            Func<string, bool> predicate = x => x.StartsWith(inputEntry, StringComparison.Ordinal);
             int firstIndex = autocompleteEntries.IndexOf(predicate);
             if (firstIndex == -1)
                 return;
@@ -418,7 +422,7 @@ namespace QuakeConsole
             {
                 index++;
                 if (index > lastIndex)
-                    index = firstIndex;                
+                    index = firstIndex;
             }
             else
             {
@@ -426,13 +430,18 @@ namespace QuakeConsole
                 if (index < firstIndex)
                     index = lastIndex;                
             }
-            SetAutocompleteValue(consoleInput, startIndex, autocompleteEntries[index]);
+            string autocompleteValue = autocompleteEntries[index];
+            
+            //if (completionType == AutocompletionType.Regular)
+            //    autocompleteValue = nameof(ExpandoWrapper.globals) + AccessorSymbol + autocompleteValue;
+
+            SetAutocompleteValue(consoleInput, startIndex, autocompleteValue);
         }
 
         private static void SetAutocompleteValue(IConsoleInput consoleInput, int startIndex, string autocompleteEntry)
         {
             consoleInput.Remove(startIndex, consoleInput.Length - startIndex);
             consoleInput.Append(autocompleteEntry);
-        }       
+        }
     }
 }

@@ -5,9 +5,10 @@ using System.Reflection;
 
 namespace QuakeConsole
 {
+    // Following the W.E.T principle with this one (from PythonInterpreter).
     internal class TypeLoader
     {
-        // Members starting with these names will not be included.
+        // Members starting with these names will not be loaded.
         private static readonly string[] AutocompleteFilters =
         {
             ".ctor", // Constructor.
@@ -21,77 +22,70 @@ namespace QuakeConsole
             "Void"
         };
 
-        private readonly PythonInterpreter _interpreter;
+        private readonly RoslynInterpreter _interpreter;
+
         private readonly HashSet<string> _referencedAssemblies = new HashSet<string>();
+        private readonly HashSet<string> _imports = new HashSet<string>();
         private readonly HashSet<Type> _addedTypes = new HashSet<Type>();
 
-        internal TypeLoader(PythonInterpreter interpreter)
+        public TypeLoader(RoslynInterpreter interpreter)
         {
             _interpreter = interpreter;
         }
 
-        internal void AddVariable<T>(string name, T obj, int recursionLevel)
+        public Dictionary<Type, MemberCollection> StaticMembers { get; } = new Dictionary<Type, MemberCollection>();
+        public Dictionary<Type, MemberCollection> InstanceMembers { get; } = new Dictionary<Type, MemberCollection>();
+        public Dictionary<string, Member> Instances { get; } = new Dictionary<string, Member>();
+        public Dictionary<string, Member> Statics { get; } = new Dictionary<string, Member>();
+        public bool InstancesAndStaticsDirty { get; set; }
+
+        public void AddVariable<T>(string name, T obj, int recursionLevel)
         {
             if (name == null)
                 throw new ArgumentNullException(nameof(name));
             if (obj == null)
                 throw new ArgumentNullException(nameof(obj));
+            if (recursionLevel < 0)
+                throw new ArgumentOutOfRangeException(nameof(recursionLevel), "Recursion level must be positive.");
 
-            if (_interpreter.Instances.ContainsKey(name))
+            if (Instances.ContainsKey(name))
                 throw new InvalidOperationException("Variable with the name " + name + " already exists.");
 
             Type type = typeof(T);
             if (!type.IsPublic)
-                throw new InvalidOperationException("Only variables of public type can be added.");
-            if (type.DeclaringType != null)
-                throw new InvalidOperationException("Nested types are not supported.");
+                throw new InvalidOperationException("Only variables of public type can be added.");            
 
-            _interpreter.ScriptScope.SetVariable(name, obj);            
+            ((IDictionary<string, object>)_interpreter.Globals.globals).Add(name, obj);
 
             // Add instance.
-            _interpreter.Instances.Add(name, new Member { Name = name, Type = type });
-            _interpreter.InstancesAndStaticsDirty = true;
+            Instances.Add(name, new Member { Name = name, Type = type });
+            InstancesAndStaticsDirty = true;
 
-            if (_interpreter.InstanceMembers.ContainsKey(type))
+            if (InstanceMembers.ContainsKey(type))
                 return;
 
             AddTypeImpl(type, recursionLevel);
         }
 
-        internal bool RemoveVariable(string name)
+        public bool RemoveVariable(string name)
         {
-            _interpreter.Instances.Remove(name);
-            _interpreter.InstancesAndStaticsDirty = true;
-            return _interpreter.ScriptScope.RemoveVariable(name);
+            Instances.Remove(name);
+            InstancesAndStaticsDirty = true;
+            return ((IDictionary<string, object>) _interpreter.Globals.globals).Remove(name);
         }
 
-        internal void AddType(Type type, int recursionLevel)
-        {
-            if (type == null)
-                throw new ArgumentException("type");
-
-            AddTypeImpl(type, recursionLevel);            
-        }
-
-        internal void AddAssembly(Assembly assembly, int recursionLevel)
-        {
-            if (assembly == null)
-                throw new ArgumentException("assembly");
-
-            assembly.GetTypes().ForEach(x => AddTypeImpl(x, recursionLevel));
-        }
-
-        internal void Reset()
+        public void Reset()
         {
             _referencedAssemblies.Clear();
-            _addedTypes.Clear();            
+            _addedTypes.Clear();
+            _imports.Clear();
         }
 
         private bool AddTypeImpl(Type type, int recursionLevel)
         {
             if (type == null)
                 return false;
-            
+
             if (type.IsArray)
             {
                 AddTypeImpl(type.GetElementType(), recursionLevel);
@@ -99,22 +93,22 @@ namespace QuakeConsole
             }
 
             // Load type and stop if it is already loaded.
-            if (!LoadTypeInPython(type))
-                return false;            
+            if (!LoadTypeToScriptContext(type))
+                return false;
 
             // Add static.
-            if (!_interpreter.Statics.ContainsKey(type.Name))
+            if (!Statics.ContainsKey(type.Name))
             {
-                _interpreter.Statics.Add(type.Name, new Member { Name = type.Name, Type = type });
-                _interpreter.InstancesAndStaticsDirty = true;
+                Statics.Add(type.Name, new Member { Name = type.Name, Type = type });
+                InstancesAndStaticsDirty = true;
             }
 
             if (recursionLevel-- > 0)
-            { 
+            {
                 // Add static members.
-                AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, recursionLevel);
+                AddMembers(StaticMembers, type, BindingFlags.Static | BindingFlags.Public, recursionLevel);
                 // Add instance members.
-                AddMembers(_interpreter.InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, recursionLevel);
+                AddMembers(InstanceMembers, type, BindingFlags.Instance | BindingFlags.Public, recursionLevel);
             }
 
             return true;
@@ -127,7 +121,7 @@ namespace QuakeConsole
                 MemberCollection memberInfo = AutocompleteMembersQuery(type.GetMembers(flags));
                 dict.Add(type, memberInfo);
                 for (int i = 0; i < memberInfo.Names.Count; i++)
-                {                        
+                {
                     AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);
                     if (memberInfo.ParamInfos[i] != null)
                     {
@@ -136,28 +130,27 @@ namespace QuakeConsole
                             overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel));
                         });
                     }
-                }               
+                }
             }
         }
-        
-        private bool LoadTypeInPython(Type type)
+
+        private bool LoadTypeToScriptContext(Type type)
         {
             if (type.IsGenericType || // Not a generic type (requires special handling).
-                !type.IsPublic || // Not a public type.
-                //type.IsAbstract && !type.IsSealed || // Not an abstract type. We check for IsSealed because a static class is considered to be abstract AND sealed.
-                type.DeclaringType != null || // IronPython does not support importing nested classes.
-                TypeFilters.Any(x => x.Equals(type.Name, PythonInterpreter.StringComparisonMethod)) || // Not filtered.
+                !type.IsPublic || // Not a public type.                
+                TypeFilters.Any(x => x.Equals(type.Name, StringComparison.Ordinal)) || // Not filtered.
                 !_addedTypes.Add(type)) // Not already added.                 
             {
                 return false;
             }
 
-            var assemblyName = type.Assembly.GetName().Name;
+            string assemblyName = type.Assembly.GetName().Name;
             if (_referencedAssemblies.Add(assemblyName))
-                _interpreter.RunScript("clr.AddReference('" + assemblyName + "')");
+                _interpreter.ScriptOptions = _interpreter.ScriptOptions.AddReferences(type.Assembly);
 
-            string script = "from " + type.Namespace + " import " + type.Name;            
-            _interpreter.RunScript(script);
+            string namespaceName = type.Namespace;
+            if (_imports.Add(namespaceName))
+                _interpreter.ScriptOptions = _interpreter.ScriptOptions.AddImports(namespaceName);
 
             return true;
         }
@@ -167,7 +160,7 @@ namespace QuakeConsole
             var result = new MemberCollection();
 
             var ordered = members.Where(x => !AutocompleteFilters
-                .Any(y => x.Name.StartsWith(y, PythonInterpreter.StringComparisonMethod))) // Filter.
+                .Any(y => x.Name.StartsWith(y, StringComparison.Ordinal))) // Filter.
                 .GroupBy(x => x.Name) // Distinctly named values only.
                 .OrderBy(x => x.Key) // Order alphabetically.            
                 .Select(group => // Pick member from first, param overloads from all
@@ -176,14 +169,14 @@ namespace QuakeConsole
                     return new
                     {
                         firstMember.Name,
-                        Type = firstMember.GetUnderlyingType(), 
+                        Type = firstMember.GetUnderlyingType(),
                         firstMember.MemberType,
                         Parameters =
                             firstMember.MemberType == MemberTypes.Method
-                                ? group.Select(x => ((MethodInfo) x).GetParameters()).ToArray()
+                                ? group.Select(x => ((MethodInfo)x).GetParameters()).ToArray()
                                 : null
                     };
-                });                
+                });
             ordered.ForEach(x => result.Add(x.Name, x.Type, x.MemberType, x.Parameters));
 
             return result;

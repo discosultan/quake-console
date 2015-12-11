@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Sandbox
 {
     public class Cube
-    {        
+    {
         public const int NumIndices = 36;
         public const int NumVertices = 8;
 

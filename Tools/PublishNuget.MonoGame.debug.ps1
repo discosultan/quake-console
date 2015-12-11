@@ -2,6 +2,7 @@
 $consoleId = 'QuakeConsole.MonoGame.WindowsDX'
 $pythonInterpreterId = 'QuakeConsole.PythonInterpreter.MonoGame.WindowsDX'
 $manualInterpreterId = 'QuakeConsole.ManualInterpreter.MonoGame.WindowsDX'
+$roslynInterpreterId = 'QuakeConsole.RoslynInterpreter.MonoGame.WindowsDX'
 
 $versionNumber = Read-Host 'What is the new version?'
 $versionRegex = '(?<=(' + $consoleId + '" version\="|\<version\>))\d+.\d+.\d+'
@@ -32,6 +33,7 @@ $createAndPublishPackage =
 Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $consoleId, $versionRegex, $versionNumber, $workingDir
 Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $pythonInterpreterId, $versionRegex, $versionNumber, $workingDir
 Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $manualInterpreterId, $versionRegex, $versionNumber, $workingDir
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $roslynInterpreterId, $versionRegex, $versionNumber, $workingDir
 
 # Wait for all jobs to complete and results ready to be received
 Wait-Job * | Out-Null

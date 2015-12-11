@@ -4,6 +4,16 @@ using System.Reflection;
 
 namespace QuakeConsole
 {
+    // TODO: pool it?
+    internal class Member
+    {
+        public Type Type { get; set; }
+        public string Name { get; set; }
+        public MemberTypes MemberType { get; set; }
+        public ParameterInfo[][] ParameterInfo { get; set; }
+        public bool IsInstance { get; set; }
+    }
+
     internal class MemberCollection
     {
         public List<string> Names { get; } = new List<string>();
@@ -31,8 +41,8 @@ namespace QuakeConsole
         {
             int index = Names.IndexOf(name);
             if (index < 0)
-                return null;                
-            return GetMemberByIndex(index, isInstance);                        
+                return null;
+            return GetMemberByIndex(index, isInstance);
         }
 
         private Member GetMemberByIndex(int index, bool isInstance)
