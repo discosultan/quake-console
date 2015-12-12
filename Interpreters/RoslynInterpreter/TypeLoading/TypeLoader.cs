@@ -71,7 +71,7 @@ namespace QuakeConsole
         {
             Instances.Remove(name);
             InstancesAndStaticsDirty = true;
-            return ((IDictionary<string, object>) _interpreter.Globals.globals).Remove(name);
+            return ((IDictionary<string, object>) _interpreter.Globals.globals).Remove(name);            
         }
 
         public void Reset()
@@ -79,6 +79,16 @@ namespace QuakeConsole
             _referencedAssemblies.Clear();
             _addedTypes.Clear();
             _imports.Clear();
+        }
+
+        public void AddAssembly(Assembly assembly, int recursionLevel)
+        {                        
+            assembly.GetTypes().ForEach(type => AddTypeImpl(type, recursionLevel));
+        }
+
+        public void AddType(Type type, int recursionLevel)
+        {
+            AddTypeImpl(type, recursionLevel);
         }
 
         private bool AddTypeImpl(Type type, int recursionLevel)

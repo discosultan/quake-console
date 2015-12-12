@@ -1,7 +1,9 @@
 ﻿using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
 using System;
+using System.Collections.Generic;
 using System.Dynamic;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,7 +21,7 @@ namespace QuakeConsole
     /// </summary>
     public class RoslynInterpreter : ICommandInterpreter
     {        
-        private const int DefaultTypeLoaderRecursionLevel = 3;
+        private const int DefaultTypeLoaderRecursionLevel = 2;
 
         private readonly TypeLoader _typeLoader;
         private readonly Autocompleter _autocompleter;
@@ -111,6 +113,39 @@ namespace QuakeConsole
         public bool RemoveVariable(string name) => _typeLoader.RemoveVariable(name);
 
         /// <summary>
+        /// Loads type to to C# scripting context.
+        /// </summary>
+        /// <param name="type">Type to load.</param>
+        /// <param name="recursionLevel">
+        /// Determines if subtypes of passed type will also be automatically added to the scripting context
+        /// and if, then how many levels deep this applies.
+        /// </param>        
+        public void AddType(Type type, int recursionLevel = DefaultTypeLoaderRecursionLevel) =>
+            _typeLoader.AddType(type, recursionLevel);
+
+        /// <summary>
+        /// Loads types to C# scripting context.
+        /// </summary>
+        /// <param name="types">Types to load.</param>
+        /// <param name="recursionLevel">
+        /// Determines if subtypes of passed types will also be automatically added to the scripting context
+        /// and if, then how many levels deep this applies.
+        /// </param>
+        public void AddTypes(IEnumerable<Type> types, int recursionLevel = DefaultTypeLoaderRecursionLevel) =>
+            types.ForEach(type => _typeLoader.AddType(type, recursionLevel));
+
+        /// <summary>
+        /// Loads all the public types from the assembly to C# scripting context.
+        /// </summary>
+        /// <param name="assembly">Assembly to get types from.</param>
+        /// <param name="recursionLevel">
+        /// Determines if subtypes of types in assembly will also be automatically added to the scripting context
+        /// and if, then how many levels deep this applies.
+        /// </param>
+        public void AddAssembly(Assembly assembly, int recursionLevel = DefaultTypeLoaderRecursionLevel) =>
+            _typeLoader.AddAssembly(assembly, recursionLevel);
+
+        /// <summary>
         /// Resets the C# script context, clears any references and imports.
         /// </summary>
         public void Reset()
@@ -124,9 +159,8 @@ namespace QuakeConsole
                 _previousInput = (await CSharpScript.RunAsync(
                     code: "int quakeconsole_dummy_value = 1;",
                     globalsType: typeof(ExpandoWrapper),
-                    globals: Globals                    
-                )).Script;
-                
+                    globals: Globals
+                )).Script;                
             });            
             _typeLoader.Reset();            
         }
