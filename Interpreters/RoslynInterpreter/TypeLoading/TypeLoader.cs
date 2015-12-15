@@ -146,8 +146,7 @@ namespace QuakeConsole
 
         private bool LoadTypeToScriptContext(Type type)
         {
-            if (type.IsGenericType || // Not a generic type (requires special handling).
-                !type.IsPublic || // Not a public type.                
+            if (!type.IsPublic || // Not a public type.                
                 TypeFilters.Any(x => x.Equals(type.Name, StringComparison.Ordinal)) || // Not filtered.
                 !_addedTypes.Add(type)) // Not already added.                 
             {

@@ -113,7 +113,7 @@ namespace QuakeConsole
         public bool RemoveVariable(string name) => _typeLoader.RemoveVariable(name);
 
         /// <summary>
-        /// Loads type to to C# scripting context.
+        /// Loads a type to C# scripting context adding any missing references and using statements.
         /// </summary>
         /// <param name="type">Type to load.</param>
         /// <param name="recursionLevel">
@@ -124,7 +124,7 @@ namespace QuakeConsole
             _typeLoader.AddType(type, recursionLevel);
 
         /// <summary>
-        /// Loads types to C# scripting context.
+        /// Loads types to C# scripting context adding any missing references and using statements.
         /// </summary>
         /// <param name="types">Types to load.</param>
         /// <param name="recursionLevel">
@@ -135,7 +135,8 @@ namespace QuakeConsole
             types.ForEach(type => _typeLoader.AddType(type, recursionLevel));
 
         /// <summary>
-        /// Loads all the public types from the assembly to C# scripting context.
+        /// Loads all the public types from the assembly to C# scripting context adding any missing
+        /// references and using statements.
         /// </summary>
         /// <param name="assembly">Assembly to get types from.</param>
         /// <param name="recursionLevel">
