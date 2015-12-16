@@ -133,13 +133,9 @@ namespace QuakeConsole
                 for (int i = 0; i < memberInfo.Names.Count; i++)
                 {
                     AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);
-                    if (memberInfo.ParamInfos[i] != null)
-                    {
-                        memberInfo.ParamInfos[i].ForEach(overload =>
-                        {
-                            overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel));
-                        });
-                    }
+                                        
+                    memberInfo.ParamInfos[i]?.ForEach(overload =>                    
+                        overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel)));
                 }
             }
         }

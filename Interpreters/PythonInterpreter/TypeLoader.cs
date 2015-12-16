@@ -128,14 +128,9 @@ namespace QuakeConsole
                 dict.Add(type, memberInfo);
                 for (int i = 0; i < memberInfo.Names.Count; i++)
                 {                        
-                    AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);
-                    if (memberInfo.ParamInfos[i] != null)
-                    {
-                        memberInfo.ParamInfos[i].ForEach(overload =>
-                        {
-                            overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel));
-                        });
-                    }
+                    AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);                    
+                    memberInfo.ParamInfos[i]?.ForEach(overload =>
+                        overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel)));
                 }               
             }
         }

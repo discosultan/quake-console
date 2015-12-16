@@ -400,7 +400,7 @@ namespace QuakeConsole
         public float BottomBorderThickness { get; set; } = 0.0f;
         public Texture2D BackgroundTexture { get; set; }
         public Matrix BackgroundTextureTransform { get; set; } = Matrix.Identity;
-        public Color SelectionColor { get; set; } = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+        public Color SelectionColor { get; set; } = new Color(0.6f, 0.6f, 0.6f, 1.0f);
         public string TabSymbol { get; set; } = "    ";
         public bool TextSelectionEnabled { get; set; } = true;
     }

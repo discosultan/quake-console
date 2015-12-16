@@ -16,7 +16,7 @@ namespace QuakeConsole
         public bool HasSelection => _selectionActive && SelectionLength > 0;
         public int SelectionStart { get; private set; }
         public int SelectionLength { get; private set; }
-        public string SelectionValue => _input.Substring(SelectionStart, SelectionLength); // TODO: fix
+        public string SelectionValue => _input.Substring(SelectionStart, SelectionLength);
         public Color Color { get; set; }
 
         public void LoadContent(ConsoleInput input)

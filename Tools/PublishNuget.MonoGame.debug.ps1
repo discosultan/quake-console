@@ -14,19 +14,24 @@ $createAndPublishPackage =
 {
 	param ([string]$packageId, [string]$versionRegex, [string]$versionNumber, [string]$workingDir)
 	
+	$outputDir = "Build\"
 	$nuspecSuffix = '.debug.nuspec'
 	$nupkgSuffix = '-alpha.nupkg'
 	
 	$nuspecFile = $packageId + $nuspecSuffix;
-	$nupkgFile = $packageId + '.' + $versionNumber + $nupkgSuffix
+	$nupkgFile = $outputDir + $packageId + '.' + $versionNumber + $nupkgSuffix
 	
+	# Set working dir, since child job's working dir is not inherited from the caller.
 	Set-Location $workingDir	
+	
+	# Ensure output dir exists.
+	md -Force $outputDir
 	
 	Write-Host Setting $nuspecFile version number to $versionNumber	
 	(Get-Content $nuspecFile) | Foreach-Object {$_ -replace $versionRegex, $versionNumber} | Out-File $nuspecFile
-	Write-Host Packing $nuspecFile
-	nuget pack $nuspecFile -symbols
-	Write-Host Publishing $nupkgFile	
+	Write-Host Packing $nuspecFile 
+	nuget pack $nuspecFile -OutputDirectory $outputDir -symbols	
+	Write-Host Publishing $nupkgFile
 	nuget push $nupkgFile
 }
 

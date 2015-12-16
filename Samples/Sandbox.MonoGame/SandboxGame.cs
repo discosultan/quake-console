@@ -122,9 +122,12 @@ namespace Sandbox
             _manualInterpreter.RegisterCommand("Set-Cube-Rotation", args => _cube.Rotation = args.ToVector3());
             _manualInterpreter.RegisterCommand("Set-Cube-RotationSpeed", args => _cube.RotationSpeed = args.ToVector3());
 
-            // Register variables with the roslyn interpreter.
-            _roslynInterpreter.AddVariable("tere", 5);
+            // Register variables with the roslyn interpreter.            
             _roslynInterpreter.AddVariable("cube", _cube);
+            _roslynInterpreter.AddVariable("console", _console);
+            _roslynInterpreter.AddVariable("pythonInterpreter", _pythonInterpreter);
+            _roslynInterpreter.AddVariable("manualInterpreter", _manualInterpreter);
+            _roslynInterpreter.AddVariable("roslynInterpreter", _roslynInterpreter);
         }
 
         /// <summary>

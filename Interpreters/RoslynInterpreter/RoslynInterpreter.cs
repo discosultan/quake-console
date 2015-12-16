@@ -28,7 +28,7 @@ namespace QuakeConsole
         private readonly AutoResetEvent _executionSignal = new AutoResetEvent(true);
 
         private Task _warmupTask;
-        private Script _previousInput;
+        private ScriptState _scriptState;
 
         /// <summary>
         /// Constructs a new instance of <see cref="RoslynInterpreter"/>.
@@ -70,16 +70,15 @@ namespace QuakeConsole
             if (!_warmupTask.IsCompleted)
                 _warmupTask.Wait();
 
-            Script script = _previousInput.ContinueWith(command, ScriptOptions);
             Task.Run(async () =>
             {
                 try
                 {
                     _executionSignal.WaitOne(); // TODO: timeout
-                    ScriptState endState = await script.RunAsync(Globals);
-                    if (endState.ReturnValue != null)
-                        output.Append(endState.ReturnValue.ToString());                    
-                    _previousInput = endState.Script;                    
+
+                    _scriptState = await _scriptState.ContinueWithAsync(command, ScriptOptions);
+                    if (_scriptState.ReturnValue != null)
+                        output.Append(_scriptState.ReturnValue.ToString());
                 }
                 catch (CompilationErrorException e)
                 {
@@ -153,17 +152,17 @@ namespace QuakeConsole
         {
             Globals = new ExpandoWrapper {globals = new ExpandoObject()};
             ScriptOptions = ScriptOptions.Default.WithReferences("System.Dynamic", "Microsoft.CSharp");
+            _typeLoader.Reset();
             _warmupTask = Task.Run(async () =>
             {
                 // Assignment and literal evaluation to warm up the scripting context.
                 // Without warmup, there is a considerable delay on first command evaluation.                
-                _previousInput = (await CSharpScript.RunAsync(
+                _scriptState = await CSharpScript.RunAsync(
                     code: "int quakeconsole_dummy_value = 1;",
                     globalsType: typeof(ExpandoWrapper),
                     globals: Globals
-                )).Script;                
-            });            
-            _typeLoader.Reset();            
+                );
+            });                        
         }
 
         internal ExpandoWrapper Globals { get; private set; }

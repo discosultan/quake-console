@@ -24,7 +24,11 @@ namespace QuakeConsole
                     if (_input.Selection.HasSelection)
                         Native.SetClipboardText(_input.Selection.SelectionValue);
                     break;
-                case ConsoleAction.Paste:                    
+                case ConsoleAction.Paste:
+                    // Clear any selected input.
+                    if (_input.Selection.HasSelection)
+                        _input.Remove(_input.Selection.SelectionStart, _input.Selection.SelectionLength);
+
                     string clipboardVal = Native.GetClipboardText().Replace("\n", _input.Console.NewlineSymbol);
                     clipboardVal = clipboardVal.Replace("\t", _input.Console.TabSymbol);
                     _singleElementArray[0] = _input.Console.NewlineSymbol;
