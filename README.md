@@ -189,7 +189,9 @@ interpreter.AddVariable("name", myVariable);
 
 The object's public members can now be accessed from the console using the passed variable's name.
 
-> Due to [an issue at Roslyn side](https://github.com/dotnet/roslyn/issues/3194), global variables *must be accessed through a 'globals' wrapper object*: `globals.myAddedVariable`
+> Due to [an issue at Roslyn side](https://github.com/dotnet/roslyn/issues/3194), global variables *must be accessed through a 'globals' wrapper object*: `globals.myVariable`
+
+> RoslynInterpreter does not provide any autocompletion features.
 
 
 # Assemblies
