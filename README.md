@@ -24,7 +24,7 @@ The following is required to successfully compile the QuakeConsole MonoGame solu
 - Visual studio 2015+
 - .NET Framework 4.6+
 - [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109)
-- MonoGame 3.4+
+- MonoGame 3.5+
 
 
 <h2 id="setup2">Using QuakeConsole</h2>
@@ -33,8 +33,8 @@ The following is required to successfully compile the QuakeConsole MonoGame solu
 
 ### Requirements
 
-- MonoGame.WindowsDX 3.4+
-- .NET Framework 4.0+
+- MonoGame.WindowsDX 3.5+
+- .NET Framework 4.5+
 
 ### Setup
 
@@ -92,8 +92,8 @@ Python interpreter can be used to interpret user input as Python code. It is ext
 
 ### Requirements
 
-- MonoGame.WindowsDX 3.4+
-- .NET Framework 4.0+
+- MonoGame.WindowsDX 3.5+
+- .NET Framework 4.5+
 
 ### Setup
 
@@ -125,8 +125,8 @@ Manual interpreter can be used to define commands and their corresponding action
 
 ### Requirements
 
-- MonoGame.WindowsDX 3.4+
-- .NET Framework 4.0+
+- MonoGame.WindowsDX 3.5+
+- .NET Framework 4.5+
 
 ### Setup
 
@@ -163,7 +163,7 @@ Roslyn interpreter can be used to interpret user input as C# code using the [Ros
 
 ### Requirements
 
-- MonoGame.WindowsDX 3.4+
+- MonoGame.WindowsDX 3.5+
 - .NET Framework 4.6+
 
 ### Setup
