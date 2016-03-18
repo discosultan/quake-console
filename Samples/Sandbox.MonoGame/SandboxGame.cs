@@ -95,7 +95,7 @@ namespace Sandbox
             _cube = new Cube(GraphicsDevice, _effect);
 
             // Set console's font and interpreter.
-            _console.LoadContent(_arial, _roslynInterpreter);            
+            _console.LoadContent(_arial, _pythonInterpreter);            
             _console.BackgroundTexture = Content.Load<Texture2D>("console");            
 
             // Register variables and types of interest with the Python interpreter.
