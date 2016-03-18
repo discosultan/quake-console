@@ -51,8 +51,8 @@ namespace Sandbox
             
             _effect.World = _world;
             _effect.CurrentTechnique.Passes[0].Apply();
-
-            _device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, NumVertices, 0, NumIndices / 3);
+            
+            _device.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, NumIndices / 3);
         }
 
         void CreateCubeVertexBuffer()
