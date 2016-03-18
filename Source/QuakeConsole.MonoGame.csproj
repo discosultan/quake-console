@@ -30,9 +30,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\MonoGame\</OutputPath>    
+    <OutputPath>bin\Release\MonoGame\</OutputPath>
     <DocumentationFile>bin\Release\MonoGame\QuakeConsole.MonoGame.xml</DocumentationFile>
-    <DefineConstants>TRACE;MONOGAME</DefineConstants>
+    <DefineConstants>TRACE;MONOGAME;DIRECTX</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>
