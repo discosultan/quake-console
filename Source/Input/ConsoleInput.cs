@@ -268,8 +268,8 @@ namespace QuakeConsole
         public override string ToString() => Value;
 
         private void CalculateInputPrefixWidth()
-        {
-            InputPrefixSize = Console.Font.MeasureString(InputPrefix);
+        {            
+            InputPrefixSize = Console.Font.MeasureString(InputPrefix) + new Vector2(Console.Font.Spacing, 0);            
         }
 
         private void CalculateStartAndEndIndices()
@@ -280,9 +280,7 @@ namespace QuakeConsole
                 windowWidth -= Caret.Width;
 
             while (CaretIndex <= VisibleStartIndex && VisibleStartIndex > 0)
-                VisibleStartIndex = Math.Max(VisibleStartIndex - NumPositionsToMoveWhenOutOfScreen, 0);
-
-            //_visibleLength = MathUtil.Clamp(_visibleLength, _input.Caret.Index, _input.Length);
+                VisibleStartIndex = Math.Max(VisibleStartIndex - NumPositionsToMoveWhenOutOfScreen, 0);            
 
             float widthProgress = 0f;
             VisibleLength = 0;
@@ -295,7 +293,7 @@ namespace QuakeConsole
                 float charWidth;
                 if (!Console.CharWidthMap.TryGetValue(c, out charWidth))
                 {
-                    charWidth = Console.Font.MeasureString(c.ToString()).X;
+                    charWidth = Console.Font.MeasureString(c.ToString()).X + Console.Font.Spacing;
                     Console.CharWidthMap.Add(c, charWidth);
                 }
 

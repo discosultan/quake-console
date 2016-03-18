@@ -50,7 +50,7 @@ namespace QuakeConsole
                 float charWidth;
                 if (!_view.Console.CharWidthMap.TryGetValue(c, out charWidth))
                 {
-                    charWidth += _view.Console.Font.MeasureString(c.ToString()).X;
+                    charWidth += _view.Console.Font.MeasureString(c.ToString()).X + _view.Console.Font.Spacing;
                     _view.Console.CharWidthMap.Add(c, charWidth);
                 }
 

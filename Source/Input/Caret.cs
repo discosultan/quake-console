@@ -93,7 +93,7 @@ namespace QuakeConsole
 
         private void CalculateSymbolWidth()
         {            
-            Width = _input.Console.Font.MeasureString(Symbol).X;            
+            Width = _input.Console.Font.MeasureString(Symbol).X + _input.Console.Font.Spacing;            
         }              
     }
 }
