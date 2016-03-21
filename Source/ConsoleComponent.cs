@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Content;
 
 namespace QuakeConsole
 {
@@ -289,23 +290,17 @@ namespace QuakeConsole
         /// </summary>
         public IConsoleOutput Output => _console.ConsoleOutput;
 
-        /// <summary>
-        /// Loads graphics resources and optionally interpreter for the console.
-        /// </summary>
-        /// <param name="font">Font used to render console text.</param>
-        /// <param name="commandInterpreter">
-        /// Interpreter that evaluates and operates on user input commands.
-        /// Pass NULL to use a stub command interpreter instead (useful for testing out shell itself).
-        /// </param>
-        public void LoadContent(SpriteFont font, ICommandInterpreter commandInterpreter = null)
+        /// <inheritdoc/>
+        public override void Initialize()
         {
+            var resourceContent = new ResourceContentManager(Game.Services, Resource.ResourceManager);
             _console.LoadContent(
                 GraphicsDevice,
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
-                font,
-                commandInterpreter);
+                resourceContent.Load<SpriteFont>("qc_console"),
+                resourceContent.Load<Effect>("qc_background"));
             _initialized = true;
-        }        
+        }
 
         /// <inheritdoc/>
         public override void Update(GameTime gameTime)
@@ -337,7 +332,7 @@ namespace QuakeConsole
         private void EnsureInitialized()
         {
             if (!_initialized)
-                throw new InvalidOperationException($"{nameof(ConsoleComponent)} must be initialized by calling {nameof(LoadContent)}.");
+                throw new InvalidOperationException($"{nameof(ConsoleComponent)} must be initialized first!");
         }
     }
 }

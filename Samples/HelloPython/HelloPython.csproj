@@ -7,7 +7,7 @@
     <ProjectGuid>{C56127DB-8995-48E4-A417-FC656B1BC6BF}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>HelloPython</RootNamespace>
+    <RootNamespace>QuakeConsole.Samples.HelloPython</RootNamespace>
     <AssemblyName>HelloPython</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MonoGamePlatform>Windows</MonoGamePlatform>
@@ -45,15 +45,15 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InstructionsComponent.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="HelloPythonGame.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Content\arial.spritefont" />
     <MonoGameContentReference Include="Content\Content.mgcb" />
-    <None Include="Content\lucida_console.spritefont" />
+    <None Include="Content\instructions.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

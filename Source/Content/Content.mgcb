@@ -1,7 +1,7 @@
 
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:bin/Windows
+/outputDir:Compiled
 /intermediateDir:obj/Windows
 /platform:Windows
 /config:
@@ -13,9 +13,15 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin background.fx
+#begin qc_background.fx
 /importer:EffectImporter
 /processor:EffectProcessor
 /processorParam:DebugMode=Auto
-/build:background.fx
+/build:qc_background.fx
+
+#begin qc_console.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:TextureFormat=Compressed
+/build:qc_console.spritefont
 

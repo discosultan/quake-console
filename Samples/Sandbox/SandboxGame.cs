@@ -4,20 +4,15 @@ using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using QuakeConsole;
-using Common;
+using QuakeConsole.Samples.Common;
 
-namespace Sandbox
-{
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
+namespace QuakeConsole.Samples.Sandbox
+{    
     public class SandboxGame : Game
     {        
         private const Keys ToggleConsole = Keys.OemTilde;
         private const float ConsoleBackgroundSpeedFactor = 1/24f;        
-        //private static readonly Color BackgroundColor = new Color(0x1d, 0x1d, 0x1d, 0xff);
-        private static readonly Color BackgroundColor = new Color(0.125f, 0.125f, 0.125f);
+        private static readonly Color BackgroundColor = new Color(new Vector3(0.125f));
         private static readonly Color ForegroundColor = Color.White;
         private static readonly Color SelectionColor = Color.DarkGray;
         private static readonly Vector2 ConsoleBackgroundTiling = new Vector2(2.5f, 1.5f);
@@ -82,19 +77,16 @@ namespace Sandbox
             IsMouseVisible = true;
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);            
 
             _arial = Content.Load<SpriteFont>("arial");
-            _lucidaConsole = Content.Load<SpriteFont>("lucida_console");                               
+            _lucidaConsole = Content.Load<SpriteFont>("lucida_console");
 
             // Set console's font and interpreter.
-            _console.LoadContent(_arial, _pythonInterpreter);            
+            //_console.LoadContent(_arial, _pythonInterpreter);            
+            _console.Interpreter = _pythonInterpreter;
             _console.BackgroundTexture = Content.Load<Texture2D>("console");            
 
             // Register variables and types of interest with the Python interpreter.
@@ -129,11 +121,6 @@ namespace Sandbox
             _roslynInterpreter.AddVariable("roslynInterpreter", _roslynInterpreter);
         }
 
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
@@ -156,10 +143,6 @@ namespace Sandbox
             base.Update(gameTime);
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(BackgroundColor);

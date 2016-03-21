@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Common
+namespace QuakeConsole.Samples.Common
 {
     public class CubeComponent : DrawableGameComponent
     {
@@ -29,10 +29,22 @@ namespace Common
         public override void Initialize()
         {
             base.Initialize();
+
             _world = Matrix.Identity;
-            _effect = new BasicEffect(GraphicsDevice) { VertexColorEnabled = true };
+            _effect = new BasicEffect(GraphicsDevice) { VertexColorEnabled = true };            
+
             CreateCubeVertexBuffer();
             CreateCubeIndexBuffer();
+
+            // Set default view and projection.
+            Projection = Matrix.CreatePerspectiveFieldOfView(
+                MathHelper.PiOver4,
+                GraphicsDevice.Viewport.Width / (float)GraphicsDevice.Viewport.Height,
+                0.1f, 1000);
+            View = Matrix.CreateLookAt(
+                new Vector3(0, 5, 10),
+                Vector3.Zero,
+                new Vector3(0, 0.9238795f, -0.3826835f));
         }        
 
         public override void Update(GameTime gameTime)

@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Common
+namespace QuakeConsole.Samples.Common
 {
     public class CameraControllerComponent : GameComponent
     {

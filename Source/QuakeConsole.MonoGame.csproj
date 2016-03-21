@@ -55,6 +55,11 @@
     <Compile Include="Input\Features\Tabbing.cs" />
     <Compile Include="Input\Features\Movement.cs" />
     <Compile Include="Input\Features\CopyPasting.cs" />
+    <Compile Include="Resource.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resource.resx</DependentUpon>
+    </Compile>
     <Compile Include="TexturedBackground.cs" />
     <Compile Include="Input\Caret.cs" />
     <Compile Include="ConsoleComponent.cs" />
@@ -87,12 +92,19 @@
   <ItemGroup>
     <None Include="App.config" />
     <MonoGameContentReference Include="Content\Content.mgcb" />
-    <EmbeddedResource Include="Content\Compiled\Background.dx11.mgfxo" />
-    <EmbeddedResource Include="Content\Compiled\Background.ogl.mgfxo" />
+    <None Include="Content\Compiled\qc_background.xnb" />
+    <None Include="Content\Compiled\qc_console.xnb" />
+    <None Include="Content\qc_console.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\Background.fx" />
+    <EmbeddedResource Include="Resource.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\qc_background.fx" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
@@ -101,8 +113,8 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>$(SolutionDir)Tools\2mgfx $(ProjectDir)Content\Background.fx $(ProjectDir)Content\Compiled\Background.dx11.mgfxo /Profile:DirectX_11
-$(SolutionDir)Tools\2mgfx $(ProjectDir)Content\Background.fx $(ProjectDir)Content\Compiled\Background.ogl.mgfxo /Profile:OpenGL</PreBuildEvent>
+    <PreBuildEvent>
+    </PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

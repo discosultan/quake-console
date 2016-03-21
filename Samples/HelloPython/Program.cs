@@ -1,4 +1,4 @@
-﻿namespace HelloPython
+﻿namespace QuakeConsole.Samples.HelloPython
 {
     class Program
     {

@@ -19,9 +19,10 @@ namespace QuakeConsole
 
         private readonly Timer _transitionTimer = new Timer { AutoReset = false };
 
-        private ICommandInterpreter _commandInterpreter;
+        private ICommandInterpreter _commandInterpreter = new StubCommandInterpreter();
         private GraphicsDeviceManager _graphicsDeviceManager;
-                
+
+        private SpriteFont _defaultFont;
         private SpriteFont _font;
         private RectangleF _windowArea;        
         private float _padding;
@@ -53,9 +54,8 @@ namespace QuakeConsole
         {
             get { return _font; }
             set
-            {
-                Check.ArgumentNotNull(value, nameof(value), "Font cannot be null.");
-                _font = value;                
+            {                
+                _font = value ?? _defaultFont;
                 CharWidthMap.Clear();
                 MeasureFontSize();
                 FontChanged?.Invoke(this, EventArgs.Empty);               
@@ -143,15 +143,16 @@ namespace QuakeConsole
         }
 
         public void LoadContent(GraphicsDevice device, GraphicsDeviceManager deviceManager,
-            SpriteFont font, ICommandInterpreter commandInterpreter)
+            SpriteFont font, Effect bgEffect)
         {
             Check.ArgumentNotNull(deviceManager, nameof(deviceManager), "Cannot instantiate the console without graphics device manager.");
             Check.ArgumentNotNull(font, nameof(font), "Cannot instantiate the console without a font.");
-
-            Interpreter = commandInterpreter;
+            
             GraphicsDevice = device;
             _graphicsDeviceManager = deviceManager;
-            Font = font;
+            _defaultFont = font;
+            if (Font == null)
+                Font = _defaultFont;
 
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -169,7 +170,7 @@ namespace QuakeConsole
 
             ConsoleInput.LoadContent(this);
             ConsoleOutput.LoadContent(this);
-            BgRenderer.LoadContent(this);
+            BgRenderer.LoadContent(this, bgEffect);
         }
 
         public void Dispose()

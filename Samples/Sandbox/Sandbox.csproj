@@ -8,7 +8,7 @@
     <ProjectGuid>{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Sandbox</RootNamespace>
+    <RootNamespace>QuakeConsole.Samples.Sandbox</RootNamespace>
     <AssemblyName>Sandbox</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>

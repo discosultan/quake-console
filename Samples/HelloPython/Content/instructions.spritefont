@@ -11,7 +11,7 @@ with.
     <!--
     Modify this string to change the font that will be imported.
     -->
-    <FontName>Arial Bold</FontName>    
+    <FontName>Lucida Console</FontName>
 
     <!--
     Size is a float value, measured in points. Modify this value to change
@@ -23,13 +23,13 @@ with.
     Spacing is a float value, measured in pixels. Modify this value to change
     the amount of spacing in between characters.
     -->
-    <Spacing>4</Spacing>
+    <Spacing>0</Spacing>
 
     <!--
     UseKerning controls the layout of the font. If this value is true, kerning information
     will be used when placing characters.
     -->
-    <UseKerning>false</UseKerning>
+    <UseKerning>true</UseKerning>
 
     <!--
     Style controls the style of the font. Valid entries are "Regular", "Bold", "Italic",
@@ -52,8 +52,8 @@ with.
     -->
     <CharacterRegions>
       <CharacterRegion>
-        <Start>&#09;</Start>
-        <End>&#255;</End>
+        <Start>&#32;</Start>
+        <End>&#126;</End>
       </CharacterRegion>
     </CharacterRegions>
   </Asset>

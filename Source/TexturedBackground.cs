@@ -18,16 +18,13 @@ namespace QuakeConsole
 
         private Matrix _wvp;
 
-        public void LoadContent(Console console)
+        public void LoadContent(Console console, Effect effect)
         {
             _console = console;
             _console.WindowAreaChanged += (s, e) => CreateWvp();
             CreateWvp();
-#if DIRECTX
-            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Compiled.Background.dx11.mgfxo");
-#else
-            _bgEffect = LoadEffectFromEmbeddedResource("QuakeConsole.Content.Compiled.Background.ogl.mgfxo");
-#endif
+            
+            _bgEffect = effect;
             _bgEffectTexture = _bgEffect.Parameters["Texture"];
             _bgEffectWvpTransform = _bgEffect.Parameters["WvpTransform"];
             _bgEffectTexTransform = _bgEffect.Parameters["TextureTransform"];
@@ -94,15 +91,14 @@ namespace QuakeConsole
 
         private void CreateWvp()
         {
-            var projection = Matrix.CreateOrthographicOffCenter(0, _console.GraphicsDevice.Viewport.Width,
-                _console.GraphicsDevice.Viewport.Height, 0, 0, 1);
-            _wvp = 
-                Matrix.CreateScale(new Vector3(
-                    _console.WindowArea.Width,
-                    _console.WindowArea.Height,
-                    0))
-                * Matrix.CreateTranslation(new Vector3(0, _console.WindowArea.Y, 0))
-                * projection;
+            var projection = Matrix.CreateOrthographicOffCenter(
+                0, 
+                _console.GraphicsDevice.Viewport.Width,
+                _console.GraphicsDevice.Viewport.Height, 
+                0, 0, 1);
+            _wvp = Matrix.CreateScale(new Vector3(_console.WindowArea.Width, _console.WindowArea.Height, 0))*
+                   Matrix.CreateTranslation(new Vector3(0, _console.WindowArea.Y, 0))*
+                   projection;
 
         }        
     }

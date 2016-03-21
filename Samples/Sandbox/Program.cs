@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Sandbox
+﻿namespace QuakeConsole.Samples.Sandbox
 {
 #if WINDOWS || LINUX
     /// <summary>

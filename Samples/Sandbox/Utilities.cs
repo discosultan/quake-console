@@ -2,7 +2,7 @@
 using System.Globalization;
 using Microsoft.Xna.Framework;
 
-namespace Sandbox
+namespace QuakeConsole.Samples.Sandbox
 {
     public static class Utilities
     {
