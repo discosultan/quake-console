@@ -58,18 +58,8 @@ public Game1()
   Components.Add(console);
 }
 ```
-2) A `SpriteFont` is required so that the console can use it to render its output. Make sure to initialize the console in the `LoadContent` method:
 
-```cs
-protected override void LoadContent()
-{
-  // ...  
-  // load font here
-  console.LoadContent(font);
-}
-```
-
-3) The console must be opened for it to accept user input. This is usually done in the update method by checking for a key press (the tilde key, for example):
+2) The console must be opened for it to accept user input. This is usually done in the update method by checking for a key press (the tilde key, for example):
 
 ```cs
 protected override void Update(GameTime gameTime)
@@ -83,7 +73,7 @@ protected override void Update(GameTime gameTime)
 
 This has setup the console shell. For the console to actually do anything useful on user input, an interpreter must be configured (see below).
 
-Sometimes it is desirable to prevent other game systems from accepting input while the console window is open. To do this, it is required to know if the console is currently open (accepting input) or closed. This can be done by using the  `console.IsAcceptingInput` property.
+Sometimes it is desirable to prevent other game systems from accepting input while the console window is open. For this, it is required to know if the console is currently open (accepting input) or closed. This can be checked by the  `console.IsAcceptingInput` property.
 
 
 <h2 id="setup3">Setting up console to use PythonInterpreter</h2>
