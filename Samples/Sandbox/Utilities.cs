@@ -35,9 +35,7 @@ namespace Sandbox
         private static void ReplaceCommasWithDots(string[] args)
         {
             for (int i = 0; i < args.Length; ++i)
-            {
                 args[i] = args[i].Replace(',', '.');
-            }
         }
     }
 }

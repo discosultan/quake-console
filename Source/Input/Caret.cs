@@ -78,8 +78,12 @@ namespace QuakeConsole
         {
             if (_drawCaret)
             {
+                float offset = _input.Console.Padding + _input.InputPrefixSize.X;
+                float positionX = _input.MeasureSubstring(_input.VisibleStartIndex, Index - _input.VisibleStartIndex).X;
+                if (positionX > 0)
+                    positionX += _input.Console.Font.Spacing;
                 Vector2 position = new Vector2(
-                    _input.Console.Padding + _input.InputPrefixSize.X + _input.MeasureSubstring(_input.VisibleStartIndex, Index - _input.VisibleStartIndex).X,
+                     offset + positionX,
                     _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y);
                 _input.Console.SpriteBatch.DrawString(_input.Console.Font, Symbol, position, _input.Console.FontColor);
             }
