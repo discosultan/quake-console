@@ -12,11 +12,11 @@ $workingDir = Get-Location
 
 $createAndPublishPackage =
 {
-	param ([string]$packageId, [string]$versionRegex, [string]$versionNumber, [string]$workingDir)
+	param ([string]$packageId, [string]$versionRegex, [string]$versionNumber, [string]$workingDir, [bool]$prerelease)
 	
-	$outputDir = "Build\"
-	$nuspecSuffix = '.debug.nuspec'
-	$nupkgSuffix = '-alpha.nupkg'
+	$outputDir = 'packages\'
+	$nuspecSuffix = '.nuspec'    
+    $nupkgSuffix = If ($prerelease) { '-alpha.nupkg' } Else { '.nupkg' }	
 	
 	$nuspecFile = $packageId + $nuspecSuffix;
 	$nupkgFile = $outputDir + $packageId + '.' + $versionNumber + $nupkgSuffix
@@ -35,10 +35,10 @@ $createAndPublishPackage =
 	nuget push $nupkgFile
 }
 
-Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $consoleId, $versionRegex, $versionNumber, $workingDir
-Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $pythonInterpreterId, $versionRegex, $versionNumber, $workingDir
-Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $manualInterpreterId, $versionRegex, $versionNumber, $workingDir
-Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $roslynInterpreterId, $versionRegex, $versionNumber, $workingDir
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $consoleId, $versionRegex, $versionNumber, $workingDir, $False
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $pythonInterpreterId, $versionRegex, $versionNumber, $workingDir, $False
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $manualInterpreterId, $versionRegex, $versionNumber, $workingDir, $True
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $roslynInterpreterId, $versionRegex, $versionNumber, $workingDir, $True
 
 # Wait for all jobs to complete and results ready to be received
 Wait-Job * | Out-Null
