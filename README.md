@@ -6,6 +6,7 @@ Quake-style console is an in-game command-line interface with swappable command 
 
 - https://www.youtube.com/watch?v=Is2m2oQ68Gc
 - https://www.youtube.com/watch?v=oVWqy16W0ak
+- https://www.youtube.com/watch?v=qJeCu-YB8Os
 
 # Getting Started
 
@@ -41,7 +42,7 @@ The following is required to successfully compile the QuakeConsole MonoGame solu
 Install the console assembly through NuGet:
 
 ```powershell
-PM> Install-Package QuakeConsole.MonoGame.WindowsDX -Pre
+PM> Install-Package QuakeConsole.MonoGame.WindowsDX
 ```
 
 The console itself is a typical `DrawableGameComponent`. The following steps will go through setting it up in a game.
@@ -90,7 +91,7 @@ Python interpreter can be used to interpret user input as Python code. It is ext
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-PM> Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX -Pre
+PM> Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
