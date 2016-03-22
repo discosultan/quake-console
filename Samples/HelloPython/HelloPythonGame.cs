@@ -15,7 +15,8 @@ namespace QuakeConsole.Samples.HelloPython
         private KeyboardState _currentKeyState;
 
         public HelloPythonGame()
-        {             
+        {
+            Window.Title = "Hello Python in MonoGame :)";
             _graphics = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = 1280,
@@ -26,7 +27,7 @@ namespace QuakeConsole.Samples.HelloPython
             var cube = new CubeComponent(this);
             Components.Add(cube);
 
-            // Create the console component.
+            // Create a console component.
             _console = new ConsoleComponent(this);
             Components.Add(_console);            
 
