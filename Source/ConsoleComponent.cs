@@ -13,6 +13,7 @@ namespace QuakeConsole
     public class ConsoleComponent : DrawableGameComponent
     {
         private readonly Console _console = new Console();
+        private ContentManager _content;
 
         private bool _initialized;
 
@@ -293,12 +294,13 @@ namespace QuakeConsole
         /// <inheritdoc/>
         public override void Initialize()
         {
-            var resourceContent = new ResourceContentManager(Game.Services, Resource.ResourceManager);
+            if (_initialized) return;
+            _content = new ResourceContentManager(Game.Services, Resource.ResourceManager);
             _console.LoadContent(
                 GraphicsDevice,
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
-                resourceContent.Load<SpriteFont>("qc_console"),
-                resourceContent.Load<Effect>("qc_background"));
+                _content.Load<SpriteFont>("qc_console"),
+                _content.Load<Effect>("qc_background"));
             _initialized = true;
         }
 
@@ -326,7 +328,10 @@ namespace QuakeConsole
         protected override void Dispose(bool disposing)
         {
             if (disposing)
+            {
                 _console.Dispose();
+                _content?.Dispose();
+            }
         }
 
         private void EnsureInitialized()
