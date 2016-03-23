@@ -324,14 +324,18 @@ namespace QuakeConsole
             }
         }
 
+        /// <inheritdoc/>
+        protected override void UnloadContent()
+        {            
+            _console.Dispose();
+            _content?.Dispose();
+        }
+
         /// <inheritdoc />        
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-            {
-                _console.Dispose();
-                _content?.Dispose();
-            }
+                UnloadContent();            
         }
 
         private void EnsureInitialized()
