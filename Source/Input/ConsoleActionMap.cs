@@ -5,8 +5,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace QuakeConsole
 {
+    /// <summary>
+    /// An action or modifier (other than symbol input) available
+    /// in the console.
+    /// </summary>
     public enum ConsoleAction : byte
     {
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         None,
         DeletePreviousChar,
         DeleteCurrentChar,
@@ -34,6 +39,7 @@ namespace QuakeConsole
         RemoveTab,
         UppercaseModifier,
         SelectionModifier
+#pragma warning restore CS1591
     }
 
     /// <remarks>
@@ -43,6 +49,7 @@ namespace QuakeConsole
     {
         private readonly BiDirectionalMultiValueDictionary<Int3, ConsoleAction> _map = new BiDirectionalMultiValueDictionary<Int3, ConsoleAction>();
 
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
         public void Add(Keys modifier1, Keys modifier2, Keys key, ConsoleAction action) =>
             _map.Add(new Int3((int)modifier1, (int)modifier2, (int)key), action);
 
@@ -63,6 +70,7 @@ namespace QuakeConsole
 
         public void Remove(ConsoleAction action) =>
             _map.Remove(action);
+#pragma warning restore CS1591
 
         internal bool AreModifiersAppliedForAction(ConsoleAction action, InputState input)
         {

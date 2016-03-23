@@ -10,10 +10,12 @@ using System.Threading.Tasks;
 namespace QuakeConsole
 {
     // Required due to missing support for ExpandoObject as global on Roslyn side: https://github.com/dotnet/roslyn/issues/3194
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
     public class ExpandoWrapper
     {
         public dynamic globals;
     }
+#pragma warning restore CS1591
 
     /// <summary>
     /// Executes <see cref="Console"/> commands in a Roslyn C# scripting context. Supports loading .NET types
