@@ -994,21 +994,21 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Interpreters\ManualInterpreter\ManualInterpreter.MonoGame.csproj">
+    <ProjectReference Include="..\..\Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.csproj">
       <Project>{a21cf025-af25-4ec1-ade2-13f4aec58f7b}</Project>
-      <Name>ManualInterpreter.MonoGame</Name>
+      <Name>MonoGame.QuakeConsole.ManualInterpreter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Interpreters\PythonInterpreter\PythonInterpreter.MonoGame.csproj">
+    <ProjectReference Include="..\..\Interpreters\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.csproj">
       <Project>{009c278a-a225-47c2-aaf2-d6f7f8d1e70f}</Project>
-      <Name>PythonInterpreter.MonoGame</Name>
+      <Name>MonoGame.QuakeConsole.PythonInterpreter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Interpreters\RoslynInterpreter\RoslynInterpreter.MonoGame.csproj">
+    <ProjectReference Include="..\..\Interpreters\RoslynInterpreter\MonoGame.QuakeConsole.RoslynInterpreter.csproj">
       <Project>{6f52cae9-64b6-4601-b8e7-2ddde96c2031}</Project>
-      <Name>RoslynInterpreter.MonoGame</Name>
+      <Name>MonoGame.QuakeConsole.RoslynInterpreter</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Source\QuakeConsole.MonoGame.csproj">
+    <ProjectReference Include="..\..\Source\MonoGame.QuakeConsole.csproj">
       <Project>{66a03276-e5e7-4e05-9790-f5602147426c}</Project>
-      <Name>QuakeConsole.MonoGame</Name>
+      <Name>MonoGame.QuakeConsole</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common\Common.csproj">
       <Project>{e01f1552-3064-4583-a2ce-2a5dd00770b3}</Project>

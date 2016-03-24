@@ -1,8 +1,8 @@
 # Define variables.
-$consoleId = 'QuakeConsole.MonoGame.WindowsDX'
-$pythonInterpreterId = 'QuakeConsole.PythonInterpreter.MonoGame.WindowsDX'
-$manualInterpreterId = 'QuakeConsole.ManualInterpreter.MonoGame.WindowsDX'
-$roslynInterpreterId = 'QuakeConsole.RoslynInterpreter.MonoGame.WindowsDX'
+$consoleId = 'MonoGame.QuakeConsole.WindowsDX'
+$pythonInterpreterId = 'MonoGame.QuakeConsole.PythonInterpreter.WindowsDX'
+$manualInterpreterId = 'MonoGame.QuakeConsole.ManualInterpreter.WindowsDX'
+$roslynInterpreterId = 'MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX'
 
 $versionNumber = Read-Host 'What is the new version?'
 $versionRegex = '(?<=(' + $consoleId + '" version\="|\<version\>))\d+.\d+.\d+'

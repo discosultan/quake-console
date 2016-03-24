@@ -42,7 +42,7 @@ The following is required to successfully compile the QuakeConsole MonoGame solu
 Install the console assembly through NuGet:
 
 ```powershell
-PM> Install-Package QuakeConsole.MonoGame.WindowsDX
+PM> Install-Package MonoGame.QuakeConsole.WindowsDX
 ```
 
 The console itself is a typical `DrawableGameComponent`. The following steps will go through setting it up in a game.
@@ -91,7 +91,7 @@ Python interpreter can be used to interpret user input as Python code. It is ext
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-PM> Install-Package QuakeConsole.PythonInterpreter.MonoGame.WindowsDX
+PM> Install-Package MonoGame.QuakeConsole.PythonInterpreter.WindowsDX
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
@@ -124,7 +124,7 @@ Manual interpreter can be used to define commands and their corresponding action
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-PM> Install-Package QuakeConsole.ManualInterpreter.MonoGame.WindowsDX -Pre
+PM> Install-Package MonoGame.QuakeConsole.ManualInterpreter.WindowsDX -Pre
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
@@ -162,7 +162,7 @@ Roslyn interpreter can be used to interpret user input as C# code using the [Ros
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-PM> Install-Package QuakeConsole.RoslynInterpreter.MonoGame.WindowsDX -Pre
+PM> Install-Package MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX -Pre
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
@@ -187,14 +187,14 @@ The object's public members can now be accessed from the console using the passe
 
 # Assemblies
 
-- **QuakeConsole**: The core project for the console. Contains the behavior associated with handling user input and the visual side of the console's window.
+- **MonoGame.QuakeConsole**: The core project for the console. Contains the behavior associated with handling user input and the visual side of the console's window.
 
 ## Interpreters
 
-- **QuakeConsole.PythonInterpreter**: IronPython interpreter for the console shell. Allows manipulating game objects using Python scripting language. Provides autocompletion for loaded .NET types.
-- **QuakeConsole.PythonInterpreter.Tests**: Unit tests covering the expected execution and autocompletion behavior for Python interpreter.
-- **QuakeConsole.ManualInterpreter**: Interpreter for manually defined commands. Provides autocompletion for command names.
-- **QuakeConsole.RoslynInterpreter**: Interpreter using the [Roslyn scripting API](https://github.com/dotnet/roslyn/wiki/Scripting-API-Samples) to execute console input as C# script.
+- **MonoGame.QuakeConsole.PythonInterpreter**: IronPython interpreter for the console shell. Allows manipulating game objects using Python scripting language. Provides autocompletion for loaded .NET types.
+- **MonoGame.QuakeConsole.PythonInterpreter.Tests**: Unit tests covering the expected execution and autocompletion behavior for Python interpreter.
+- **MonoGame.QuakeConsole.ManualInterpreter**: Interpreter for manually defined commands. Provides autocompletion for command names.
+- **MonoGame.QuakeConsole.RoslynInterpreter**: Interpreter using the [Roslyn scripting API](https://github.com/dotnet/roslyn/wiki/Scripting-API-Samples) to execute console input as C# script.
 
 ## Samples
 
