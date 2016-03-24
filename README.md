@@ -198,4 +198,6 @@ The object's public members can now be accessed from the console using the passe
 
 ## Samples
 
-- **Sandbox**: Simple game which sets up the console and allows to manipulate a cube object using either Python, manual or Roslyn interpreter.
+- **HelloPython**: Simple sample which sets up the console with Python interpreter, allowing to execute Python code and manipulate a cube at runtime.
+- **Sandbox**: Generic sandbox for testing out various parts of the project. Sets up the console tying together all the interpreters (Python, Roslyn, manual).
+- **Common**: Supporting library providing common functionality for samples.
