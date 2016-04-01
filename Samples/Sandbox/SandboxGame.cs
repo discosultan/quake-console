@@ -84,8 +84,7 @@ namespace QuakeConsole.Samples.Sandbox
             _arial = Content.Load<SpriteFont>("arial");
             _lucidaConsole = Content.Load<SpriteFont>("lucida_console");
 
-            // Set console's font and interpreter.
-            //_console.LoadContent(_arial, _pythonInterpreter);            
+            // Set console's font and interpreter.             
             _console.Interpreter = _pythonInterpreter;
             _console.BackgroundTexture = Content.Load<Texture2D>("console");            
 
