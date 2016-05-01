@@ -90,8 +90,8 @@
   <ItemGroup>
     <None Include="App.config" />
     <MonoGameContentReference Include="Content\Content.WindowsDX.mgcb" />
-    <None Include="Content\Compiled.WindowsDX\qc_background.xnb" />
-    <None Include="Content\Compiled.WindowsDX\qc_console.xnb" />
+    <None Include="Content\bin\Windows\qc_background.xnb" />
+    <None Include="Content\bin\Windows\qc_console.xnb" />
     <None Include="Content\qc_console.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>

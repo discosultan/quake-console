@@ -299,7 +299,8 @@ namespace QuakeConsole
                 Game.Services,
 #if WINDOWSDX
                 Resource_WindowsDX.ResourceManager
-#else
+#elif DESKTOPGL
+                Resource_DesktopGL.ResourceManager
 #endif
             );
             _console.LoadContent(
