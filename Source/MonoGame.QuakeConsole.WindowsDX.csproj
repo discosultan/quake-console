@@ -20,9 +20,9 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\MonoGame\</OutputPath>
-    <DocumentationFile>bin\Debug\MonoGame\MonoGame.QuakeConsole.xml</DocumentationFile>
-    <DefineConstants>TRACE;DEBUG;MONOGAME;DIRECTX</DefineConstants>
+    <OutputPath>bin\Debug\MonoGame.WindowsDX\</OutputPath>
+    <DocumentationFile>bin\Debug\MonoGame.WindowsDX\MonoGame.QuakeConsole.xml</DocumentationFile>
+    <DefineConstants>TRACE;DEBUG;MONOGAME;WINDOWSDX</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -30,12 +30,11 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\MonoGame\</OutputPath>
-    <DocumentationFile>bin\Release\MonoGame\QuakeConsole.MonoGame.xml</DocumentationFile>
-    <DefineConstants>TRACE;MONOGAME;DIRECTX</DefineConstants>
+    <OutputPath>bin\Release\MonoGame.WindowsDX\</OutputPath>
+    <DocumentationFile>bin\Release\MonoGame.WindowsDX\QuakeConsole.MonoGame.xml</DocumentationFile>
+    <DefineConstants>TRACE;MONOGAME;WINDOWSDX</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\MonoGame\MonoGame.QuakeConsole.xml</DocumentationFile>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
@@ -54,10 +53,10 @@
     <Compile Include="Input\Features\Tabbing.cs" />
     <Compile Include="Input\Features\Movement.cs" />
     <Compile Include="Input\Features\CopyPasting.cs" />
-    <Compile Include="Resource.Designer.cs">
+    <Compile Include="Resource.WindowsDX.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.resx</DependentUpon>
+      <DependentUpon>Resource.WindowsDX.resx</DependentUpon>
     </Compile>
     <Compile Include="TexturedBackground.cs" />
     <Compile Include="Input\Caret.cs" />
@@ -90,16 +89,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <MonoGameContentReference Include="Content\Content.mgcb" />
-    <None Include="Content\Compiled\qc_background.xnb" />
-    <None Include="Content\Compiled\qc_console.xnb" />
+    <MonoGameContentReference Include="Content\Content.WindowsDX.mgcb" />
+    <None Include="Content\Compiled.WindowsDX\qc_background.xnb" />
+    <None Include="Content\Compiled.WindowsDX\qc_console.xnb" />
     <None Include="Content\qc_console.spritefont" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Resource.resx">
+    <EmbeddedResource Include="Resource.WindowsDX.resx">
       <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.Designer.cs</LastGenOutput>
+      <LastGenOutput>Resource.WindowsDX.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

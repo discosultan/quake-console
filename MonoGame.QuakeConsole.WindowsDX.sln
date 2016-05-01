@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole", "Source\MonoGame.QuakeConsole.csproj", "{66A03276-E5E7-4E05-9790-F5602147426C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole", "Source\MonoGame.QuakeConsole.WindowsDX.csproj", "{66A03276-E5E7-4E05-9790-F5602147426C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{F7379397-76DC-4F58-95A8-2EF2C908BFC7}"
 EndProject

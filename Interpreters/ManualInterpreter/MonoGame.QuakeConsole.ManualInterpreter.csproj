@@ -44,7 +44,7 @@
     <Compile Include="Utilities\EnumerableExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Source\MonoGame.QuakeConsole.csproj">
+    <ProjectReference Include="..\..\Source\MonoGame.QuakeConsole.WindowsDX.csproj">
       <Project>{66A03276-E5E7-4E05-9790-F5602147426C}</Project>
       <Name>MonoGame.QuakeConsole</Name>
     </ProjectReference>

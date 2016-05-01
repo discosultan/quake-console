@@ -1,7 +1,7 @@
 
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:Compiled
+/outputDir:Compiled.WindowsDX
 /intermediateDir:obj/Windows
 /platform:Windows
 /config:

@@ -295,7 +295,13 @@ namespace QuakeConsole
         public override void Initialize()
         {
             if (_initialized) return;
-            _content = new ResourceContentManager(Game.Services, Resource.ResourceManager);
+            _content = new ResourceContentManager(
+                Game.Services,
+#if WINDOWSDX
+                Resource_WindowsDX.ResourceManager
+#else
+#endif
+            );
             _console.LoadContent(
                 GraphicsDevice,
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
