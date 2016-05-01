@@ -32,7 +32,6 @@ namespace QuakeConsole
             return value.Split(_array, options);
         }
 
-#if MONOGAME
         public static string Substring(this StringBuilder builder, int startIndex)
         {
             return builder.ToString(startIndex, builder.Length - startIndex);
@@ -42,6 +41,5 @@ namespace QuakeConsole
         {
             return builder.ToString(startIndex, length);
         }
-#endif
     }
 }

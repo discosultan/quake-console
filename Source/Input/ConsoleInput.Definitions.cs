@@ -1,19 +1,12 @@
 ﻿using System.Collections.Generic;
-#if MONOGAME
 using Microsoft.Xna.Framework.Input;
-#endif
 
 namespace QuakeConsole
 {
     internal partial class ConsoleInput
     {
         internal ConsoleActionMap ActionDefinitions { get; } = new ConsoleActionMap
-        {
-#if PARADOX
-            { Keys.NumPadEnter, ConsoleAction.ExecuteCommand },
-            { Keys.LeftShift, Keys.NumPadEnter, ConsoleAction.NextLineModifier },
-            { Keys.RightShift, Keys.NumPadEnter, ConsoleAction.NextLineModifier },
-#endif            
+        {           
             { Keys.Enter, ConsoleAction.ExecuteCommand },
             { Keys.Left, ConsoleAction.MoveLeft },
             { Keys.Right, ConsoleAction.MoveRight },
@@ -105,11 +98,7 @@ namespace QuakeConsole
             { Keys.L, new Symbol("l", "L") },
             { Keys.OemSemicolon, new Symbol(";", ":") },
             { Keys.OemQuotes, new Symbol("'", "\"") },
-#if PARADOX
-            { Keys.Oem5, new SymbolPair("\\", "|") },            
-#else
             { Keys.OemPipe, new Symbol("\\", "|") },
-#endif
 
             { Keys.OemBackslash, new Symbol("\\", "|") },
             { Keys.Z, new Symbol("z", "Z") },
@@ -121,11 +110,7 @@ namespace QuakeConsole
             { Keys.M, new Symbol("m", "M") },
             { Keys.OemComma, new Symbol(",", "<") },
             { Keys.OemPeriod, new Symbol(".", ">") },
-#if PARADOX
-            { Keys.Oem2, new SymbolPair("/", "?") },
-#else
             { Keys.OemQuestion, new Symbol("/", "?") },
-#endif
 
             // Special.
             { Keys.Space, new Symbol(" ", " ") },

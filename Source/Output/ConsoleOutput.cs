@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System;
-#if MONOGAME
 using Microsoft.Xna.Framework;
-#endif
 
 namespace QuakeConsole
 {

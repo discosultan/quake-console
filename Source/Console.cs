@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-#if MONOGAME
-using Texture = Microsoft.Xna.Framework.Graphics.Texture2D;
-using MathUtil = Microsoft.Xna.Framework.MathHelper;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-#endif
 
 namespace QuakeConsole
 {    
@@ -64,7 +60,7 @@ namespace QuakeConsole
 
         public Vector2 FontSize { get; private set; }
 
-        public Texture WhiteTexture { get; private set; }
+        public Texture2D WhiteTexture { get; private set; }
 
         public string TabSymbol
         {
@@ -93,7 +89,7 @@ namespace QuakeConsole
             get { return _heightRatio; }
             set
             {
-                _heightRatio = MathUtil.Clamp(value, 0, 1.0f);
+                _heightRatio = MathHelper.Clamp(value, 0, 1.0f);
                 if (_loaded)
                     SetWindowWidthAndHeight();
             }
@@ -106,7 +102,7 @@ namespace QuakeConsole
             {                
                 if (_loaded)
                 {
-                    _padding = MathUtil.Clamp(
+                    _padding = MathHelper.Clamp(
                         value,
                         0,
                         GetMaxAllowedPadding());
@@ -157,12 +153,8 @@ namespace QuakeConsole
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
             _graphicsDeviceManager.PreparingDeviceSettings += OnPreparingDeviceChanged;
-#if MONOGAME
             WhiteTexture = new Texture2D(GraphicsDevice, 2, 2, false, SurfaceFormat.Color);
             WhiteTexture.SetData(new[] { Color.White, Color.White, Color.White, Color.White });
-#else                   
-            WhiteTexture = Texture.New2D(GraphicsDevice, 2, 2, PixelFormat.R8G8B8A8_UNorm, new[] { Color.White, Color.White, Color.White, Color.White });            
-#endif
             _loaded = true;
 
             MeasureFontSize();
@@ -296,11 +288,7 @@ namespace QuakeConsole
 
         private void SetWindowWidthAndHeight()
         {
-#if MONOGAME
             SetWindowWidthAndHeight(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-#else
-            SetWindowWidthAndHeight(GraphicsDevice.BackBuffer.Width, GraphicsDevice.BackBuffer.Height);            
-#endif
         }
 
         private void SetWindowWidthAndHeight(int width, int height)

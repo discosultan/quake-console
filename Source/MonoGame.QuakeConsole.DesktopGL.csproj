@@ -21,7 +21,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\MonoGame.DesktopGL\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;LINUX;DESKTOPGL;MONOGAME</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;LINUX;DESKTOPGL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -32,7 +32,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\MonoGame.DesktopGL\</OutputPath>
-    <DefineConstants>TRACE;LINUX;DESKTOPGL;MONOGAME</DefineConstants>
+    <DefineConstants>TRACE;LINUX;DESKTOPGL</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

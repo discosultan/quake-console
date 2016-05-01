@@ -1,8 +1,5 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-#if MONOGAME
-using MathUtil = Microsoft.Xna.Framework.MathHelper;
-#endif
 
 namespace QuakeConsole
 {
@@ -36,7 +33,7 @@ namespace QuakeConsole
             {
                 if (value != _index)
                 {
-                    _index = MathUtil.Clamp(value, 0, _input.Length);
+                    _index = MathHelper.Clamp(value, 0, _input.Length);
                     Moved?.Invoke(this, EventArgs.Empty);
                 }
             }

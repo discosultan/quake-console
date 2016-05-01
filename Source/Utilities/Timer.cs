@@ -1,6 +1,4 @@
-﻿#if MONOGAME
-using MathUtil = Microsoft.Xna.Framework.MathHelper;
-#endif
+﻿using Microsoft.Xna.Framework;
 
 namespace QuakeConsole
 {
@@ -24,7 +22,7 @@ namespace QuakeConsole
         /// Gets the current progress of the timer as a value between zero and one, where
         /// zero indicates the beginning and one the finishing of the timer.
         /// </summary>
-        public float Progress => MathUtil.Clamp(_time / TargetTime, 0f, 1f);
+        public float Progress => MathHelper.Clamp(_time / TargetTime, 0f, 1f);
 
         /// <summary>
         /// Resets current time back to zero.

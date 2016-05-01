@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -59,22 +57,7 @@ namespace QuakeConsole
         {
             Texture = settings.BackgroundTexture;
             TextureTransform = settings.BackgroundTextureTransform;
-        }
-
-        private Effect LoadEffectFromEmbeddedResource(string name)
-        {
-#if WINRT
-            Assembly assembly = GetType().GetTypeInfo().Assembly;
-#else
-            Assembly assembly = GetType().Assembly;
-#endif
-            var stream = assembly.GetManifestResourceStream(name);
-            using (var ms = new MemoryStream())
-            {
-                stream.CopyTo(ms);                
-                return new Effect(_console.GraphicsDevice, ms.ToArray());
-            }
-        }
+        }       
 
         private void BuildVertexBuffer()
         {

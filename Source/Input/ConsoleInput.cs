@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-#if MONOGAME
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-#endif
 
 namespace QuakeConsole
 {
@@ -24,9 +22,7 @@ namespace QuakeConsole
         private bool _loaded;
 
         public Console Console { get; private set; }
-#if MONOGAME
         public InputState Input { get; } = new InputState();
-#endif
         public Caret Caret { get; } = new Caret();
         public RepeatingInput RepeatingInput { get; } = new RepeatingInput();
         public InputHistory InputHistory { get; } = new InputHistory();
@@ -179,9 +175,7 @@ namespace QuakeConsole
 
         public void Update(float deltaSeconds)
         {
-#if MONOGAME
             Input.Update();
-#endif
             ProcessInput(Input);
 
             Caret.Update(deltaSeconds);            
