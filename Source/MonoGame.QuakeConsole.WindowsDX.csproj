@@ -20,8 +20,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\MonoGame.WindowsDX\</OutputPath>
-    <DocumentationFile>bin\Debug\MonoGame.WindowsDX\MonoGame.QuakeConsole.xml</DocumentationFile>
+    <OutputPath>bin\Debug\WindowsDX\</OutputPath>
+    <DocumentationFile>bin\Debug\WindowsDX\MonoGame.QuakeConsole.xml</DocumentationFile>
     <DefineConstants>TRACE;DEBUG;WINDOWSDX</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -30,8 +30,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\MonoGame.WindowsDX\</OutputPath>
-    <DocumentationFile>bin\Release\MonoGame.WindowsDX\QuakeConsole.MonoGame.xml</DocumentationFile>
+    <OutputPath>bin\Release\WindowsDX\</OutputPath>
+    <DocumentationFile>bin\Release\WindowsDX\QuakeConsole.MonoGame.xml</DocumentationFile>
     <DefineConstants>TRACE;WINDOWSDX</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

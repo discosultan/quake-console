@@ -17,8 +17,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\MonoGame\</OutputPath>
-    <DocumentationFile>bin\Debug\MonoGame\MonoGame.QuakeConsole.PythonInterpreter.xml</DocumentationFile>
+    <OutputPath>bin\Debug\WindowsDX\</OutputPath>
+    <DocumentationFile>bin\Debug\WindowsDX\MonoGame.QuakeConsole.PythonInterpreter.xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -27,8 +27,8 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\MonoGame\</OutputPath>
-    <DocumentationFile>bin\Release\MonoGame\MonoGame.QuakeConsole.PythonInterpreter.xml</DocumentationFile>
+    <OutputPath>bin\Release\WindowsDX\</OutputPath>
+    <DocumentationFile>bin\Release\WindowsDX\MonoGame.QuakeConsole.PythonInterpreter.xml</DocumentationFile>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -82,7 +82,6 @@
     <Compile Include="Utilities.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

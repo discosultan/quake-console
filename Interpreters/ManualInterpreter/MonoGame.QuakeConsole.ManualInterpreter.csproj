@@ -17,8 +17,8 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\MonoGame\</OutputPath>
-    <DocumentationFile>bin\Debug\MonoGame\MonoGame.QuakeConsole.ManualInterpreter.xml</DocumentationFile>
+    <OutputPath>bin\Debug\WindowsDX\</OutputPath>
+    <DocumentationFile>bin\Debug\WindowsDX\MonoGame.QuakeConsole.ManualInterpreter.xml</DocumentationFile>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>

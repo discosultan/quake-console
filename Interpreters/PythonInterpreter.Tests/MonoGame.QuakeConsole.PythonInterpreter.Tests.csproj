@@ -58,7 +58,7 @@
       <Project>{66A03276-E5E7-4E05-9790-F5602147426C}</Project>
       <Name>MonoGame.QuakeConsole</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.csproj">
+    <ProjectReference Include="..\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.WindowsDX.csproj">
       <Project>{009c278a-a225-47c2-aaf2-d6f7f8d1e70f}</Project>
       <Name>MonoGame.QuakeConsole.PythonInterpreter</Name>
     </ProjectReference>

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace QuakeConsole.Samples.Common
+namespace QuakeConsole.Samples.HelloPython
 {
     public class CubeComponent : DrawableGameComponent
     {
