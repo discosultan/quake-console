@@ -40,7 +40,7 @@ namespace QuakeConsole.Samples.Sandbox
 
         public override void Update(GameTime gameTime)
         {
-            float deltaSeconds = (float) gameTime.ElapsedGameTime.TotalSeconds;
+            var deltaSeconds = (float) gameTime.ElapsedGameTime.TotalSeconds;
 
             HandleKeyboard(deltaSeconds);
             HandleMouse();

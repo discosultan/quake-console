@@ -79,7 +79,7 @@ namespace QuakeConsole
                 float positionX = _input.MeasureSubstring(_input.VisibleStartIndex, Index - _input.VisibleStartIndex).X;
                 if (positionX > 0)
                     positionX += _input.Console.Font.Spacing;
-                Vector2 position = new Vector2(
+                var position = new Vector2(
                      offset + positionX,
                     _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y);
                 _input.Console.SpriteBatch.DrawString(_input.Console.Font, Symbol, position, _input.Console.FontColor);

@@ -36,8 +36,7 @@ namespace QuakeConsole
                         _selectionIndex1 = _previousCaretIndex;
                         _selectionIndex2 = _input.Caret.Index;
                         CalculateSelectionProperties();
-                        if (SelectionLength > 0)
-                            _selectionActive = true;
+                        _selectionActive |= SelectionLength > 0;
                     }
                 }
                 else

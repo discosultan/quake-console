@@ -120,7 +120,7 @@ namespace QuakeConsole
             { Keys.Add, new Symbol("+") },
             { Keys.Subtract, new Symbol("-") },
             { Keys.Multiply, new Symbol("*") },
-            { Keys.Divide, new Symbol("/") },
+            { Keys.Divide, new Symbol("/") }
             //{ Keys.Tab, new SymbolPair("\t", "\t") } // Tab char is not supported in many fonts.
             //{ Keys.Tab, new SymbolPair("    ", "    ") } // Use 4 spaces instead.
         };         

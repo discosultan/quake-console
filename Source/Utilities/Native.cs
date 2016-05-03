@@ -36,7 +36,7 @@ namespace QuakeConsole
         {
             try
             {
-                int nKey = (int) key;
+                var nKey = (int) key;
                 return (GetKeyState(nKey) & 0x01) == 1;
             }
             catch

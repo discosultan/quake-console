@@ -53,11 +53,7 @@ namespace QuakeConsole
             }
 
             _time += deltaTime;
-
-            if (_time >= TargetTime)
-            {
-                Finished = true;
-            }
+            Finished |= _time >= TargetTime;
         }
     }
 }

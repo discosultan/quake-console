@@ -70,7 +70,7 @@ namespace QuakeConsole.Samples.HelloPython
             "Open/close console [",
             "Execute command [",
             "Autocomplete entry [",
-            "Add newline [",
+            "Add newline ["
         };
         string[] _instructionKeys =
         {
