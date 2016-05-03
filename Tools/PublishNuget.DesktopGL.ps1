@@ -33,8 +33,8 @@ $createAndPublishPackage =
 	nuget push $nupkgFile
 }
 
-Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $consoleId, $versionRegex, $versionNumber, $workingDir, $False
-Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $pythonInterpreterId, $versionRegex, $versionNumber, $workingDir, $False
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $consoleId, $versionRegex, $versionNumber, $workingDir, $True
+Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $pythonInterpreterId, $versionRegex, $versionNumber, $workingDir, $True
 
 # Wait for all jobs to complete and results ready to be received
 Wait-Job * | Out-Null
