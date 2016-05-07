@@ -128,9 +128,21 @@ namespace QuakeConsole
                 dict.Add(type, memberInfo);
                 for (int i = 0; i < memberInfo.Names.Count; i++)
                 {                        
-                    AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);                    
-                    memberInfo.ParamInfos[i]?.ForEach(overload =>
-                        overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel)));
+                    AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);
+
+                    // NB! There seems to be some unexpected behavior on Mono (v4.2.3.4) using null propagation on extension methods.
+                    // Therefore, regular null checks and foreach statements are used!
+                    // Issue: https://github.com/discosultan/quake-console/issues/6#issuecomment-217608599
+
+                    //memberInfo.ParamInfos[i]?.ForEach(overload =>
+                    //    overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel)));
+
+                    ParameterInfo[][] paramInfos = memberInfo.ParamInfos[i];
+                    if (paramInfos != null)
+                        foreach (ParameterInfo[] paramInfo in paramInfos)
+                            if (paramInfo != null)
+                                foreach (ParameterInfo param in paramInfo)
+                                    AddTypeImpl(param.ParameterType, recursionLevel);                    
                 }               
             }
         }
