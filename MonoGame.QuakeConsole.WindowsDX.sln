@@ -17,7 +17,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interpreters", "Interpreter
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.PythonInterpreter.WindowsDX", "Interpreters\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.WindowsDX.csproj", "{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.PythonInterpreter.Tests", "Interpreters\PythonInterpreter.Tests\MonoGame.QuakeConsole.PythonInterpreter.Tests.csproj", "{76B26717-E016-4C24-AA10-7CD8706DAAA6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.PythonInterpreter.Tests.WindowsDX", "Interpreters\PythonInterpreter.Tests\MonoGame.QuakeConsole.PythonInterpreter.Tests.WindowsDX.csproj", "{76B26717-E016-4C24-AA10-7CD8706DAAA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.ManualInterpreter", "Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.csproj", "{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}"
 EndProject
