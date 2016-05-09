@@ -21,6 +21,9 @@ namespace QuakeConsole
             "Void"
         };
 
+        // These characters will be stripped from the Type name loaded into Python engine.
+        private static readonly char[] StrippablePythonTypeNameChars = { '&' };
+
         private readonly PythonInterpreter _interpreter;
         private readonly HashSet<string> _referencedAssemblies = new HashSet<string>();
         private readonly HashSet<Type> _addedTypes = new HashSet<Type>();
@@ -38,7 +41,7 @@ namespace QuakeConsole
                 throw new ArgumentNullException(nameof(obj));
 
             if (_interpreter.Instances.ContainsKey(name))
-                throw new InvalidOperationException("Variable with the name " + name + " already exists.");
+                throw new InvalidOperationException($"Variable with the name {name} already exists.");
 
             Type type = typeof(T);
             if (!type.IsPublic)
@@ -68,7 +71,7 @@ namespace QuakeConsole
         internal void AddType(Type type, int recursionLevel)
         {
             if (type == null)
-                throw new ArgumentException("type");
+                throw new ArgumentException(nameof(type));
 
             AddTypeImpl(type, recursionLevel);            
         }
@@ -76,7 +79,7 @@ namespace QuakeConsole
         internal void AddAssembly(Assembly assembly, int recursionLevel)
         {
             if (assembly == null)
-                throw new ArgumentException("assembly");
+                throw new ArgumentException(nameof(assembly));
 
             assembly.GetTypes().ForEach(x => AddTypeImpl(x, recursionLevel));
         }
@@ -130,7 +133,7 @@ namespace QuakeConsole
                 {                        
                     AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);
 
-                    // NB! There seems to be some unexpected behavior on Mono (v4.2.3.4) using null propagation on extension methods.
+                    // NB! There seems to be some unexpected behavior on Mono (v4.2.3.4) using null propagation with extension methods.
                     // Therefore, regular null checks and foreach statements are used!
                     // Issue: https://github.com/discosultan/quake-console/issues/6#issuecomment-217608599
 
@@ -142,11 +145,11 @@ namespace QuakeConsole
                         foreach (ParameterInfo[] paramInfo in paramInfos)
                             if (paramInfo != null)
                                 foreach (ParameterInfo param in paramInfo)
-                                    AddTypeImpl(param.ParameterType, recursionLevel);                    
-                }               
+                                    AddTypeImpl(param.ParameterType, recursionLevel);
+                }
             }
         }
-        
+       
         private bool LoadTypeInPython(Type type)
         {
             if (type.IsGenericType || // Not a generic type (requires special handling).
@@ -161,9 +164,16 @@ namespace QuakeConsole
 
             var assemblyName = type.Assembly.GetName().Name;
             if (_referencedAssemblies.Add(assemblyName))
-                _interpreter.RunScript("clr.AddReference('" + assemblyName + "')");
+                _interpreter.RunScript($"clr.AddReference('{assemblyName}')");
 
-            string script = "from " + type.Namespace + " import " + type.Name;            
+            // While not required on Windows platform, the type system used by the Mono runtime seems to
+            // slightly differ, providing occasional primitive type names with an ampersand (&) suffix (ref type?).
+            // We simply remove that suffix, since we want to load the type itself and do not care about ref/val differences.
+            // That means that we potentially may load a type twice, but this is not an issue - just a very minor perf overhead.
+            // Ref: https://github.com/discosultan/quake-console/issues/6
+            string sanitizedTypeName = type.Name.TrimEnd(StrippablePythonTypeNameChars);
+
+            string script = $"from {type.Namespace} import {sanitizedTypeName}";
             _interpreter.RunScript(script);
 
             return true;
