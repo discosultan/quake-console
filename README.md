@@ -98,7 +98,7 @@ PM> Install-Package MonoGame.QuakeConsole.PythonInterpreter.WindowsDX
 
 ```cs
 var interpreter = new PythonInterpreter();
-console.Interpreter = Interpreter;
+console.Interpreter = interpreter;
 ```
 
 2) To be able to modify game objects through the console, the objects must be added as variables to the IronPython engine (this creates the connection between the CLR and Python object):
@@ -131,7 +131,7 @@ PM> Install-Package MonoGame.QuakeConsole.ManualInterpreter.WindowsDX -Pre
 
 ```cs
 var interpreter = new ManualInterpreter();
-console.Interpreter = Interpreter;
+console.Interpreter = interpreter;
 ```
 
 A command is essentially a delegate that is invoked when user inputs the name of the command. The delegate provides an array of arguments separated by spaces (similar to arguments in a Windows console application) and optionally can return a string value that is output to the console.
@@ -169,7 +169,7 @@ PM> Install-Package MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX -Pre
 
 ```cs
 var interpreter = new RoslynInterpreter();
-console.Interpreter = Interpreter;
+console.Interpreter = interpreter;
 ```
 
 2) To be able to modify game objects through the console, the objects must be added as variables to the C# scripting context:
