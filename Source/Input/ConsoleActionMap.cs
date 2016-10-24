@@ -6,8 +6,7 @@ using Microsoft.Xna.Framework.Input;
 namespace QuakeConsole
 {
     /// <summary>
-    /// An action or modifier (other than symbol input) available
-    /// in the console.
+    /// An action or modifier (other than symbol input) available in the console.
     /// </summary>
     public enum ConsoleAction : byte
     {
@@ -42,35 +41,58 @@ namespace QuakeConsole
 #pragma warning restore CS1591
     }
 
+    /// <summary>
+    /// A map specifying which input keys are translated to which <see cref="ConsoleAction"/>s.
+    /// </summary>
     /// <remarks>
-    /// <see cref="IEnumerable" /> is implemented only to allow collection initializer syntax.
+    /// <see cref="IEnumerable" /> is implemented only to allow collection initializer syntax. 
+    /// Iteration will fail!
     /// </remarks>
     public class ConsoleActionMap : IEnumerable
     {
         private readonly BiDirectionalMultiValueDictionary<Int3, ConsoleAction> _map = new BiDirectionalMultiValueDictionary<Int3, ConsoleAction>();
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
-        public void Add(Keys modifier1, Keys modifier2, Keys key, ConsoleAction action) =>
-            _map.Add(new Int3((int)modifier1, (int)modifier2, (int)key), action);
-
-        public void Add(Keys modifier, Keys key, ConsoleAction action) =>
-            _map.Add(new Int3((int)Keys.None, (int)modifier, (int)key), action);
-
+        /// <summary>
+        /// Adds a mapping from keyboard key to <see cref="ConsoleAction"/>
+        /// </summary>
         public void Add(Keys key, ConsoleAction action) =>
             _map.Add(new Int3((int)Keys.None, (int)Keys.None, (int)key), action);
 
+        /// <summary>
+        /// Adds a mapping from keyboard keys to <see cref="ConsoleAction"/>
+        /// </summary>
+        public void Add(Keys modifier, Keys key, ConsoleAction action) =>
+            _map.Add(new Int3((int)Keys.None, (int)modifier, (int)key), action);
+
+        /// <summary>
+        /// Adds a mapping from keyboard keys to <see cref="ConsoleAction"/>
+        /// </summary>
+        public void Add(Keys modifier1, Keys modifier2, Keys key, ConsoleAction action) =>
+            _map.Add(new Int3((int)modifier1, (int)modifier2, (int)key), action);        
+
+        /// <summary>
+        /// Removes a mapping from keyboard key to <see cref="ConsoleAction"/>
+        /// </summary>
         public void Remove(Keys key) =>
             _map.Remove(new Int3((int)Keys.None, (int)Keys.None, (int)key));
 
+        /// <summary>
+        /// Removes a mapping from keyboard keys to <see cref="ConsoleAction"/>
+        /// </summary>
         public void Remove(Keys modifier, Keys key) =>
             _map.Remove(new Int3((int)Keys.None, (int)modifier, (int)key));
 
+        /// <summary>
+        /// Removes a mapping from keyboard keys to <see cref="ConsoleAction"/>
+        /// </summary>
         public void Remove(Keys modifier1, Keys modifier2, Keys key) =>
             _map.Remove(new Int3((int)modifier1, (int)modifier2, (int)key));
 
+        /// <summary>
+        /// Removes all mappings to <see cref="ConsoleAction"/>
+        /// </summary>
         public void Remove(ConsoleAction action) =>
             _map.Remove(action);
-#pragma warning restore CS1591
 
         internal bool AreModifiersAppliedForAction(ConsoleAction action, InputState input)
         {

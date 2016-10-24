@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 namespace QuakeConsole
 {
-    /// <remarks>
-    /// <see cref="IEnumerable"/> is implemented only to allow collection initializer syntax.
-    /// </remarks>
+    // <see cref="IEnumerable"/> is implemented only to allow collection initializer syntax.
     internal class BiDirectionalMultiValueDictionary<TForward, TBackward> : IEnumerable
     {
         private readonly Dictionary<TForward, List<TBackward>> _forward = new Dictionary<TForward, List<TBackward>>();

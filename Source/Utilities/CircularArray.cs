@@ -3,10 +3,7 @@ using System.Collections.Generic;
 
 namespace QuakeConsole
 {
-    /// <summary>
-    /// Implements <see cref="IEnumerable{T}"/> for LINQ capabilities.
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
+    // Implements <see cref="IEnumerable{T}"/> for LINQ capabilities.
     internal class CircularArray<T> : IEnumerable<T>
     {
         public struct Enumerator : IEnumerator<T>
