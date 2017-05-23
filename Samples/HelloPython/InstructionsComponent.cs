@@ -58,7 +58,7 @@ namespace QuakeConsole.Samples.HelloPython
                 progressX = GraphicsDevice.Viewport.Width - margin - _font.MeasureString(_sampleCommands[i]).X;
                 _spriteBatch.DrawString(_font, _sampleCommands[i], new Vector2(progressX, progressY), ForegroundColorHighlight);
 
-                progressY -= sizeY;                
+                progressY -= sizeY;
             }
             string commandsTitle = "Sample commands to try:";
             progressX = GraphicsDevice.Viewport.Width - margin - _font.MeasureString(commandsTitle).X;

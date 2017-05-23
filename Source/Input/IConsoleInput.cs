@@ -11,7 +11,7 @@ namespace QuakeConsole
         /// this value will be set to null whenever anything from the normal <see cref="Console"/>
         /// input pipeline gets appended here.
         /// </summary>
-        string LastAutocompleteEntry { get; set; }        
+        string LastAutocompleteEntry { get; set; }
 
         /// <summary>
         /// Gets or sets the location of the caret. This is where user input will be appended.
@@ -39,7 +39,7 @@ namespace QuakeConsole
         /// </summary>
         /// <param name="startIndex">Index from which to start removing.</param>
         /// <param name="length">Number of symbols to remove.</param>
-        void Remove(int startIndex, int length);        
+        void Remove(int startIndex, int length);
 
         /// <summary>
         /// Gets a substring of the buffer.
@@ -52,7 +52,7 @@ namespace QuakeConsole
         /// <summary>
         /// Gets a substring of the buffer.
         /// </summary>
-        /// <param name="startIndex">Index ta take all the following symbols from.</param>        
+        /// <param name="startIndex">Index ta take all the following symbols from.</param>
         /// <returns>Substring of the buffer.</returns>
         string Substring(int startIndex);
 

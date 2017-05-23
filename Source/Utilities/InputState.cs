@@ -64,7 +64,7 @@ namespace QuakeConsole
                 //    DownKeys.Add(key);
                 if (IsKeyDown(key))
                     DownKeys.Add(key);
-            }       
+            }
         }
     }
 }

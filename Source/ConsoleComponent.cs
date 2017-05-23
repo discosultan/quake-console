@@ -17,7 +17,7 @@ namespace QuakeConsole
 
         private bool _initialized;
 
-        /// <inheritdoc />        
+        /// <inheritdoc />
         public ConsoleComponent(Game game) : base(game)
         { }
 
@@ -338,11 +338,11 @@ namespace QuakeConsole
             _content?.Dispose();
         }
 
-        /// <inheritdoc />        
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-                UnloadContent();            
+                UnloadContent();
         }
 
         private void EnsureInitialized()

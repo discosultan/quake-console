@@ -9,7 +9,7 @@ namespace QuakeConsole
         public struct Enumerator : IEnumerator<T>
         {
             private readonly CircularArray<T> _q;
-            private int _index;            
+            private int _index;
             private T _currentElement;
 
             public T Current => _currentElement;

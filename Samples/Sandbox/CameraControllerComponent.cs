@@ -69,7 +69,7 @@ namespace QuakeConsole.Samples.Sandbox
             {
                 movement.Normalize();
                 movement = Vector3.TransformNormal(movement, _rotation);
-                _position += movement * MovementSpeed * deltaSeconds;                
+                _position += movement * MovementSpeed * deltaSeconds;
             }
         }
 
@@ -82,7 +82,7 @@ namespace QuakeConsole.Samples.Sandbox
                 Vector2 mousePos = mouseState.Position.ToVector2();
                 if (_previousMousePos != Vector2.Zero)
                 {
-                    Vector2 amount = mousePos - _previousMousePos;                    
+                    Vector2 amount = mousePos - _previousMousePos;
                     if (amount != Vector2.Zero)
                     {
                         amount *= RotationSpeed * RotationScaleFactor;
@@ -100,13 +100,13 @@ namespace QuakeConsole.Samples.Sandbox
         }
 
         private void CalculateView()
-        {                                                
+        {
             Vector3 target = _position + _rotation.Forward;
             View = Matrix.CreateLookAt(_position, target, _rotation.Up);
         }
 
         private void CalculateProjection()
-        {            
+        {
             Viewport viewport = Game.GraphicsDevice.Viewport;
             float aspectRatio = viewport.Width / (float)viewport.Height;
             Projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 0.1f, 1000);

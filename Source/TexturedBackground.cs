@@ -42,7 +42,7 @@ namespace QuakeConsole
 
         public void Draw()
         {            
-            _bgEffectTexture.SetValue(Texture);               
+            _bgEffectTexture.SetValue(Texture);
             _bgEffectTexTransform.SetValue(TextureTransform);
             _bgEffectWvpTransform.SetValue(_wvp);
             _bgEffectBgColor.SetValue(_console.BackgroundColor.ToVector4());
@@ -57,7 +57,7 @@ namespace QuakeConsole
         {
             Texture = settings.BackgroundTexture;
             TextureTransform = settings.BackgroundTextureTransform;
-        }       
+        }
 
         private void BuildVertexBuffer()
         {
@@ -83,6 +83,6 @@ namespace QuakeConsole
                    Matrix.CreateTranslation(new Vector3(0, _console.WindowArea.Y, 0))*
                    projection;
 
-        }        
+        }
     }
 }

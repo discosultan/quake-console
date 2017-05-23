@@ -13,15 +13,15 @@ namespace QuakeConsole.Samples.Sandbox
         public Vector3 Rotation;
         public Vector3 RotationSpeed = new Vector3(0, MathHelper.PiOver2, 0);
 
-        private BasicEffect _effect;                
+        private BasicEffect _effect;
         private DynamicVertexBuffer _vertexBuffer;
         private IndexBuffer _indexBuffer;
         private Matrix _world;
 
         public CubeComponent(Game game) : base(game)
-        {            
+        {
         }
-        
+
         public VertexPositionColor[] Vertices { get; private set; }
         public Matrix View { get; set; } = Matrix.Identity;
         public Matrix Projection { get; set; } = Matrix.Identity;
@@ -62,7 +62,7 @@ namespace QuakeConsole.Samples.Sandbox
         }
 
         public override void Draw(GameTime gameTime)
-        {            
+        {
             _vertexBuffer.SetData(Vertices);
             GraphicsDevice.SetVertexBuffer(_vertexBuffer);
             GraphicsDevice.Indices = _indexBuffer;

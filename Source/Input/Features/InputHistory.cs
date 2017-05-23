@@ -6,7 +6,7 @@ namespace QuakeConsole
 {
     internal class InputHistory
     {
-        // Input history.        
+        // Input history.
         private readonly List<string> _inputHistory = new List<string>();
         private int _inputHistoryIndexer;
         private bool _inputHistoryDoNotDecrement;
@@ -15,7 +15,7 @@ namespace QuakeConsole
 
         public void LoadContent(ConsoleInput input)
         {
-            _input = input;            
+            _input = input;
         }
 
         public void OnAction(ConsoleAction action)
@@ -56,7 +56,7 @@ namespace QuakeConsole
                     break;
                 case ConsoleAction.AutocompleteForward:
                 case ConsoleAction.AutocompleteBackward:
-                    _inputHistoryIndexer = int.MaxValue;                    
+                    _inputHistoryIndexer = int.MaxValue;
                     break;
             }
         }

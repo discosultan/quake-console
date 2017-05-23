@@ -153,7 +153,7 @@ namespace QuakeConsole
         public static bool operator !=(RectangleF left, RectangleF right) => !(left == right);
 
         public static implicit operator Rectangle(RectangleF value) => 
-            new Rectangle((int) value.X, (int) value.Y, (int) value.Width, (int) value.Height);        
+            new Rectangle((int) value.X, (int) value.Y, (int) value.Width, (int) value.Height);
 
         public override string ToString() => $"{nameof(X)}:{X} {nameof(Y)}:{Y} {nameof(Width)}:{2} {nameof(Height)}:{3}";
     }

@@ -64,10 +64,10 @@ namespace QuakeConsole
         /// <param name="message">Message to append.</param>
         public void Append(string message)
         {
-            if (message == null) return;            
+            if (message == null) return;
 
             var viewBufferEntry = _entryPool.Fetch();
-            viewBufferEntry.Value = message;            
+            viewBufferEntry.Value = message;
             _numRows += viewBufferEntry.CalculateLines(Console.WindowArea.Width - Console.Padding * 2, false);
             _entries.Enqueue(viewBufferEntry);
             RemoveOverflownBufferEntriesIfAllowed();

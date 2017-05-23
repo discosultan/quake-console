@@ -61,7 +61,7 @@ namespace QuakeConsole
         
         public void MoveBy(int amount)
         {
-            Index = Index + amount;            
+            Index = Index + amount;
         }
 
         public void Update(float deltaSeconds)
@@ -93,8 +93,8 @@ namespace QuakeConsole
         }
 
         private void CalculateSymbolWidth()
-        {            
+        {
             Width = _input.Console.Font.MeasureString(Symbol).X + _input.Console.Font.Spacing;            
-        }              
+        }
     }
 }

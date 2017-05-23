@@ -11,7 +11,7 @@ namespace QuakeConsole
         public OutputEntry(ConsoleOutput view)
         {
             _view = view;
-        }        
+        }
 
         public string Value
         {
@@ -29,14 +29,14 @@ namespace QuakeConsole
         public int CalculateLines(float bufferAreaWidth, bool countPrefix)
         {
             Lines.Clear();
-            string[] values = Value.Split(_view.Console.NewlineSymbol, StringSplitOptions.None);                        
+            string[] values = Value.Split(_view.Console.NewlineSymbol, StringSplitOptions.None);
             for (int i = 0; i < values.Length; i++)
                 CalculateLinesPart(values[i], bufferAreaWidth, i == 0 && countPrefix);
 
             return Lines.Count;
         }
 
-        public override string ToString() => Value;        
+        public override string ToString() => Value;
 
         private void CalculateLinesPart(string value, float bufferAreaWidth, bool countPrefix)
         {

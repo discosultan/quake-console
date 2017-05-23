@@ -8,7 +8,7 @@ namespace QuakeConsole
         private readonly Timer _repeatedPressIntervalTimer = new Timer { AutoReset = true };
 
         private bool _startRepeatedProcess;
-        private bool _isFastRepeating;        
+        private bool _isFastRepeating;
         private readonly InputState _inputToRepeat = new InputState();
 
         private ConsoleInput _input;
@@ -54,7 +54,7 @@ namespace QuakeConsole
             {                
                 _repeatedPressIntervalTimer.Update(deltaSeconds);
                 if (_repeatedPressIntervalTimer.Finished)
-                    _input.ProcessInput(_inputToRepeat);                    
+                    _input.ProcessInput(_inputToRepeat);
             }
         }
 
@@ -65,12 +65,12 @@ namespace QuakeConsole
                 ResetRepeatingPresses();
                 _input.Input.CopyTo(_inputToRepeat);
                 _startRepeatedProcess = true;
-            }            
+            }
         }
 
         private void ResetRepeatingPresses()
         {
-            _inputToRepeat.Clear();            
+            _inputToRepeat.Clear();
             _startRepeatedProcess = false;
             _isFastRepeating = false;
             _repeatedPressTresholdTimer.Reset();

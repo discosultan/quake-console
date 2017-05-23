@@ -40,8 +40,8 @@ namespace QuakeConsole
         public void Remove(int startIndex, int length)
         {
             _stringBuilder.Remove(startIndex, length);
-            SetDirtyAndClearCache();                        
-        }        
+            SetDirtyAndClearCache();
+        }
 
         public void Remove(int startIndex)
         {

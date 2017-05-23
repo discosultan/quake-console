@@ -13,7 +13,7 @@ namespace QuakeConsole
             CheckKeysToggled();
             // TODO: Keys toggled should also be checked when the game window gets focus, since caps lock
             // TODO: might be toggled while the game is minimized, for example.
-        }        
+        }
 
         public void OnAction(ConsoleAction action)
         {
@@ -37,7 +37,7 @@ namespace QuakeConsole
         }
 
         private void CheckKeysToggled()
-        {            
+        {
             _capsLockToggled = _input.Input.IsKeyToggled(Keys.CapsLock);
         }
     }

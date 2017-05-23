@@ -13,7 +13,7 @@ namespace QuakeConsole
         private readonly SpriteFontStringBuilder _inputBuffer = new SpriteFontStringBuilder();
         private bool _dirty = true;
 
-        private string _inputPrefix;        
+        private string _inputPrefix;
         private int _numPosToMoveWhenOutOfScreen;
 
         public int VisibleStartIndex { get; private set; }
@@ -45,7 +45,7 @@ namespace QuakeConsole
         {
             get { return Autocompletion.LastAutocompleteEntry; }
             set { Autocompletion.LastAutocompleteEntry = value; }
-        }        
+        }
 
         public int CaretIndex
         {
@@ -114,7 +114,7 @@ namespace QuakeConsole
             if (string.IsNullOrEmpty(value)) return;
 
             _inputBuffer.Insert(Caret.Index, value);
-            Caret.MoveBy(value.Length);            
+            Caret.MoveBy(value.Length);
             SetDirty();
             InputChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -128,7 +128,7 @@ namespace QuakeConsole
             SetDirty();
             InputChanged?.Invoke(this, EventArgs.Empty);
         }
-        
+
         public string Value
         {
             get { return _inputBuffer.ToString(); } // Does not allocate if value is cached.
@@ -155,10 +155,10 @@ namespace QuakeConsole
             if (_inputBuffer.Length == 0) return;
 
             _inputBuffer.Clear();
-            Caret.MoveBy(int.MinValue);            
+            Caret.MoveBy(int.MinValue);
             SetDirty();
             InputChanged?.Invoke(this, EventArgs.Empty);
-        }        
+        }
 
         public char this[int i] {
             get { return _inputBuffer[i]; }
@@ -178,7 +178,7 @@ namespace QuakeConsole
             Input.Update();
             ProcessInput(Input);
 
-            Caret.Update(deltaSeconds);            
+            Caret.Update(deltaSeconds);
             RepeatingInput.Update(deltaSeconds);
             if (_dirty)
             {
@@ -241,10 +241,10 @@ namespace QuakeConsole
                 InputPrefixColor);
             // Draw input buffer.
             inputPosition.X += InputPrefixSize.X;
-            if (_inputBuffer.Length > 0)                
+            if (_inputBuffer.Length > 0)
                 Console.SpriteBatch.DrawString(Console.Font, _inputBuffer.Substring(VisibleStartIndex, VisibleLength), inputPosition, Console.FontColor);
             
-            Caret.Draw();            
+            Caret.Draw();
         }
         
         public void SetDefaults(ConsoleSettings settings)
@@ -262,7 +262,7 @@ namespace QuakeConsole
         public override string ToString() => Value;
 
         private void CalculateInputPrefixWidth()
-        {            
+        {
             InputPrefixSize = Console.Font.MeasureString(InputPrefix) + new Vector2(Console.Font.Spacing, 0);            
         }
 

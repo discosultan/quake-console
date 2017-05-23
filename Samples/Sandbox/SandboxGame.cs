@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace QuakeConsole.Samples.Sandbox
-{    
+{
     public class SandboxGame : Game
-    {        
+    {
         private const Keys ToggleConsole = Keys.OemTilde;
         private const float ConsoleBackgroundSpeedFactor = 1/24f;        
         private static readonly Color BackgroundColor = new Color(new Vector3(0.125f));
@@ -24,12 +24,12 @@ namespace QuakeConsole.Samples.Sandbox
         private readonly RoslynInterpreter _roslynInterpreter = new RoslynInterpreter();
         private readonly CameraControllerComponent _camera;
 
-        private SpriteBatch _spriteBatch;        
+        private SpriteBatch _spriteBatch;
 
         private CubeComponent _cube;
 
         private SpriteFont _lucidaConsole;
-        private SpriteFont _arial;                
+        private SpriteFont _arial;
         
         private Matrix _consoleBgTransform = Matrix.Identity;
 
@@ -41,7 +41,7 @@ namespace QuakeConsole.Samples.Sandbox
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            _camera = new CameraControllerComponent(this);            
+            _camera = new CameraControllerComponent(this);
             _cube = new CubeComponent(this);
             Components.Add(_camera);
             Components.Add(_cube);
@@ -51,13 +51,13 @@ namespace QuakeConsole.Samples.Sandbox
                 Padding = 10.0f,
                 FontColor = Color.White,
                 InputPrefixColor = Color.White,
-                BackgroundColor = Color.White,                
+                BackgroundColor = Color.White,
                 BottomBorderThickness = 4.0f,
                 BottomBorderColor = Color.Red,
-                SelectionColor = SelectionColor,                
+                SelectionColor = SelectionColor,
                 LogInput = cmd => Debug.WriteLine(cmd) // Logs input commands to VS output window.
-            };            
-            Components.Add(_console);            
+            };
+            Components.Add(_console);
 
             // Add search path for IronPython standard library. This is so that Python engine knows where to load modules from.
             _pythonInterpreter.AddSearchPath(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Lib\\"));
@@ -65,27 +65,27 @@ namespace QuakeConsole.Samples.Sandbox
             // Import threading module and Timer function.
             _pythonInterpreter.RunScript("import threading");
             _pythonInterpreter.RunScript("import random");
-            _pythonInterpreter.RunScript("from threading import Timer");            
+            _pythonInterpreter.RunScript("from threading import Timer");
 
             // There's a bug when trying to change resolution during window resize.
             // https://github.com/mono/MonoGame/issues/3572
             _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 720;            
-            Window.AllowUserResizing = false;            
+            _graphics.PreferredBackBufferHeight = 720;
+            Window.AllowUserResizing = false;
 
             IsMouseVisible = true;
         }
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);            
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _arial = Content.Load<SpriteFont>("arial");
             _lucidaConsole = Content.Load<SpriteFont>("lucida_console");
 
-            // Set console's font and interpreter.             
+            // Set console's font and interpreter.
             _console.Interpreter = _pythonInterpreter;
-            _console.BackgroundTexture = Content.Load<Texture2D>("console");            
+            _console.BackgroundTexture = Content.Load<Texture2D>("console");
 
             // Register variables and types of interest with the Python interpreter.
             _pythonInterpreter.AddVariable("cube", _cube);
@@ -111,7 +111,7 @@ namespace QuakeConsole.Samples.Sandbox
             _manualInterpreter.RegisterCommand("Set-Cube-Rotation", args => _cube.Rotation = args.ToVector3());
             _manualInterpreter.RegisterCommand("Set-Cube-RotationSpeed", args => _cube.RotationSpeed = args.ToVector3());
 
-            // Register variables with the roslyn interpreter.            
+            // Register variables with the roslyn interpreter.
             _roslynInterpreter.AddVariable("cube", _cube);
             _roslynInterpreter.AddVariable("console", _console);
             _roslynInterpreter.AddVariable("pythonInterpreter", _pythonInterpreter);
@@ -128,7 +128,7 @@ namespace QuakeConsole.Samples.Sandbox
             _currentKeyState = Keyboard.GetState();
 
             if (IsKeyPressed(ToggleConsole))
-                _console.ToggleOpenClose();            
+                _console.ToggleOpenClose();
             
             _camera.Enabled = !_console.IsAcceptingInput;
             _cube.View = _camera.View;
@@ -150,7 +150,7 @@ namespace QuakeConsole.Samples.Sandbox
             _spriteBatch.End();
 
             base.Draw(gameTime);
-        }        
+        }
 
         private bool IsKeyPressed(Keys key) => _previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key);        
 

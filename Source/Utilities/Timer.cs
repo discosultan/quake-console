@@ -23,7 +23,7 @@ namespace QuakeConsole
         {
             _time = 0f;
             Finished = false;
-        }        
+        }
 
         public void Update(float deltaTime)
         {

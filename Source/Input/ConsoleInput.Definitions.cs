@@ -6,7 +6,7 @@ namespace QuakeConsole
     internal partial class ConsoleInput
     {
         internal ConsoleActionMap ActionDefinitions { get; } = new ConsoleActionMap
-        {           
+        {
             { Keys.Enter, ConsoleAction.ExecuteCommand },
             { Keys.Left, ConsoleAction.MoveLeft },
             { Keys.Right, ConsoleAction.MoveRight },
@@ -123,6 +123,6 @@ namespace QuakeConsole
             { Keys.Divide, new Symbol("/") }
             //{ Keys.Tab, new SymbolPair("\t", "\t") } // Tab char is not supported in many fonts.
             //{ Keys.Tab, new SymbolPair("    ", "    ") } // Use 4 spaces instead.
-        };         
+        };
     }
 }

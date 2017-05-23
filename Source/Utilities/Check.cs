@@ -5,28 +5,28 @@ namespace QuakeConsole
 {
     internal static class Check
     {
-        [DebuggerHidden]        
+        [DebuggerHidden]
         public static void ArgumentNotNull(object argument, string argumentName, string message = "")
         {
             if (argument == null)
                 throw new ArgumentNullException(argumentName, message);
         }
 
-        [DebuggerHidden]        
+        [DebuggerHidden]
         public static void True(bool expression, string message = "")
         {
             if (!expression)
                 throw new InvalidOperationException(message);
         }
 
-        [DebuggerHidden]        
+        [DebuggerHidden]
         public static void False(bool expression, string message = "")
         {
             if (expression)
                 throw new InvalidOperationException(message);
         }
 
-        [DebuggerHidden]        
+        [DebuggerHidden]
         public static void ArgumentNotLessThan<T>(T argument, T treshold, string argumentName, string message = "") where T : IComparable<T>
         {
             if (argument.CompareTo(treshold) < 0)

@@ -99,7 +99,7 @@ namespace QuakeConsole
             bool modifiersAccepted = false;
             List<Int3> requiredModifiers;
             if (_map.BackwardTryGetValues(action, out requiredModifiers))
-            {                
+            {
                 foreach (Int3 modifiers in requiredModifiers)
                 {
                     var modifier1 = (Keys)modifiers.X;
@@ -114,7 +114,7 @@ namespace QuakeConsole
         }
 
         internal bool TryGetAction(InputState input, out ConsoleAction action)
-        {                        
+        {
             foreach (Keys key in input.PressedKeys)
             {
                 // First look for actions with two modifiers.

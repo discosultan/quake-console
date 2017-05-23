@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 namespace QuakeConsole.Samples.HelloPython
 {
     public class HelloPythonGame : Game
-    {                
+    {
         private readonly GraphicsDeviceManager _graphics;
         // We need a reference to console to open and close it.
         private readonly ConsoleComponent _console;
@@ -16,11 +16,14 @@ namespace QuakeConsole.Samples.HelloPython
         public HelloPythonGame()
         {
             Window.Title = "Hello Python in MonoGame :)";
+            IsMouseVisible = true;
+            Window.AllowUserResizing = true;
+
             _graphics = new GraphicsDeviceManager(this)
             {
                 PreferredBackBufferWidth = 1280,
                 PreferredBackBufferHeight = 720
-            };            
+            };
 
             // Create a sample cube component.
             var cube = new CubeComponent(this);
@@ -28,14 +31,14 @@ namespace QuakeConsole.Samples.HelloPython
 
             // Create a console component.
             _console = new ConsoleComponent(this);
-            Components.Add(_console);            
+            Components.Add(_console);
 
             // Create an interpreter - this will execute the commands typed into console.
             // In this case we are creating a python interpreter which allows python code to be executed.
             var interpreter = new PythonInterpreter();
             // Register the cube and the console itself as objects we can manipulate in-game.
             interpreter.AddVariable("cube", cube);
-            interpreter.AddVariable("console", _console);            
+            interpreter.AddVariable("console", _console);
             // Finally, tell the console to use this interpreter.
             _console.Interpreter = interpreter;
 
@@ -56,7 +59,7 @@ namespace QuakeConsole.Samples.HelloPython
 
             // If toggle console key is pressed, toggle the console to open or close.
             if (IsKeyPressed(ToggleConsoleKey))
-                _console.ToggleOpenClose();                        
+                _console.ToggleOpenClose();
 
             base.Update(gameTime);
         }

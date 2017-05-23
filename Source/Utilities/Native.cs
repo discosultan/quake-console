@@ -78,7 +78,7 @@ namespace QuakeConsole
 
             string data = null;
             try
-            {                
+            {
                 var hGlobal = GetClipboardData(CF_UNICODETEXT);
                 if (hGlobal != IntPtr.Zero)
                 {
@@ -109,7 +109,7 @@ namespace QuakeConsole
 
             try
             {
-                uint sizeOfChar = 2;                                                                           
+                uint sizeOfChar = 2;
 
                 var characters = (uint)message.Length;
                 uint bytes = (characters + 1) * sizeOfChar;
@@ -121,7 +121,7 @@ namespace QuakeConsole
                 // IMPORTANT: SetClipboardData requires memory that was acquired with GlobalAlloc using GMEM_MOVABLE.
                 var hGlobal = GlobalAlloc(GHND, (UIntPtr)bytes);
                 if (hGlobal == IntPtr.Zero)
-                    return false;   
+                    return false;
 
                 try
                 {

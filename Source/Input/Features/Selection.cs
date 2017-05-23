@@ -11,7 +11,7 @@ namespace QuakeConsole
         private int _selectionIndex2;
 
         private int _previousCaretIndex;
-        private bool _selectionActive;               
+        private bool _selectionActive;
 
         public bool HasSelection => _selectionActive && SelectionLength > 0;
         public int SelectionStart { get; private set; }
@@ -65,8 +65,8 @@ namespace QuakeConsole
                 _input.Console.WindowArea.Y + _input.Console.WindowArea.Height - _input.Console.Padding - _input.Console.FontSize.Y);
 
             float startX = _input.MeasureSubstring(_input.VisibleStartIndex, visibleSelectionStartIndex - _input.VisibleStartIndex).X;
-            if (startX > 0)            
-                startX += _input.Console.Font.Spacing;            
+            if (startX > 0)
+                startX += _input.Console.Font.Spacing;
             float width = _input.MeasureSubstring(visibleSelectionStartIndex, length).X;
             var destRectangle = new RectangleF(
                 offset.X + startX,
@@ -90,7 +90,7 @@ namespace QuakeConsole
             _selectionActive = false;
             _previousCaretIndex = 0;
             _selectionIndex1 = 0;
-            _selectionIndex2 = 0;            
+            _selectionIndex2 = 0;
         }
     }
 }

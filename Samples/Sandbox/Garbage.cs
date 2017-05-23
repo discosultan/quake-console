@@ -9,14 +9,14 @@ namespace QuakeConsole.Samples.Sandbox
     /// </summary>
     internal static class Garbage
     {
-        private static float _garbageAmountAtLastUpdate;        
+        private static float _garbageAmountAtLastUpdate;
         private static float _secondsPassedSinceLastSecond;
         private static int _updatesPerSecond;
 
         /// <summary>
         /// Gets the current amount of allocated garbage in kilobytes.
         /// </summary>
-        public static float CurrentAmount { get; private set; }     
+        public static float CurrentAmount { get; private set; }
    
         /// <summary>
         /// Gets the average amount of garbage created per frame in kilobytes.
@@ -59,7 +59,7 @@ namespace QuakeConsole.Samples.Sandbox
 
                 // Reset how many updates have been done in the past second.
                 _updatesPerSecond = 0;
-            }            
+            }
         }
     }
 }
