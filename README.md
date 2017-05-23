@@ -27,7 +27,7 @@ The following is required to successfully compile the QuakeConsole MonoGame solu
 - Visual studio 2015+
 - .NET Framework 4.6+
 - [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109)
-- MonoGame 3.5.1+
+- MonoGame 3.6+
 
 
 <h2 id="setup2">Using QuakeConsole</h2>
