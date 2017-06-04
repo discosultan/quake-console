@@ -30,7 +30,7 @@ $createAndPublishPackage =
 	Write-Host Packing $nuspecFile 
 	nuget pack $nuspecFile -OutputDirectory $outputDir -symbols	
 	Write-Host Publishing $nupkgFile
-	nuget push $nupkgFile
+	nuget push $nupkgFile -Source https://www.nuget.org/api/v2/package
 }
 
 Start-Job -ScriptBlock $createAndPublishPackage -ArgumentList $consoleId, $versionRegex, $versionNumber, $workingDir, $False

@@ -18,7 +18,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>bin\Debug\DesktopGL\</OutputPath>
     <DefineConstants>TRACE;DEBUG;LINUX;DESKTOPGL</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\Debug\DesktopGL\MonoGame.QuakeConsole.xml</DocumentationFile>
@@ -27,7 +27,7 @@
     <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>bin\Release\DesktopGL\</OutputPath>
     <DefineConstants>TRACE;LINUX;DESKTOPGL</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>bin\Release\DesktopGL\MonoGame.QuakeConsole.xml</DocumentationFile>
