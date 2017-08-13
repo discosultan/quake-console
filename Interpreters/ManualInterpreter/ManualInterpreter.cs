@@ -10,6 +10,7 @@ namespace QuakeConsole
     public class ManualInterpreter : ICommandInterpreter
     {
         private static readonly string[] CommandAndArgumentSeparator = { " " };
+        private static readonly string[] InstructionSeparator = { ";" };
         private const StringComparison StringComparisonMethod = StringComparison.OrdinalIgnoreCase;
 
         // Command map supports executing multiple commands from a single input.
@@ -30,32 +31,37 @@ namespace QuakeConsole
         {
             if (EchoEnabled) output.Append(input);
 
-            string[] inputSplit = input.Split(CommandAndArgumentSeparator, StringSplitOptions.RemoveEmptyEntries);
-            if (inputSplit.Length == 0) return;
+            string[] instructions = input.Split(InstructionSeparator, StringSplitOptions.RemoveEmptyEntries);
 
-            string command = inputSplit[0];
-            string[] commandArgs = inputSplit.Skip(1).ToArray();
-
-            List<Func<string[], string>> commandList;
-            if (_commandMap.TryGetValue(command, out commandList))
+            foreach (var instruction in instructions)
             {
-                foreach (Func<string[], string> cmd in commandList)
+                string[] inputSplit = instruction.Trim().Split(CommandAndArgumentSeparator, StringSplitOptions.RemoveEmptyEntries);
+                if (inputSplit.Length == 0) return;
+
+                string command = inputSplit[0];
+                string[] commandArgs = inputSplit.Skip(1).ToArray();
+
+                List<Func<string[], string>> commandList;
+                if (_commandMap.TryGetValue(command, out commandList))
                 {
-                    try
+                    foreach (Func<string[], string> cmd in commandList)
                     {
-                        string result = cmd(commandArgs);
-                        if (!string.IsNullOrWhiteSpace(result))
-                            output.Append(result);
-                    }
-                    catch (Exception ex)
-                    {
-                        output.Append($"Command '{command}' failed. {ex.Message}");
+                        try
+                        {
+                            string result = cmd(commandArgs);
+                            if (!string.IsNullOrWhiteSpace(result))
+                                output.Append(result);
+                        }
+                        catch (Exception ex)
+                        {
+                            output.Append($"Command '{command}' failed. {ex.Message}");
+                        }
                     }
                 }
-            }
-            else
-            {
-                output.Append($"Command '{command}' not found.");
+                else
+                {
+                    output.Append($"Command '{command}' not found.");
+                }
             }
         }
 
