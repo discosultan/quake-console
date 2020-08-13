@@ -299,7 +299,7 @@ namespace QuakeConsole
             _content = new ResourceContentManager(
                 Game.Services,
 #if WINDOWSDX
-                Resource_WindowsDX.ResourceManager
+            Resource_WindowsDX.ResourceManager
 #elif DESKTOPGL
             Resource_DesktopGL.ResourceManager
 #endif
