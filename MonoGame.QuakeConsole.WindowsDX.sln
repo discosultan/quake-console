@@ -1,29 +1,27 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.WindowsDX", "Source\MonoGame.QuakeConsole.WindowsDX.csproj", "{66A03276-E5E7-4E05-9790-F5602147426C}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{F7379397-76DC-4F58-95A8-2EF2C908BFC7}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sandbox", "Samples\Sandbox\Sandbox.csproj", "{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}"
-	ProjectSection(ProjectDependencies) = postProject
-		{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B} = {A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}
-		{6F52CAE9-64B6-4601-B8E7-2DDDE96C2031} = {6F52CAE9-64B6-4601-B8E7-2DDDE96C2031}
-	EndProjectSection
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.WindowsDX", "Source\MonoGame.QuakeConsole.WindowsDX.csproj", "{66A03276-E5E7-4E05-9790-F5602147426C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interpreters", "Interpreters", "{008C44E4-2B68-4E46-9700-DE1C8FA36432}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.PythonInterpreter.WindowsDX", "Interpreters\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.WindowsDX.csproj", "{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.ManualInterpreter", "Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.csproj", "{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.PythonInterpreter.Tests.WindowsDX", "Interpreters\PythonInterpreter.Tests\MonoGame.QuakeConsole.PythonInterpreter.Tests.WindowsDX.csproj", "{76B26717-E016-4C24-AA10-7CD8706DAAA6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Samples\Sandbox\Sandbox.csproj", "{22D28A8B-F26F-4000-AE4F-3857937A44B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.ManualInterpreter", "Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.csproj", "{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{93586DEB-D5A1-4DF5-8385-135AF17525DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.RoslynInterpreter", "Interpreters\RoslynInterpreter\MonoGame.QuakeConsole.RoslynInterpreter.csproj", "{6F52CAE9-64B6-4601-B8E7-2DDDE96C2031}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sandbox", "Sandbox", "{33742BAA-3F5F-40D6-ADAD-2B51AE0A0D77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloPython.WindowsDX", "Samples\HelloPython\HelloPython.WindowsDX.csproj", "{C56127DB-8995-48E4-A417-FC656B1BC6BF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.PythonInterpreter.WindowsDX", "Interpreters\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.WindowsDX.csproj", "{2D1B7CFF-C52E-418D-BD32-C13608E7E685}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.RoslynInterpreter", "Interpreters\RoslynInterpreter\MonoGame.QuakeConsole.RoslynInterpreter.csproj", "{40A5A139-401A-4D97-9223-532336AE8ABD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HelloPython", "HelloPython", "{27BDBA01-77EB-416A-A971-E8FEF148E0FC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloPython.WindowsDX", "Samples\HelloPython\HelloPython.WindowsDX.csproj", "{46D248B3-2648-4CCD-930B-0B97E04C9A73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,40 +33,40 @@ Global
 		{66A03276-E5E7-4E05-9790-F5602147426C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66A03276-E5E7-4E05-9790-F5602147426C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66A03276-E5E7-4E05-9790-F5602147426C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76B26717-E016-4C24-AA10-7CD8706DAAA6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F52CAE9-64B6-4601-B8E7-2DDDE96C2031}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F52CAE9-64B6-4601-B8E7-2DDDE96C2031}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F52CAE9-64B6-4601-B8E7-2DDDE96C2031}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F52CAE9-64B6-4601-B8E7-2DDDE96C2031}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C56127DB-8995-48E4-A417-FC656B1BC6BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C56127DB-8995-48E4-A417-FC656B1BC6BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C56127DB-8995-48E4-A417-FC656B1BC6BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C56127DB-8995-48E4-A417-FC656B1BC6BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22D28A8B-F26F-4000-AE4F-3857937A44B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22D28A8B-F26F-4000-AE4F-3857937A44B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22D28A8B-F26F-4000-AE4F-3857937A44B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22D28A8B-F26F-4000-AE4F-3857937A44B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D1B7CFF-C52E-418D-BD32-C13608E7E685}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D1B7CFF-C52E-418D-BD32-C13608E7E685}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D1B7CFF-C52E-418D-BD32-C13608E7E685}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D1B7CFF-C52E-418D-BD32-C13608E7E685}.Release|Any CPU.Build.0 = Release|Any CPU
+		{40A5A139-401A-4D97-9223-532336AE8ABD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{40A5A139-401A-4D97-9223-532336AE8ABD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{40A5A139-401A-4D97-9223-532336AE8ABD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{40A5A139-401A-4D97-9223-532336AE8ABD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46D248B3-2648-4CCD-930B-0B97E04C9A73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46D248B3-2648-4CCD-930B-0B97E04C9A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46D248B3-2648-4CCD-930B-0B97E04C9A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46D248B3-2648-4CCD-930B-0B97E04C9A73}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{38B365CF-91C8-43E5-AB85-9EB69EC0AA19} = {F7379397-76DC-4F58-95A8-2EF2C908BFC7}
-		{009C278A-A225-47C2-AAF2-D6F7F8D1E70F} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
-		{76B26717-E016-4C24-AA10-7CD8706DAAA6} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
 		{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
-		{6F52CAE9-64B6-4601-B8E7-2DDDE96C2031} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
-		{C56127DB-8995-48E4-A417-FC656B1BC6BF} = {F7379397-76DC-4F58-95A8-2EF2C908BFC7}
+		{22D28A8B-F26F-4000-AE4F-3857937A44B5} = {33742BAA-3F5F-40D6-ADAD-2B51AE0A0D77}
+		{33742BAA-3F5F-40D6-ADAD-2B51AE0A0D77} = {93586DEB-D5A1-4DF5-8385-135AF17525DC}
+		{2D1B7CFF-C52E-418D-BD32-C13608E7E685} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
+		{40A5A139-401A-4D97-9223-532336AE8ABD} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
+		{27BDBA01-77EB-416A-A971-E8FEF148E0FC} = {93586DEB-D5A1-4DF5-8385-135AF17525DC}
+		{46D248B3-2648-4CCD-930B-0B97E04C9A73} = {27BDBA01-77EB-416A-A971-E8FEF148E0FC}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {0DD4851F-194E-476B-AEF2-C615766861FE}
 	EndGlobalSection
 EndGlobal

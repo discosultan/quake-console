@@ -1,102 +1,16 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{009C278A-A225-47C2-AAF2-D6F7F8D1E70F}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuakeConsole</RootNamespace>
-    <AssemblyName>MonoGame.QuakeConsole.PythonInterpreter</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\WindowsDX\</OutputPath>
-    <DocumentationFile>bin\Debug\WindowsDX\MonoGame.QuakeConsole.PythonInterpreter.xml</DocumentationFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\WindowsDX\</OutputPath>
-    <DocumentationFile>bin\Release\WindowsDX\MonoGame.QuakeConsole.PythonInterpreter.xml</DocumentationFile>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Reference Include="IronPython, Version=2.7.5.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.5\lib\Net40\IronPython.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="IronPython.Modules, Version=2.7.5.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.5\lib\Net40\IronPython.Modules.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="IronPython.SQLite, Version=2.7.5.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.5\lib\Net40\IronPython.SQLite.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="IronPython.Wpf, Version=2.7.5.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.5\lib\Net40\IronPython.Wpf.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.5\lib\Net40\Microsoft.Dynamic.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.5\lib\Net40\Microsoft.Scripting.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Scripting.AspNet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.5\lib\Net40\Microsoft.Scripting.AspNet.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Microsoft.Scripting.Metadata, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\IronPython.2.7.5\lib\Net40\Microsoft.Scripting.Metadata.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
+    <PackageReference Include="IronPython" Version="2.7.10" />
   </ItemGroup>
+
   <ItemGroup>
-    <Compile Include="Autocompleter.cs" />
-    <Compile Include="AutocompletionContext.cs" />
-    <Compile Include="Member.cs" />
-    <Compile Include="OutputBufferWriter.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PythonInterpreter.cs" />
-    <Compile Include="TypeLoader.cs" />
-    <Compile Include="Utilities.cs" />
+    <ProjectReference Include="..\..\Source\MonoGame.QuakeConsole.WindowsDX.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <ProjectReference Include="..\..\Source\MonoGame.QuakeConsole.WindowsDX.csproj">
-      <Project>{66a03276-e5e7-4e05-9790-f5602147426c}</Project>
-      <Name>MonoGame.QuakeConsole</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

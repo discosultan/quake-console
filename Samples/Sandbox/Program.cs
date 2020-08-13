@@ -1,6 +1,5 @@
 ﻿namespace QuakeConsole.Samples.Sandbox
 {
-#if WINDOWS || LINUX
     /// <summary>
     /// The main class.
     /// </summary>
@@ -16,5 +15,4 @@
                 game.Run();
         }
     }
-#endif
 }

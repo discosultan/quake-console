@@ -16,14 +16,9 @@
 #begin arial.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:arial.spritefont
-
-#begin lucida_console.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:TextureFormat=Compressed
-/build:lucida_console.spritefont
 
 #begin console.png
 /importer:TextureImporter
@@ -33,6 +28,14 @@
 /processorParam:GenerateMipmaps=False
 /processorParam:PremultiplyAlpha=False
 /processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:console.png
+
+#begin lucida_console.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:lucida_console.spritefont
 

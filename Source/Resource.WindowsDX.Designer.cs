@@ -39,7 +39,7 @@ namespace QuakeConsole {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("QuakeConsole.Resource.WindowsDX", typeof(Resource_WindowsDX).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("MonoGame.QuakeConsole.WindowsDX.Resource.WindowsDX", typeof(Resource_WindowsDX).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;

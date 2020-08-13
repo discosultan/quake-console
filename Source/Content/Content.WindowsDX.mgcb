@@ -1,8 +1,8 @@
 
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:bin/$(Platform)
-/intermediateDir:obj/$(Platform)
+/outputDir:bin\$(Platform)
+/intermediateDir:obj\$(Platform)
 /platform:Windows
 /config:
 /profile:Reach
@@ -22,6 +22,7 @@
 #begin qc_console.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:qc_console.spritefont
 
