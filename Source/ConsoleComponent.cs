@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
+using System.Runtime.InteropServices;
 
 namespace QuakeConsole
 {
@@ -298,11 +299,14 @@ namespace QuakeConsole
             _content = new ResourceContentManager(
                 Game.Services,
 #if WINDOWSDX
-                Resource_WindowsDX.ResourceManager
+            Resource_WindowsDX.ResourceManager
 #elif DESKTOPGL
-                Resource_DesktopGL.ResourceManager
+            Resource_DesktopGL.ResourceManager
 #endif
             );
+
+
+
             _console.LoadContent(
                 GraphicsDevice,
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),

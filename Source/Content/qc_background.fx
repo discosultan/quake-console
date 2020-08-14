@@ -40,8 +40,8 @@ technique Main
 	pass P0
 	{
 #ifdef SM4 
-		VertexShader = compile vs_4_0_level_9_1 VS();
-		PixelShader = compile ps_4_0_level_9_1 PS();
+		VertexShader = compile vs_4_0_level_9_3 VS();
+		PixelShader = compile ps_4_0_level_9_3 PS();
 #else
 		VertexShader = compile vs_2_0 VS();
 		PixelShader = compile ps_2_0 PS();
