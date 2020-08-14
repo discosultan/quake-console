@@ -6,6 +6,8 @@
 
     <MonoGamePlatform>Windows</MonoGamePlatform>
 
+    <ApplicationIcon>Icon.ico</ApplicationIcon>
+
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
