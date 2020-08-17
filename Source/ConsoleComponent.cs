@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Content;
-using System.Runtime.InteropServices;
 
 namespace QuakeConsole
 {
@@ -93,7 +92,7 @@ namespace QuakeConsole
         /// </summary>
         public Color BackgroundColor
         {
-            get {  return _console.BackgroundColor; }  
+            get {  return _console.BackgroundColor; }
             set { _console.BackgroundColor = value; }
         }
 
@@ -117,8 +116,8 @@ namespace QuakeConsole
 
         /// <summary>
         /// Gets or sets the time in seconds it takes to trigger repeating input feature.
-        /// Repeating input is triggered when a key is held down. When repeating input is triggered, 
-        /// keys which are held down will be repeatedly processed or appended to the console 
+        /// Repeating input is triggered when a key is held down. When repeating input is triggered,
+        /// keys which are held down will be repeatedly processed or appended to the console
         /// (normally they are processed or appended only upon key press).
         /// </summary>
         public float TimeToTriggerRepeatingInput
@@ -262,13 +261,13 @@ namespace QuakeConsole
         {
             get { return _console.ConsoleInput.Selection.Color; }
             set { _console.ConsoleInput.Selection.Color = value; }
-            
+
         }
 
         /// <summary>
         /// Opens the console windows if it is closed. Closes it if it is opened.
         /// </summary>
-        public void ToggleOpenClose() => _console.ToggleOpenClose();        
+        public void ToggleOpenClose() => _console.ToggleOpenClose();
 
         /// <summary>
         /// Clears the subparts of the <see cref="Console"/>.
@@ -304,9 +303,6 @@ namespace QuakeConsole
             Resource_DesktopGL.ResourceManager
 #endif
             );
-
-
-
             _console.LoadContent(
                 GraphicsDevice,
                 (GraphicsDeviceManager)Game.Services.GetService<IGraphicsDeviceManager>(),
@@ -337,7 +333,7 @@ namespace QuakeConsole
 
         /// <inheritdoc/>
         protected override void UnloadContent()
-        {            
+        {
             _console.Dispose();
             _content?.Dispose();
         }

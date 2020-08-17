@@ -10,7 +10,7 @@ namespace QuakeConsole.Samples.Sandbox
     public class SandboxGame : Game
     {
         private const Keys ToggleConsole = Keys.OemTilde;
-        private const float ConsoleBackgroundSpeedFactor = 1/24f;        
+        private const float ConsoleBackgroundSpeedFactor = 1/24f;
         private static readonly Color BackgroundColor = new Color(new Vector3(0.125f));
         private static readonly Color ForegroundColor = Color.White;
         private static readonly Color SelectionColor = Color.DarkGray;
@@ -30,7 +30,7 @@ namespace QuakeConsole.Samples.Sandbox
 
         private SpriteFont _lucidaConsole;
         private SpriteFont _arial;
-        
+
         private Matrix _consoleBgTransform = Matrix.Identity;
 
         private KeyboardState _previousKeyState;
@@ -129,7 +129,7 @@ namespace QuakeConsole.Samples.Sandbox
 
             if (IsKeyPressed(ToggleConsole))
                 _console.ToggleOpenClose();
-            
+
             _camera.Enabled = !_console.IsAcceptingInput;
             _cube.View = _camera.View;
             _cube.Projection = _camera.Projection;
@@ -152,7 +152,7 @@ namespace QuakeConsole.Samples.Sandbox
             base.Draw(gameTime);
         }
 
-        private bool IsKeyPressed(Keys key) => _previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key);        
+        private bool IsKeyPressed(Keys key) => _previousKeyState.IsKeyUp(key) && _currentKeyState.IsKeyDown(key);
 
         private void DrawInstructions()
         {

@@ -63,7 +63,7 @@ namespace QuakeConsole.Samples.HelloPython
 
             base.Update(gameTime);
         }
-        
+
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(BackgroundColor);

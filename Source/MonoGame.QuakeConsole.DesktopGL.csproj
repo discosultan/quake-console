@@ -5,52 +5,27 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\DesktopGL\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;LINUX;DESKTOPGL</DefineConstants>
-    <DocumentationFile>bin\Debug\DesktopGL\MonoGame.QuakeConsole.xml</DocumentationFile>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\DesktopGL\</OutputPath>
-    <DefineConstants>TRACE;LINUX;DESKTOPGL</DefineConstants>
-    <DocumentationFile>bin\Release\DesktopGL\MonoGame.QuakeConsole.xml</DocumentationFile>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;DESKTOPGL</DefineConstants>
   </PropertyGroup>
 
-  <!-- 
-  <ItemGroup>
-   
-    <Compile Include="Resource.DesktopGL.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resource.DesktopGL.resx</DependentUpon>
-    </Compile>
-   
-  </ItemGroup>
-  -->
-  <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.DesktopGL.mgcb" />
-    <None Include="Content\bin\DesktopGL\qc_background.xnb" />
-    <None Include="Content\bin\DesktopGL\qc_console.xnb" />
-    <None Include="Content\qc_background.fx" />
-    <None Include="Content\qc_console.spritefont" />
-  </ItemGroup>
-  <!-- <ItemGroup>
-    <EmbeddedResource Include="Resource.DesktopGL.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resource.DesktopGL.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup> -->
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DESKTOPGL</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Framework.DesktopGL" Version="3.8.0.1641" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.DesktopGL.mgcb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resource.DesktopGL.resx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
 </Project>

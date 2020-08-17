@@ -8,21 +8,21 @@ namespace QuakeConsole.Tests
     {
         private const string InstancePrefix = "instance";
         private const string FirstInstanceName = "instance_a";
-        private const string SecondInstanceName = "instance_b";        
-        private const string LastStaticName = "YieldAwaitable";                        
+        private const string SecondInstanceName = "instance_b";
+        private const string LastStaticName = "YieldAwaitable";
         private const string StaticClassName = "Podobranchia";
-        private const string StaticClassPrefix = "Podo";        
+        private const string StaticClassPrefix = "Podo";
 
-        private Kickup _target;        
-        
+        private Kickup _target;
+
         public override void Setup()
         {
             base.Setup();
-            _target = new Kickup();            
+            _target = new Kickup();
             Interpreter.AddVariable(FirstInstanceName, _target, int.MaxValue);
-            Interpreter.AddVariable(SecondInstanceName, _target, int.MaxValue);                   
+            Interpreter.AddVariable(SecondInstanceName, _target, int.MaxValue);
             Interpreter.AddType(typeof (Podobranchia), int.MaxValue);
-        }        
+        }
 
         [Test]
         public void NoInput_AutocompleteOnce_FirstInstanceSelected()
@@ -77,7 +77,7 @@ namespace QuakeConsole.Tests
             Interpreter.Autocomplete(Input, true);
 
             Assert.AreEqual(FirstInstanceName, Input.Value);
-        }        
+        }
 
         [Test]
         public void InstancePrefix_CaretAtZero_Autocomplete_FirstInstanceSelected()

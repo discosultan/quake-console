@@ -201,8 +201,7 @@ namespace QuakeConsole
 
         private string[] GetAvailableNamesForType(Type type)
         {
-            string[] results;
-            if (!_instancesAndStaticsForTypes.TryGetValue(type, out results))
+            if (!_instancesAndStaticsForTypes.TryGetValue(type, out string[] results))
             {
                 IEnumerable<string> resultsQuery = _typeLoader.Instances.Where(x => type.IsAssignableFrom(x.Value.Type))
                     .Union(_typeLoader.Statics.Where(x => type.IsAssignableFrom(x.Value.Type)))
@@ -326,8 +325,7 @@ namespace QuakeConsole
 
             bool isArrayIndexer = IsArrayIndexer(link, out link);
 
-            Member member;
-            if (_typeLoader.Instances.TryGetValue(link, out member))
+            if (_typeLoader.Instances.TryGetValue(link, out Member member))
                 member.IsInstance = true;
             else if (_typeLoader.Statics.TryGetValue(link, out member))
                 member.IsInstance = false;
@@ -428,10 +426,10 @@ namespace QuakeConsole
             {
                 index--;
                 if (index < firstIndex)
-                    index = lastIndex;                
+                    index = lastIndex;
             }
             string autocompleteValue = autocompleteEntries[index];
-            
+
             //if (completionType == AutocompletionType.Regular)
             //    autocompleteValue = nameof(ExpandoWrapper.globals) + AccessorSymbol + autocompleteValue;
 

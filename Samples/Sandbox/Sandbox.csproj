@@ -19,7 +19,7 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <PackageReference Include="IronPython" Version="2.7.10" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
@@ -939,5 +939,5 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  
+
 </Project>

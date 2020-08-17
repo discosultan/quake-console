@@ -31,8 +31,8 @@ namespace QuakeConsole
             bool uppercaseModifierApplies = _input.ActionDefinitions.AreModifiersAppliedForAction(
                 ConsoleAction.UppercaseModifier, _input.Input);
 
-            return capsLockApplies ^ uppercaseModifierApplies 
-                ? symbol.Uppercase 
+            return capsLockApplies ^ uppercaseModifierApplies
+                ? symbol.Uppercase
                 : symbol.Lowercase;
         }
 

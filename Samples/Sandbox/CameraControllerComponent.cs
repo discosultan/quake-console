@@ -11,7 +11,7 @@ namespace QuakeConsole.Samples.Sandbox
         private Vector3 _position = new Vector3(0, 5, 10);
         private Matrix _rotation = Matrix.CreateFromAxisAngle(Vector3.Right, -MathHelper.PiOver4 * 0.5f);
 
-        private Vector2 _previousMousePos;        
+        private Vector2 _previousMousePos;
 
         public CameraControllerComponent(Game game) : base(game)
         { }

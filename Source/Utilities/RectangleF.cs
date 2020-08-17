@@ -72,15 +72,15 @@ namespace QuakeConsole
             Height += verticalAmount * 2;
         }
 
-        public void Contains(ref Vector2 value, out bool result) =>       
-            result = (X <= value.X) && (value.X < Right) && (Y <= value.Y) && (value.Y < Bottom);        
-        public bool Contains(Rectangle value) => 
+        public void Contains(ref Vector2 value, out bool result) =>
+            result = (X <= value.X) && (value.X < Right) && (Y <= value.Y) && (value.Y < Bottom);
+        public bool Contains(Rectangle value) =>
             (X <= value.X) && (value.Right <= Right) && (Y <= value.Y) && (value.Bottom <= Bottom);
-        public void Contains(ref RectangleF value, out bool result) => 
-            result = (X <= value.X) && (value.Right <= Right) && (Y <= value.Y) && (value.Bottom <= Bottom);        
+        public void Contains(ref RectangleF value, out bool result) =>
+            result = (X <= value.X) && (value.Right <= Right) && (Y <= value.Y) && (value.Bottom <= Bottom);
 
-        public bool Contains(float x, float y) => (x >= Left && x <= Right && y >= Top && y <= Bottom);        
-        public bool Contains(Vector2 vector2D) => Contains(vector2D.X, vector2D.Y);        
+        public bool Contains(float x, float y) => (x >= Left && x <= Right && y >= Top && y <= Bottom);
+        public bool Contains(Vector2 vector2D) => Contains(vector2D.X, vector2D.Y);
         public bool Contains(Point point) => Contains(point.X, point.Y);
 
         public bool Intersects(RectangleF value)
@@ -90,7 +90,7 @@ namespace QuakeConsole
             return result;
         }
 
-        public void Intersects(ref RectangleF value, out bool result) => 
+        public void Intersects(ref RectangleF value, out bool result) =>
             result = (value.X < Right) && (X < value.Right) && (value.Y < Bottom) && (Y < value.Bottom);
 
         public static RectangleF Intersect(RectangleF value1, RectangleF value2)
@@ -152,7 +152,7 @@ namespace QuakeConsole
         public static bool operator ==(RectangleF left, RectangleF right) => left.Equals(right);
         public static bool operator !=(RectangleF left, RectangleF right) => !(left == right);
 
-        public static implicit operator Rectangle(RectangleF value) => 
+        public static implicit operator Rectangle(RectangleF value) =>
             new Rectangle((int) value.X, (int) value.Y, (int) value.Width, (int) value.Height);
 
         public override string ToString() => $"{nameof(X)}:{X} {nameof(Y)}:{Y} {nameof(Width)}:{2} {nameof(Height)}:{3}";

@@ -133,8 +133,8 @@ namespace QuakeConsole
                 for (int i = 0; i < memberInfo.Names.Count; i++)
                 {
                     AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);
-                                        
-                    memberInfo.ParamInfos[i]?.ForEach(overload =>                    
+
+                    memberInfo.ParamInfos[i]?.ForEach(overload =>
                         overload?.ForEach(parameter => AddTypeImpl(parameter.ParameterType, recursionLevel)));
                 }
             }
@@ -142,9 +142,9 @@ namespace QuakeConsole
 
         private bool LoadTypeToScriptContext(Type type)
         {
-            if (!type.IsPublic || // Not a public type.                
+            if (!type.IsPublic || // Not a public type.
                 TypeFilters.Any(x => x.Equals(type.Name, StringComparison.Ordinal)) || // Not filtered.
-                !_addedTypes.Add(type)) // Not already added.                 
+                !_addedTypes.Add(type)) // Not already added.
             {
                 return false;
             }
@@ -167,7 +167,7 @@ namespace QuakeConsole
             var ordered = members.Where(x => !AutocompleteFilters
                 .Any(y => x.Name.StartsWith(y, StringComparison.Ordinal))) // Filter.
                 .GroupBy(x => x.Name) // Distinctly named values only.
-                .OrderBy(x => x.Key) // Order alphabetically.            
+                .OrderBy(x => x.Key) // Order alphabetically.
                 .Select(group => // Pick member from first, param overloads from all
                 {
                     MemberInfo firstMember = group.First();

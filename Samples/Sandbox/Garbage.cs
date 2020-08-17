@@ -17,7 +17,7 @@ namespace QuakeConsole.Samples.Sandbox
         /// Gets the current amount of allocated garbage in kilobytes.
         /// </summary>
         public static float CurrentAmount { get; private set; }
-   
+
         /// <summary>
         /// Gets the average amount of garbage created per frame in kilobytes.
         /// </summary>

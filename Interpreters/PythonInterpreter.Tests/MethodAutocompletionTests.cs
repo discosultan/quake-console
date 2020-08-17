@@ -112,7 +112,7 @@ namespace QuakeConsole.Tests
         }
 
         [Test]
-        [Ignore(@"Currently interpreter is expected to cut input buffer ending after autocompleted value 
+        [Ignore(@"Currently interpreter is expected to cut input buffer ending after autocompleted value
         (Command Prompt Style). We might want to change that (to Powershell style for example).")]
         public void InstanceMethodInput_MethodStart_Space_MethodParamSeparator_CaretAtSpace_Autocomplete_FirstParamTypeSelected()
         {
@@ -134,5 +134,5 @@ namespace QuakeConsole.Tests
 
             Assert.AreEqual(StaticTypeMethodName + MethodStart + StaticTypeMethodParamName, Input.Value);
         }
-    }    
+    }
 }

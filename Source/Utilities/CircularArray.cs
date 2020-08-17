@@ -18,7 +18,7 @@ namespace QuakeConsole
 
             internal Enumerator(CircularArray<T> q)
             {
-                _q = q;                
+                _q = q;
                 _index = -1;
                 _currentElement = default(T);
             }

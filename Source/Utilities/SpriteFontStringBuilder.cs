@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 namespace QuakeConsole
 {
     internal class SpriteFontStringBuilder
-    {        
+    {
         private readonly StringBuilder _stringBuilder = new StringBuilder();
         private readonly Dictionary<Point, string> _substringCache = new Dictionary<Point, string>();
         // Which is faster, string key lookup vs Font.MeasureString?

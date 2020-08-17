@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace QuakeConsole
-{    
+{
     internal class Console : IDisposable
     {
         private const string MeasureFontSizeSymbol = "x";
@@ -20,7 +20,7 @@ namespace QuakeConsole
 
         private SpriteFont _defaultFont;
         private SpriteFont _font;
-        private RectangleF _windowArea;        
+        private RectangleF _windowArea;
         private float _padding;
         private float _heightRatio;
         private string _tabSymbol;
@@ -28,7 +28,7 @@ namespace QuakeConsole
         private bool _loaded;
 
         public Console()
-        {            
+        {
             SetSettings(new ConsoleSettings());
         }
 
@@ -40,21 +40,21 @@ namespace QuakeConsole
 
         public ConsoleInput ConsoleInput { get; } = new ConsoleInput();
 
-        public ConsoleOutput ConsoleOutput { get; } = new ConsoleOutput();        
-        
+        public ConsoleOutput ConsoleOutput { get; } = new ConsoleOutput();
+
         public bool IsVisible => State != ConsoleState.Closed;
-        
-        public bool IsAcceptingInput => State == ConsoleState.Open || State == ConsoleState.Opening;                
-        
+
+        public bool IsAcceptingInput => State == ConsoleState.Open || State == ConsoleState.Opening;
+
         public SpriteFont Font
         {
             get { return _font; }
             set
-            {                
+            {
                 _font = value ?? _defaultFont;
                 CharWidthMap.Clear();
                 MeasureFontSize();
-                FontChanged?.Invoke(this, EventArgs.Empty);               
+                FontChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -75,15 +75,15 @@ namespace QuakeConsole
         }
 
         public Color BackgroundColor { get; set; }
-        
-        public Color FontColor { get; set; }        
-        
+
+        public Color FontColor { get; set; }
+
         public float OpenCloseTransitionSeconds
         {
             get { return _transitionTimer.TargetTime; }
             set { _transitionTimer.TargetTime = value; }
         }
-        
+
         public float HeightRatio
         {
             get { return _heightRatio; }
@@ -94,12 +94,12 @@ namespace QuakeConsole
                     SetWindowWidthAndHeight();
             }
         }
-        
+
         public float Padding
         {
             get { return _padding; }
             set
-            {                
+            {
                 if (_loaded)
                 {
                     _padding = MathHelper.Clamp(
@@ -116,7 +116,7 @@ namespace QuakeConsole
         }
 
         public Color BottomBorderColor { get; set; }
-        public float BottomBorderThickness { get; set; }                
+        public float BottomBorderThickness { get; set; }
 
         public ConsoleState State { get; private set; } = ConsoleState.Closed;
 
@@ -143,7 +143,7 @@ namespace QuakeConsole
         {
             Check.ArgumentNotNull(deviceManager, nameof(deviceManager), "Cannot instantiate the console without graphics device manager.");
             Check.ArgumentNotNull(font, nameof(font), "Cannot instantiate the console without a font.");
-            
+
             GraphicsDevice = device;
             _graphicsDeviceManager = deviceManager;
             _defaultFont = font;
@@ -188,7 +188,7 @@ namespace QuakeConsole
                     break;
             }
         }
-        
+
         public void Clear(ConsoleClearFlags flags = ConsoleClearFlags.All)
         {
             if ((flags & ConsoleClearFlags.OutputBuffer) != 0)
@@ -198,13 +198,13 @@ namespace QuakeConsole
             if ((flags & ConsoleClearFlags.InputHistory) != 0)
                 ConsoleInput.InputHistory.Clear();
         }
-        
+
         public void Reset()
         {
             Clear();
             SetSettings(new ConsoleSettings());
         }
-        
+
         public void Update(float deltaSeconds)
         {
 
@@ -227,7 +227,7 @@ namespace QuakeConsole
                         WindowArea.Width,
                         WindowArea.Height);
                     goto case ConsoleState.Open;
-                case ConsoleState.Open:                    
+                case ConsoleState.Open:
                     ConsoleInput.Update(deltaSeconds);
                     break;
             }
@@ -263,9 +263,9 @@ namespace QuakeConsole
                         SpriteBatch.Draw(
                             WhiteTexture,
                             new RectangleF(0, WindowArea.Bottom, WindowArea.Width, BottomBorderThickness),
-                            BottomBorderColor);                                        
+                            BottomBorderColor);
                     // Draw output and input strings.
-                    ConsoleOutput.Draw();                    
+                    ConsoleOutput.Draw();
                     ConsoleInput.Draw();
                     SpriteBatch.End();
                     break;
@@ -280,7 +280,7 @@ namespace QuakeConsole
         }
 
         private void OnPreparingDeviceChanged(object sender, PreparingDeviceSettingsEventArgs args)
-        {            
+        {
             SetWindowWidthAndHeight(
                 args.GraphicsDeviceInformation.PresentationParameters.BackBufferWidth,
                 args.GraphicsDeviceInformation.PresentationParameters.BackBufferHeight);
@@ -303,9 +303,9 @@ namespace QuakeConsole
                 case ConsoleState.Closed:
                     newWindowArea.Y = -newWindowArea.Height;
                     break;
-            }            
+            }
             WindowArea = newWindowArea;
-            Padding = _padding; // Invoke padding setter.                      
+            Padding = _padding; // Invoke padding setter.
         }
 
         private float GetMaxAllowedPadding()
@@ -320,10 +320,10 @@ namespace QuakeConsole
 
         private void SetSettings(ConsoleSettings settings)
         {
-            BackgroundColor = settings.BackgroundColor;            
+            BackgroundColor = settings.BackgroundColor;
             FontColor = settings.FontColor;
             HeightRatio = settings.HeightRatio;
-            OpenCloseTransitionSeconds = settings.TimeToToggleOpenClose;            
+            OpenCloseTransitionSeconds = settings.TimeToToggleOpenClose;
             Padding = settings.Padding;
             BottomBorderColor = settings.BottomBorderColor;
             BottomBorderThickness = settings.BottomBorderThickness;

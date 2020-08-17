@@ -9,8 +9,8 @@ namespace QuakeConsole.Samples.HelloPython
         private static readonly Color ForegroundColorHighlight = Color.Yellow;
 
         private readonly HelloPythonGame _game;
-        private SpriteBatch _spriteBatch;    
-        private SpriteFont _font;        
+        private SpriteBatch _spriteBatch;
+        private SpriteFont _font;
 
         public InstructionsComponent(HelloPythonGame game) : base(game)
         {
@@ -20,7 +20,7 @@ namespace QuakeConsole.Samples.HelloPython
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);            
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
             _font = Game.Content.Load<SpriteFont>("instructions");
         }
 
@@ -35,12 +35,12 @@ namespace QuakeConsole.Samples.HelloPython
         {
             const float margin = 10;
             float sizeY = _font.LineSpacing;
-            
+
             // Render key instructions.
             float progressX = margin;
             float progressY = GraphicsDevice.Viewport.Height - margin - sizeY;
             for (int i = _instructionPrefixes.Length - 1; i >= 0; i--)
-            {                               
+            {
                 _spriteBatch.DrawString(_font, _instructionPrefixes[i], new Vector2(progressX, progressY), ForegroundColorDefault);
                 progressX += _font.MeasureString(_instructionPrefixes[i]).X;
                 _spriteBatch.DrawString(_font, _instructionKeys[i], new Vector2(progressX, progressY), ForegroundColorHighlight);

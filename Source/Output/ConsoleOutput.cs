@@ -25,7 +25,7 @@ namespace QuakeConsole
         {
             Console = console;
             _entryPool = new Pool<OutputEntry>(() => new OutputEntry(this));
-            
+
             Console.PaddingChanged += (s, e) =>
             {
                 CalculateRows();
@@ -43,12 +43,12 @@ namespace QuakeConsole
             };
             CalculateRows();
         }
-        
-        public bool RemoveOverflownEntries 
+
+        public bool RemoveOverflownEntries
         {
             get { return _removeOverflownEntries; }
-            set 
-            { 
+            set
+            {
                 _removeOverflownEntries = value;
                 RemoveOverflownBufferEntriesIfAllowed();
             }
@@ -136,7 +136,7 @@ namespace QuakeConsole
                 if (rowCounter >= _maxNumRows) return;
                 DrawRow(_entries[i], ref viewPosition, ref rowCounter, false);
             }
-        }        
+        }
 
         private void DrawRow(OutputEntry entry, ref Vector2 viewPosition, ref int rowCounter, bool drawPrefix)
         {
@@ -187,7 +187,7 @@ namespace QuakeConsole
         private void CalculateRows()
         {
             // Take top padding into account and hide any row which is only partly visible.
-            //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / _fontSize.Y) - 1, 0);            
+            //_maxNumRows = Math.Max((int)((_console.WindowArea.Height - _console.Padding * 2) / _fontSize.Y) - 1, 0);
 
             // Disregard top padding and allow any row which is only partly visible.
             _maxNumRows = Math.Max((int)Math.Ceiling(((Console.WindowArea.Height - Console.Padding) / Console.FontSize.Y)) - 1, 0);

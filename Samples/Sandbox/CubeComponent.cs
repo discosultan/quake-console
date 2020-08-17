@@ -31,7 +31,7 @@ namespace QuakeConsole.Samples.Sandbox
             base.Initialize();
 
             _world = Matrix.Identity;
-            _effect = new BasicEffect(GraphicsDevice) { VertexColorEnabled = true };            
+            _effect = new BasicEffect(GraphicsDevice) { VertexColorEnabled = true };
 
             CreateCubeVertexBuffer();
             CreateCubeIndexBuffer();
@@ -45,7 +45,7 @@ namespace QuakeConsole.Samples.Sandbox
                 new Vector3(0, 5, 10),
                 Vector3.Zero,
                 new Vector3(0, 0.9238795f, -0.3826835f));
-        }        
+        }
 
         public override void Update(GameTime gameTime)
         {
@@ -78,7 +78,7 @@ namespace QuakeConsole.Samples.Sandbox
         void CreateCubeVertexBuffer()
         {
             Vertices = new VertexPositionColor[NumVertices];
-            
+
             Vertices[0].Position = new Vector3(-1, -1, -1);
             Vertices[1].Position = new Vector3(-1, -1, 1);
             Vertices[2].Position = new Vector3(1, -1, 1);
@@ -97,7 +97,7 @@ namespace QuakeConsole.Samples.Sandbox
             Vertices[6].Color = Color.White;
             Vertices[7].Color = Color.Cyan;
 
-            _vertexBuffer = new DynamicVertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, Vertices.Length, BufferUsage.WriteOnly);            
+            _vertexBuffer = new DynamicVertexBuffer(GraphicsDevice, VertexPositionColor.VertexDeclaration, Vertices.Length, BufferUsage.WriteOnly);
         }
 
         void CreateCubeIndexBuffer()

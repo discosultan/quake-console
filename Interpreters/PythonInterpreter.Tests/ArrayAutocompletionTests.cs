@@ -6,12 +6,12 @@ namespace QuakeConsole.Tests
 {
     [TestFixture]
     public class ArrayAutocompletionTestses : TestsBase
-    {             
+    {
         [Test]
         public void ArrayUnderlyingTypeLoaded()
         {
             var target = new int[0];
-            Interpreter.AddVariable("target", target);            
+            Interpreter.AddVariable("target", target);
             Input.Value = "In";
             Input.CaretIndex = Input.Length;
 
@@ -73,7 +73,7 @@ namespace QuakeConsole.Tests
             Assert.Ignore("More than single indexer access autocompletion not implemented.");
             Assert.AreEqual("target.C[0][0].CompareTo", Input.Value);
         }
-    }    
+    }
 
     public class A
     {

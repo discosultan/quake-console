@@ -55,7 +55,7 @@ namespace QuakeConsole
         public void Draw()
         {
             if (!HasSelection) return;
-            
+
             int visibleSelectionStartIndex = Math.Max(SelectionStart, _input.VisibleStartIndex);
             int visibleEndIndex = _input.VisibleStartIndex + _input.VisibleLength - 1;
             int length = Math.Min(SelectionLength, visibleEndIndex - visibleSelectionStartIndex + 1);

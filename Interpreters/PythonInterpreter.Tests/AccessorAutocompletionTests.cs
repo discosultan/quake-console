@@ -98,12 +98,12 @@ namespace QuakeConsole.Tests
             Input.CaretIndex = Input.Length;
 
             Interpreter.Autocomplete(Input, true); // Cymidine
-            Interpreter.Autocomplete(Input, true); // Equals            
+            Interpreter.Autocomplete(Input, true); // Equals
             Interpreter.Autocomplete(Input, true); // GetHashcode
             Interpreter.Autocomplete(Input, true); // GetType
             Interpreter.Autocomplete(Input, true); // Gusher
             Interpreter.Autocomplete(Input, true); // Pauciloquent
-            Interpreter.Autocomplete(Input, true); // SetBehen            
+            Interpreter.Autocomplete(Input, true); // SetBehen
             Interpreter.Autocomplete(Input, true); // ToString
 
             Assert.AreEqual(FirstInstanceName + Accessor + "ToString", Input.Value);
@@ -140,6 +140,6 @@ namespace QuakeConsole.Tests
             Interpreter.Autocomplete(Input, true);
 
             Assert.AreEqual(TargetRecursiveFieldName + Accessor + TargetRecursiveFieldTypeMemberName, Input.Value);
-        }        
+        }
     }
 }

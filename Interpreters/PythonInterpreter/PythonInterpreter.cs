@@ -21,7 +21,7 @@ namespace QuakeConsole
 
         // Autocomplete information.
 
-        private bool _initialized;        
+        private bool _initialized;
 
         /// <summary>
         /// Constructs a new instance of <see cref="PythonInterpreter"/>.
@@ -30,8 +30,8 @@ namespace QuakeConsole
         {
             _autocompleter = new Autocompleter(this);
             _typeLoader = new TypeLoader(this);
-            Reset();            
-            EchoEnabled = true;            
+            Reset();
+            EchoEnabled = true;
         }
 
         /// <summary>
@@ -65,17 +65,17 @@ namespace QuakeConsole
             if (EchoEnabled)
                 output.Append(command);
 
-            string resultStr;            
+            string resultStr;
             try
-            {                
+            {
                 dynamic result = RunScript(command);
-                resultStr = result == null ? null : result.ToString();                
+                resultStr = result == null ? null : result.ToString();
             }
             catch (Exception ex)
             {
                 resultStr = ex.Message;
             }
-            
+
             output.Append(resultStr);
         }
 
@@ -98,7 +98,7 @@ namespace QuakeConsole
                 return;
 
             ICollection<string> paths = _scriptEngine.GetSearchPaths();
-            paths.Add(dir);             
+            paths.Add(dir);
             _scriptEngine.SetSearchPaths(paths);
         }
 
@@ -129,7 +129,7 @@ namespace QuakeConsole
         /// <param name="recursionLevel">
         /// Determines if subtypes of passed type will also be automatically added to IronPython environment
         /// and if then how many levels deep this applies.
-        /// </param>        
+        /// </param>
         public void AddType(Type type, int recursionLevel = DefaultRecursionLevel) =>
             _typeLoader.AddType(type, recursionLevel);
 
@@ -174,10 +174,10 @@ namespace QuakeConsole
             InstanceMembers.Clear();
             StaticMembers.Clear();
             Instances.Clear();
-            Statics.Clear();            
+            Statics.Clear();
             InstancesAndStaticsDirty = true;
             RunScript("import clr");
             RunScript("from System import Array");
-        }             
+        }
     }
 }

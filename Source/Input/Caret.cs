@@ -38,13 +38,13 @@ namespace QuakeConsole
                 }
             }
         }
-        
+
         public float BlinkIntervalSeconds
         {
             get { return _caretBlinkingTimer.TargetTime; }
             set { _caretBlinkingTimer.TargetTime = value; }
         }
-        
+
         public string Symbol
         {
             get { return _symbol; }
@@ -58,7 +58,7 @@ namespace QuakeConsole
         }
 
         public float Width { get; private set; }
-        
+
         public void MoveBy(int amount)
         {
             Index = Index + amount;
@@ -94,7 +94,7 @@ namespace QuakeConsole
 
         private void CalculateSymbolWidth()
         {
-            Width = _input.Console.Font.MeasureString(Symbol).X + _input.Console.Font.Spacing;            
+            Width = _input.Console.Font.MeasureString(Symbol).X + _input.Console.Font.Spacing;
         }
     }
 }

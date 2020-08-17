@@ -109,13 +109,13 @@ namespace QuakeConsole.Tests
 
             Assert.AreEqual("x" + Assignment + FirstInstanceName, Input.Value);
         }
-    }    
+    }
 
     public class Base
-    {        
+    {
     }
 
     public class Derived : Base
-    {        
+    {
     }
 }

@@ -21,7 +21,7 @@ namespace QuakeConsole
             _console = console;
             _console.WindowAreaChanged += (s, e) => CreateWvp();
             CreateWvp();
-            
+
             _bgEffect = effect;
             _bgEffectTexture = _bgEffect.Parameters["Texture"];
             _bgEffectWvpTransform = _bgEffect.Parameters["WvpTransform"];
@@ -41,7 +41,7 @@ namespace QuakeConsole
         }
 
         public void Draw()
-        {            
+        {
             _bgEffectTexture.SetValue(Texture);
             _bgEffectTexTransform.SetValue(TextureTransform);
             _bgEffectWvpTransform.SetValue(_wvp);
@@ -75,9 +75,9 @@ namespace QuakeConsole
         private void CreateWvp()
         {
             var projection = Matrix.CreateOrthographicOffCenter(
-                0, 
+                0,
                 _console.GraphicsDevice.Viewport.Width,
-                _console.GraphicsDevice.Viewport.Height, 
+                _console.GraphicsDevice.Viewport.Height,
                 0, 0, 1);
             _wvp = Matrix.CreateScale(new Vector3(_console.WindowArea.Width, _console.WindowArea.Height, 0))*
                    Matrix.CreateTranslation(new Vector3(0, _console.WindowArea.Y, 0))*

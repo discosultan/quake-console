@@ -23,9 +23,9 @@ namespace QuakeConsole.Samples.Sandbox
         {
             ReplaceCommasWithDots(args);
 
-            if (args.Length == 1)            
+            if (args.Length == 1)
                 return new Vector3(float.Parse(args[0 + offset], DecimalParsingInfo));
-            
+
             return new Vector3(
                 float.Parse(args[0 + offset], DecimalParsingInfo),
                 float.Parse(args[1 + offset], DecimalParsingInfo),

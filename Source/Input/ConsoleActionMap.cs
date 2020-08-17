@@ -45,7 +45,7 @@ namespace QuakeConsole
     /// A map specifying which input keys are translated to which <see cref="ConsoleAction"/>s.
     /// </summary>
     /// <remarks>
-    /// <see cref="IEnumerable" /> is implemented only to allow collection initializer syntax. 
+    /// <see cref="IEnumerable" /> is implemented only to allow collection initializer syntax.
     /// Iteration will fail!
     /// </remarks>
     public class ConsoleActionMap : IEnumerable
@@ -68,7 +68,7 @@ namespace QuakeConsole
         /// Adds a mapping from keyboard keys to <see cref="ConsoleAction"/>
         /// </summary>
         public void Add(Keys modifier1, Keys modifier2, Keys key, ConsoleAction action) =>
-            _map.Add(new Int3((int)modifier1, (int)modifier2, (int)key), action);        
+            _map.Add(new Int3((int)modifier1, (int)modifier2, (int)key), action);
 
         /// <summary>
         /// Removes a mapping from keyboard key to <see cref="ConsoleAction"/>
@@ -128,7 +128,7 @@ namespace QuakeConsole
                     if (_map.ForwardTryGetValue(new Int3((int)Keys.None, (int)modifier, (int)key), out action))
                         return true;
             }
-                
+
             // If not found; look for actions without modifiers.
             foreach (Keys key in input.PressedKeys)
                 if (_map.ForwardTryGetValue(new Int3((int)Keys.None, (int)Keys.None, (int)key), out action))

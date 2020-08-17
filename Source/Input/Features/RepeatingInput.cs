@@ -1,7 +1,7 @@
 ﻿using System;
 
 namespace QuakeConsole
-{    
+{
     internal class RepeatingInput
     {
         private readonly Timer _repeatedPressTresholdTimer = new Timer { AutoReset = false };
@@ -51,7 +51,7 @@ namespace QuakeConsole
                 }
             }
             else if (_isFastRepeating)
-            {                
+            {
                 _repeatedPressIntervalTimer.Update(deltaSeconds);
                 if (_repeatedPressIntervalTimer.Finished)
                     _input.ProcessInput(_inputToRepeat);

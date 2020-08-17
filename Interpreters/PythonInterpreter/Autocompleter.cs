@@ -178,7 +178,7 @@ namespace QuakeConsole
             int newStartIndex = startIndex;
             int newCommandLength = 0;
             for (int i = startIndex; i < consoleInput.Length; i++)
-            {                
+            {
                 if (consoleInput[i] == FunctionEndSymbol)
                     break;
                 if (consoleInput[i] == FunctionParamSeparatorSymbol)
@@ -197,10 +197,10 @@ namespace QuakeConsole
         }
 
         private string[] GetAvailableNamesForType(Type type)
-        {            
+        {
             string[] results;
             if (!_instancesAndStaticsForTypes.TryGetValue(type, out results))
-            {                                    
+            {
                 IEnumerable<string> resultsQuery = _interpreter.Instances.Where(x => type.IsAssignableFrom(x.Value.Type))
                     .Union(_interpreter.Statics.Where(x => type.IsAssignableFrom(x.Value.Type)))
                     .Select(x => x.Key);
@@ -209,7 +209,7 @@ namespace QuakeConsole
                 if (PredefinedAutocompleteEntries.TryGetValue(type, out predefined))
                     resultsQuery = predefined.Union(resultsQuery);
 
-                results = resultsQuery.ToArray();               
+                results = resultsQuery.ToArray();
 
                 _instancesAndStaticsForTypes.Add(type, results);
             }
@@ -226,7 +226,7 @@ namespace QuakeConsole
             // Find start index.
             for (int i = previousIndex; i >= 0; i--)
             {
-                if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]))                    
+                if (AutocompleteBoundaryDenoters.Any(x => x == consoleInput[i]))
                     break;
                 lookupIndex = i;
             }
@@ -271,7 +271,7 @@ namespace QuakeConsole
             {
                 char c = consoleInput[i];
                 if (c == SpaceSymbol) continue;
-                if (c == AccessorSymbol) return AutocompletionType.Accessor;                
+                if (c == AccessorSymbol) return AutocompletionType.Accessor;
                 if (c == AssignmentSymbol)
                 {
                     if (i <= 0) return AutocompletionType.Assignment;
@@ -313,21 +313,21 @@ namespace QuakeConsole
             }
             return _accessorChain;
         }
-        
+
         private Member FindLastChainLinkMember(Stack<string> accessorChain)
         {
             if (accessorChain.Count == 0)
                 return null;
 
             string link = accessorChain.Pop();
-            
+
             bool isArrayIndexer = IsArrayIndexer(link, out link);
 
             Member member;
             if (_interpreter.Instances.TryGetValue(link, out member))
-                member.IsInstance = true;                
+                member.IsInstance = true;
             else if (_interpreter.Statics.TryGetValue(link, out member))
-                member.IsInstance = false;                
+                member.IsInstance = false;
             else
                 return null;
 
@@ -359,7 +359,7 @@ namespace QuakeConsole
                     return null;
 
                 if (isArrayIndexer)
-                    member = ResolveIndexerType(member);                
+                    member = ResolveIndexerType(member);
 
                 if (accessorChain.Count == 0)
                     return member;
@@ -401,7 +401,7 @@ namespace QuakeConsole
 
         private static void FindAutocompleteForEntries(IConsoleInput consoleInput, IList<string> autocompleteEntries, string command, int startIndex, bool isNextValue)
         {
-            int index = autocompleteEntries.IndexOf(x => x.Equals(command, PythonInterpreter.StringComparisonMethod));            
+            int index = autocompleteEntries.IndexOf(x => x.Equals(command, PythonInterpreter.StringComparisonMethod));
             if (index == -1 || consoleInput.LastAutocompleteEntry == null)
                 consoleInput.LastAutocompleteEntry = command;
 
@@ -418,13 +418,13 @@ namespace QuakeConsole
             {
                 index++;
                 if (index > lastIndex)
-                    index = firstIndex;                
+                    index = firstIndex;
             }
             else
             {
                 index--;
                 if (index < firstIndex)
-                    index = lastIndex;                
+                    index = lastIndex;
             }
             SetAutocompleteValue(consoleInput, startIndex, autocompleteEntries[index]);
         }
@@ -433,6 +433,6 @@ namespace QuakeConsole
         {
             consoleInput.Remove(startIndex, consoleInput.Length - startIndex);
             consoleInput.Append(autocompleteEntry);
-        }       
+        }
     }
 }

@@ -52,7 +52,7 @@ namespace QuakeConsole
             get { return Caret.Index; }
             set { Caret.Index = value; }
         }
-        
+
         public string InputPrefix
         {
             get { return _inputPrefix; }
@@ -65,7 +65,7 @@ namespace QuakeConsole
                 PrefixChanged?.Invoke(this, EventArgs.Empty);
             }
         }
-        
+
         public Color InputPrefixColor { get; set; }
 
         public int Length => _inputBuffer.Length;
@@ -108,7 +108,7 @@ namespace QuakeConsole
 
             _loaded = true;
         }
-        
+
         public void Append(string value)
         {
             if (string.IsNullOrEmpty(value)) return;
@@ -118,7 +118,7 @@ namespace QuakeConsole
             SetDirty();
             InputChanged?.Invoke(this, EventArgs.Empty);
         }
-        
+
         public void Remove(int startIndex, int length)
         {
             if (length <= 0) return;
@@ -243,10 +243,10 @@ namespace QuakeConsole
             inputPosition.X += InputPrefixSize.X;
             if (_inputBuffer.Length > 0)
                 Console.SpriteBatch.DrawString(Console.Font, _inputBuffer.Substring(VisibleStartIndex, VisibleLength), inputPosition, Console.FontColor);
-            
+
             Caret.Draw();
         }
-        
+
         public void SetDefaults(ConsoleSettings settings)
         {
             InputPrefix = settings.InputPrefix;
@@ -263,7 +263,7 @@ namespace QuakeConsole
 
         private void CalculateInputPrefixWidth()
         {
-            InputPrefixSize = Console.Font.MeasureString(InputPrefix) + new Vector2(Console.Font.Spacing, 0);            
+            InputPrefixSize = Console.Font.MeasureString(InputPrefix) + new Vector2(Console.Font.Spacing, 0);
         }
 
         private void CalculateStartAndEndIndices()
@@ -274,7 +274,7 @@ namespace QuakeConsole
                 windowWidth -= Caret.Width;
 
             while (CaretIndex <= VisibleStartIndex && VisibleStartIndex > 0)
-                VisibleStartIndex = Math.Max(VisibleStartIndex - NumPositionsToMoveWhenOutOfScreen, 0);            
+                VisibleStartIndex = Math.Max(VisibleStartIndex - NumPositionsToMoveWhenOutOfScreen, 0);
 
             float widthProgress = 0f;
             VisibleLength = 0;

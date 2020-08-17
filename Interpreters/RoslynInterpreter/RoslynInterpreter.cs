@@ -54,7 +54,7 @@ namespace QuakeConsole
         /// <param name="forward">True if user wants to autocomplete to the next value; false if to the previous value.</param>
         /// <remarks>Disabled due to missing dynamic global support: https://github.com/dotnet/roslyn/issues/3194</remarks>
         public void Autocomplete(IConsoleInput input, bool forward)
-        {            
+        {
             //_autocompleter.Autocomplete(input, forward);
         }
 
@@ -158,13 +158,13 @@ namespace QuakeConsole
             _warmupTask = Task.Run(async () =>
             {
                 // Assignment and literal evaluation to warm up the scripting context.
-                // Without warmup, there is a considerable delay on first command evaluation.                
+                // Without warmup, there is a considerable delay on first command evaluation.
                 _scriptState = await CSharpScript.RunAsync(
                     code: "int quakeconsole_dummy_value = 1;",
                     globalsType: typeof(ExpandoWrapper),
                     globals: Globals
                 );
-            });                        
+            });
         }
 
         internal ExpandoWrapper Globals { get; private set; }

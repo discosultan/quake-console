@@ -12,7 +12,7 @@ namespace QuakeConsole
         public Pool(Func<T> factory, int initialCapacity = 4)
         {
             Check.ArgumentNotNull(factory, "factory");
-            Check.ArgumentNotLessThan(initialCapacity, 1, "initialCapacity");            
+            Check.ArgumentNotLessThan(initialCapacity, 1, "initialCapacity");
 
             _factory = factory;
             _capacity = initialCapacity;

@@ -43,7 +43,7 @@ namespace QuakeConsole
             other.PreviousKeyboardState = PreviousKeyboardState;
             other.CurrentKeyboardState = CurrentKeyboardState;
             other.DownKeys.Clear();
-            other.PressedKeys.Clear();                     
+            other.PressedKeys.Clear();
             other.DownKeys.AddRange(DownKeys);
             other.PressedKeys.AddRange(PressedKeys);
         }

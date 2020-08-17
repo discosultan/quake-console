@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 
 namespace QuakeConsole
-{    
+{
     internal static class Native
     {
         const uint CF_UNICODETEXT = 13;
@@ -29,7 +29,7 @@ namespace QuakeConsole
         [DllImport("kernel32.dll")]
         private static extern bool GlobalUnlock(IntPtr hMem);
         [DllImport("kernel32.dll", EntryPoint = "CopyMemory", SetLastError = false)]
-        private static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);                
+        private static extern void CopyMemory(IntPtr dest, IntPtr src, uint count);
 
         // Ref: http://users.cis.fiu.edu/~downeyt/cop4226/toggled.html
         public static bool IsKeyToggled(Keys key)

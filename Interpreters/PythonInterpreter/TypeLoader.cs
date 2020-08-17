@@ -49,7 +49,7 @@ namespace QuakeConsole
             if (type.DeclaringType != null)
                 throw new InvalidOperationException("Nested types are not supported.");
 
-            _interpreter.ScriptScope.SetVariable(name, obj);            
+            _interpreter.ScriptScope.SetVariable(name, obj);
 
             // Add instance.
             _interpreter.Instances.Add(name, new Member { Name = name, Type = type });
@@ -73,7 +73,7 @@ namespace QuakeConsole
             if (type == null)
                 throw new ArgumentException(nameof(type));
 
-            AddTypeImpl(type, recursionLevel);            
+            AddTypeImpl(type, recursionLevel);
         }
 
         internal void AddAssembly(Assembly assembly, int recursionLevel)
@@ -87,14 +87,14 @@ namespace QuakeConsole
         internal void Reset()
         {
             _referencedAssemblies.Clear();
-            _addedTypes.Clear();            
+            _addedTypes.Clear();
         }
 
         private bool AddTypeImpl(Type type, int recursionLevel)
         {
             if (type == null)
                 return false;
-            
+
             if (type.IsArray)
             {
                 AddTypeImpl(type.GetElementType(), recursionLevel);
@@ -103,7 +103,7 @@ namespace QuakeConsole
 
             // Load type and stop if it is already loaded.
             if (!LoadTypeInPython(type))
-                return false;            
+                return false;
 
             // Add static.
             if (!_interpreter.Statics.ContainsKey(type.Name))
@@ -113,7 +113,7 @@ namespace QuakeConsole
             }
 
             if (recursionLevel-- > 0)
-            { 
+            {
                 // Add static members.
                 AddMembers(_interpreter.StaticMembers, type, BindingFlags.Static | BindingFlags.Public, recursionLevel);
                 // Add instance members.
@@ -130,7 +130,7 @@ namespace QuakeConsole
                 MemberCollection memberInfo = AutocompleteMembersQuery(type.GetMembers(flags));
                 dict.Add(type, memberInfo);
                 for (int i = 0; i < memberInfo.Names.Count; i++)
-                {                        
+                {
                     AddTypeImpl(memberInfo.UnderlyingTypes[i], recursionLevel);
 
                     // NB! There seems to be some unexpected behavior on Mono (v4.2.3.4) using null propagation with extension methods.
@@ -149,7 +149,7 @@ namespace QuakeConsole
                 }
             }
         }
-       
+
         private bool LoadTypeInPython(Type type)
         {
             if (type.IsGenericType || // Not a generic type (requires special handling).
@@ -157,7 +157,7 @@ namespace QuakeConsole
                 //type.IsAbstract && !type.IsSealed || // Not an abstract type. We check for IsSealed because a static class is considered to be abstract AND sealed.
                 type.DeclaringType != null || // IronPython does not support importing nested classes.
                 TypeFilters.Any(x => x.Equals(type.Name, PythonInterpreter.StringComparisonMethod)) || // Not filtered.
-                !_addedTypes.Add(type)) // Not already added.                 
+                !_addedTypes.Add(type)) // Not already added.
             {
                 return false;
             }
@@ -186,21 +186,21 @@ namespace QuakeConsole
             var ordered = members.Where(x => !AutocompleteFilters
                 .Any(y => x.Name.StartsWith(y, PythonInterpreter.StringComparisonMethod))) // Filter.
                 .GroupBy(x => x.Name) // Distinctly named values only.
-                .OrderBy(x => x.Key) // Order alphabetically.            
+                .OrderBy(x => x.Key) // Order alphabetically.
                 .Select(group => // Pick member from first, param overloads from all
                 {
                     MemberInfo firstMember = group.First();
                     return new
                     {
                         firstMember.Name,
-                        Type = firstMember.GetUnderlyingType(), 
+                        Type = firstMember.GetUnderlyingType(),
                         firstMember.MemberType,
                         Parameters =
                             firstMember.MemberType == MemberTypes.Method
                                 ? group.Select(x => ((MethodInfo) x).GetParameters()).ToArray()
                                 : null
                     };
-                });                
+                });
             ordered.ForEach(x => result.Add(x.Name, x.Type, x.MemberType, x.Parameters));
 
             return result;

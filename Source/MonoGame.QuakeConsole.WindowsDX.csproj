@@ -2,32 +2,24 @@
 
   <PropertyGroup>
     <OutputType>Library</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-<PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\Debug\Windows\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;LINUX;WINDOWSDX</DefineConstants>
-    <DocumentationFile>bin\Debug\Windows\MonoGame.QuakeConsole.xml</DocumentationFile>
-    <DebugType>full</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
-    <OutputPath>bin\Release\Windows\</OutputPath>
-    <DefineConstants>TRACE;LINUX;WINDOWSDX</DefineConstants>
-    <DocumentationFile>bin\Release\Windows\MonoGame.QuakeConsole.xml</DocumentationFile>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <ErrorReport>prompt</ErrorReport>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;WINDOWSDX</DefineConstants>
   </PropertyGroup>
 
-  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;WINDOWSDX</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
     <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
+    <PackageReference Include="MonoGame.Framework.WindowsDX" Version="3.8.0.1641" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <MonoGameContentReference Include="Content\Content.WindowsDX.mgcb" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,8 +28,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <MonoGameContentReference Include="Content\Content.WindowsDX.mgcb" />
-  </ItemGroup>
-  
 </Project>
