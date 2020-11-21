@@ -126,7 +126,7 @@ Manual interpreter can be used to define commands and their corresponding action
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-PM> Install-Package MonoGame.QuakeConsole.ManualInterpreter.WindowsDX -Pre
+PM> Install-Package MonoGame.QuakeConsole.ManualInterpreter.WindowsDX
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
@@ -164,7 +164,7 @@ Roslyn interpreter can be used to interpret user input as C# code using the [Ros
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-PM> Install-Package MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX -Pre
+PM> Install-Package MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
