@@ -5,6 +5,13 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <DefineConstants>WINDOWSDX</DefineConstants>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>MonoGame.QuakeConsole.WindowsDX</PackageId>
+    <Title>Quake-style Console for MonoGame</Title>
+    <Version>2.0.0-pre</Version>
+    <Authors>Jaanus Varus</Authors>
+    <Description>Quake-style console allowing for in-game user input.</Description>
+    <PackageTags>monogame console shell terminal</PackageTags>
+    <RepositoryUrl>https://github.com/discosultan/quake-console</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
