@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <DefaultItemExcludes>$(DefaultItemExcludes);**/*WindowsDX*;**/Content.WindowsDX/*</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*WindowsDX*/**;**/*WindowsDX*</DefaultItemExcludes>
   </PropertyGroup>
 
 </Project>

@@ -28,7 +28,7 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <DefaultItemExcludes>$(DefaultItemExcludes);**/*DesktopGL*;**/Content.DesktopGL/*</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*DesktopGL*/**;**/*DesktopGL*</DefaultItemExcludes>
   </PropertyGroup>
 
 </Project>
