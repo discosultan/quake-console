@@ -6,7 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>MonoGame.QuakeConsole.PythonInterpreter.DesktopGL</PackageId>
     <Title>Python Interpreter for MonoGame Quake-style Console</Title>
-    <Version>2.0.0-pre</Version>
+    <Version>2.0.0</Version>
     <Authors>Jaanus Varus</Authors>
     <Description>Interpreter for executing console commands using a Python engine.</Description>
     <PackageTags>monogame console interpreter ironpython python</PackageTags>

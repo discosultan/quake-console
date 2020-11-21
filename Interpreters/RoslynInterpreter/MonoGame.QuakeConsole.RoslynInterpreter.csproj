@@ -6,7 +6,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX</PackageId>
     <Title>C# Interpreter for MonoGame Quake-style Console</Title>
-    <Version>2.0.0-pre</Version>
+    <Version>2.0.0</Version>
     <Authors>Jaanus Varus</Authors>
     <Description>Interpreter for executing console commands using a Roslyn scripting API.</Description>
     <PackageTags>monogame console interpreter roslyn csharp</PackageTags>
