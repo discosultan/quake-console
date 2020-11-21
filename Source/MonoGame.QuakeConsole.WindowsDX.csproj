@@ -24,9 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resource.WindowsDX.resx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Update="Resource.WindowsDX.resx" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*DesktopGL*;**/Content.DesktopGL/*</DefaultItemExcludes>
+  </PropertyGroup>
 
 </Project>

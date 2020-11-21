@@ -3,6 +3,7 @@
   <PropertyGroup>
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <DefineConstants>DESKTOPGL</DefineConstants>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>MonoGame.QuakeConsole.DesktopGL</PackageId>
     <Title>Quake-style Console for MonoGame</Title>
@@ -11,14 +12,6 @@
     <Description>Quake-style console allowing for in-game user input.</Description>
     <PackageTags>monogame console shell terminal</PackageTags>
     <RepositoryUrl>https://github.com/discosultan/quake-console</RepositoryUrl>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DefineConstants>TRACE;DESKTOPGL</DefineConstants>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DESKTOPGL</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,9 +24,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resource.DesktopGL.resx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </EmbeddedResource>
+    <EmbeddedResource Update="Resource.DesktopGL.resx" />
   </ItemGroup>
+
+  <PropertyGroup>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*WindowsDX*;**/Content.WindowsDX/*</DefaultItemExcludes>
+  </PropertyGroup>
 
 </Project>
