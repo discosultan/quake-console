@@ -126,7 +126,7 @@ Manual interpreter can be used to define commands and their corresponding action
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-PM> Install-Package MonoGame.QuakeConsole.ManualInterpreter.WindowsDX -Pre
+PM> Install-Package MonoGame.QuakeConsole.ManualInterpreter.WindowsDX
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
@@ -164,7 +164,7 @@ Roslyn interpreter can be used to interpret user input as C# code using the [Ros
 Install the interpreter assembly through NuGet (this will also bring in the console if it hasn't been installed already):
 
 ```powershell
-PM> Install-Package MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX -Pre
+PM> Install-Package MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX
 ```
 
 1) Create the interpreter and set it as the interpreter for the console:
@@ -203,3 +203,27 @@ The object's public members can now be accessed from the console using the passe
 - **HelloPython**: Simple sample which sets up the console with Python interpreter, allowing to execute Python code and manipulate a cube at runtime.
 - **Sandbox**: Generic sandbox for testing out various parts of the project. Sets up the console tying together all the interpreters (Python, Roslyn, manual).
 - **Common**: Supporting library providing common functionality for samples.
+
+## Development
+
+### Release a New Version
+
+* Make sure version numbers are updated in .csproj files.
+* Create packages:
+
+```sh
+dotnet pack -c Release MonoGame.QuakeConsole.DesktopGL.sln
+dotnet pack -c Release MonoGame.QuakeConsole.WindowsDX.sln
+```
+
+* Publish packages (substitute `<version>` with version to be released):
+
+```sh
+VERSION=<version>
+dotnet nuget push Source/bin/Release/MonoGame.QuakeConsole.DesktopGL.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push Source/bin/Release/MonoGame.QuakeConsole.WindowsDX.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push Interpreters/ManualInterpreter/bin/Release/MonoGame.QuakeConsole.ManualInterpreter.WindowsDX.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push Interpreters/PythonInterpreter/bin/Release/MonoGame.QuakeConsole.PythonInterpreter.DesktopGL.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push Interpreters/PythonInterpreter/bin/Release/MonoGame.QuakeConsole.PythonInterpreter.WindowsDX.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push Interpreters/RoslynInterpreter/bin/Release/MonoGame.QuakeConsole.RoslynInterpreter.WindowsDX.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+```
