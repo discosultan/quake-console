@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <DefineConstants>WINDOWSDX</DefineConstants>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>MonoGame.QuakeConsole.WindowsDX</PackageId>
     <Title>Quake-style Console for MonoGame</Title>
@@ -24,7 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resource.WindowsDX.resx" />
+    <EmbeddedResource Include="Resource.WindowsDX.resx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Content\bin\" />
   </ItemGroup>
 
   <PropertyGroup>

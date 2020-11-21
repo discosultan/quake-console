@@ -4,6 +4,7 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <DefineConstants>DESKTOPGL</DefineConstants>
+    <EnableDefaultEmbeddedResourceItems>false</EnableDefaultEmbeddedResourceItems>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <PackageId>MonoGame.QuakeConsole.DesktopGL</PackageId>
     <Title>Quake-style Console for MonoGame</Title>
@@ -24,11 +25,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Resource.DesktopGL.resx" />
+    <EmbeddedResource Include="Resource.DesktopGL.resx" />
   </ItemGroup>
 
   <PropertyGroup>
-    <DefaultItemExcludes>$(DefaultItemExcludes);**/*WindowsDX*/**;**/*WindowsDX*</DefaultItemExcludes>
+    <DefaultItemExcludes>$(DefaultItemExcludes);**/*Windows*/**;**/*WindowsDX*</DefaultItemExcludes>
   </PropertyGroup>
 
 </Project>
