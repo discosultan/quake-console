@@ -32,8 +32,6 @@ The following is required to successfully compile the QuakeConsole MonoGame solu
 
 <h2 id="setup2">Using QuakeConsole</h2>
 
-> Nuget packages currently available only for MonoGame WindowsDX platform!
-
 ### Requirements
 
 - MonoGame.WindowsDX 3.8+
