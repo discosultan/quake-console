@@ -220,6 +220,7 @@ dotnet pack -c Release MonoGame.QuakeConsole.WindowsDX.sln
 VERSION=<version>
 dotnet nuget push Source/bin/Release/MonoGame.QuakeConsole.DesktopGL.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
 dotnet nuget push Source/bin/Release/MonoGame.QuakeConsole.WindowsDX.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
+dotnet nuget push Interpreters/ManualInterpreter/bin/Release/MonoGame.QuakeConsole.ManualInterpreter.DesktopGL.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
 dotnet nuget push Interpreters/ManualInterpreter/bin/Release/MonoGame.QuakeConsole.ManualInterpreter.WindowsDX.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
 dotnet nuget push Interpreters/PythonInterpreter/bin/Release/MonoGame.QuakeConsole.PythonInterpreter.DesktopGL.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json
 dotnet nuget push Interpreters/PythonInterpreter/bin/Release/MonoGame.QuakeConsole.PythonInterpreter.WindowsDX.$VERSION.nupkg --api-key $NUGET_API_KEY --source https://api.nuget.org/v3/index.json

@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.csproj" />
+    <ProjectReference Include="..\..\Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.WindowsDX.csproj" />
     <ProjectReference Include="..\..\Interpreters\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.WindowsDX.csproj" />
     <ProjectReference Include="..\..\Interpreters\RoslynInterpreter\MonoGame.QuakeConsole.RoslynInterpreter.csproj" />
   </ItemGroup>

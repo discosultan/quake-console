@@ -1,13 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30320.27
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.WindowsDX", "Source\MonoGame.QuakeConsole.WindowsDX.csproj", "{66A03276-E5E7-4E05-9790-F5602147426C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interpreters", "Interpreters", "{008C44E4-2B68-4E46-9700-DE1C8FA36432}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.ManualInterpreter", "Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.csproj", "{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.ManualInterpreter.WindowsDX", "Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.WindowsDX.csproj", "{A21CF025-AF25-4EC1-ADE2-13F4AEC58F7B}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Sandbox", "Samples\Sandbox\Sandbox.csproj", "{22D28A8B-F26F-4000-AE4F-3857937A44B5}"
 EndProject
@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HelloPython", "HelloPython"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloPython.WindowsDX", "Samples\HelloPython\HelloPython.WindowsDX.csproj", "{46D248B3-2648-4CCD-930B-0B97E04C9A73}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.PythonInterpreter.Tests.WindowsDX", "Interpreters\PythonInterpreter.Tests\MonoGame.QuakeConsole.PythonInterpreter.Tests.WindowsDX.csproj", "{6D0ED68D-9864-4FA1-A5FE-718FB02EF14A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.PythonInterpreter.Tests.WindowsDX", "Interpreters\PythonInterpreter.Tests\MonoGame.QuakeConsole.PythonInterpreter.Tests.WindowsDX.csproj", "{9669A771-F257-4FC2-ADD7-429CFDBDF33D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -55,10 +55,10 @@ Global
 		{46D248B3-2648-4CCD-930B-0B97E04C9A73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{46D248B3-2648-4CCD-930B-0B97E04C9A73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{46D248B3-2648-4CCD-930B-0B97E04C9A73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6D0ED68D-9864-4FA1-A5FE-718FB02EF14A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6D0ED68D-9864-4FA1-A5FE-718FB02EF14A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6D0ED68D-9864-4FA1-A5FE-718FB02EF14A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6D0ED68D-9864-4FA1-A5FE-718FB02EF14A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9669A771-F257-4FC2-ADD7-429CFDBDF33D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9669A771-F257-4FC2-ADD7-429CFDBDF33D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9669A771-F257-4FC2-ADD7-429CFDBDF33D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9669A771-F257-4FC2-ADD7-429CFDBDF33D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -71,7 +71,7 @@ Global
 		{40A5A139-401A-4D97-9223-532336AE8ABD} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
 		{27BDBA01-77EB-416A-A971-E8FEF148E0FC} = {93586DEB-D5A1-4DF5-8385-135AF17525DC}
 		{46D248B3-2648-4CCD-930B-0B97E04C9A73} = {27BDBA01-77EB-416A-A971-E8FEF148E0FC}
-		{6D0ED68D-9864-4FA1-A5FE-718FB02EF14A} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
+		{9669A771-F257-4FC2-ADD7-429CFDBDF33D} = {008C44E4-2B68-4E46-9700-DE1C8FA36432}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0DD4851F-194E-476B-AEF2-C615766861FE}

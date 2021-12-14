@@ -1,19 +1,21 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30406.217
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.DesktopGL", "Source\MonoGame.QuakeConsole.DesktopGL.csproj", "{98F182D3-4B53-4F26-A72C-588471AFDC49}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.DesktopGL", "Source\MonoGame.QuakeConsole.DesktopGL.csproj", "{98F182D3-4B53-4F26-A72C-588471AFDC49}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Interpreters", "Interpreters", "{494C62F4-73F9-4F9F-BFCD-22C8942DD0B4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{A53FECA0-11E3-48DF-877B-791B8416F2B9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloPython.DesktopGL", "Samples\HelloPython\HelloPython.DesktopGL.csproj", "{6DD855BE-2D3A-4B36-B373-3DBD5000DCF7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HelloPython.DesktopGL", "Samples\HelloPython\HelloPython.DesktopGL.csproj", "{6DD855BE-2D3A-4B36-B373-3DBD5000DCF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.PythonInterpreter.DesktopGL", "Interpreters\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.DesktopGL.csproj", "{E012A443-B6EC-47AE-836E-BDC76D1CF4AC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.PythonInterpreter.DesktopGL", "Interpreters\PythonInterpreter\MonoGame.QuakeConsole.PythonInterpreter.DesktopGL.csproj", "{E012A443-B6EC-47AE-836E-BDC76D1CF4AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonoGame.QuakeConsole.PythonInterpreter.Tests.DesktopGL", "Interpreters\PythonInterpreter.Tests\MonoGame.QuakeConsole.PythonInterpreter.Tests.DesktopGL.csproj", "{7A3615B7-2F7B-46CA-987E-88DC71FD815A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.PythonInterpreter.Tests.DesktopGL", "Interpreters\PythonInterpreter.Tests\MonoGame.QuakeConsole.PythonInterpreter.Tests.DesktopGL.csproj", "{7A3615B7-2F7B-46CA-987E-88DC71FD815A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonoGame.QuakeConsole.ManualInterpreter.DesktopGL", "Interpreters\ManualInterpreter\MonoGame.QuakeConsole.ManualInterpreter.DesktopGL.csproj", "{EEE0C00B-BAEF-4AD2-9495-C7D950D3ABB7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{7A3615B7-2F7B-46CA-987E-88DC71FD815A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A3615B7-2F7B-46CA-987E-88DC71FD815A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A3615B7-2F7B-46CA-987E-88DC71FD815A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEE0C00B-BAEF-4AD2-9495-C7D950D3ABB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEE0C00B-BAEF-4AD2-9495-C7D950D3ABB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEE0C00B-BAEF-4AD2-9495-C7D950D3ABB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEE0C00B-BAEF-4AD2-9495-C7D950D3ABB7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -45,5 +51,9 @@ Global
 		{6DD855BE-2D3A-4B36-B373-3DBD5000DCF7} = {A53FECA0-11E3-48DF-877B-791B8416F2B9}
 		{E012A443-B6EC-47AE-836E-BDC76D1CF4AC} = {494C62F4-73F9-4F9F-BFCD-22C8942DD0B4}
 		{7A3615B7-2F7B-46CA-987E-88DC71FD815A} = {494C62F4-73F9-4F9F-BFCD-22C8942DD0B4}
+		{EEE0C00B-BAEF-4AD2-9495-C7D950D3ABB7} = {494C62F4-73F9-4F9F-BFCD-22C8942DD0B4}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {20652C67-D756-4205-B3D4-E7361F640566}
 	EndGlobalSection
 EndGlobal
