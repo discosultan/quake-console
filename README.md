@@ -24,18 +24,18 @@ Quake-style console is an in-game command-line interface with swappable command 
 
 The following is required to successfully compile the QuakeConsole MonoGame solution:
 
-- Visual studio 2019+
-- .NET Core 3.1
+- Visual studio 2022+
+- .NET 6.0+
 - [DirectX End-User Runtimes (June 2010)](http://www.microsoft.com/en-us/download/details.aspx?id=8109)
-- MonoGame 3.8+
+- MonoGame 3.8.1+
 
 
 <h2 id="setup2">Using QuakeConsole</h2>
 
 ### Requirements
 
-- MonoGame.WindowsDX 3.8+
-- .NET Core 3.1+
+- MonoGame 3.8.1+
+- .NET 6.0+
 
 ### Setup
 
@@ -83,8 +83,8 @@ Python interpreter can be used to interpret user input as Python code. It is ext
 
 ### Requirements
 
-- MonoGame.WindowsDX 3.8+
-- .NET Core 3.1+
+- MonoGame 3.8.1+
+- .NET 6.0+
 
 ### Setup
 
@@ -116,8 +116,8 @@ Manual interpreter can be used to define commands and their corresponding action
 
 ### Requirements
 
-- MonoGame.WindowsDX 3.8+
-- .NET Core 3.1+
+- MonoGame 3.8.1+
+- .NET 6.0+
 
 ### Setup
 
@@ -154,8 +154,8 @@ Roslyn interpreter can be used to interpret user input as C# code using the [Ros
 
 ### Requirements
 
-- MonoGame.WindowsDX 3.8+
-- .NET Core 3.1+
+- MonoGame 3.8.1+
+- .NET 6.0+
 
 ### Setup
 
